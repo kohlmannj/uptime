@@ -1,0 +1,14 @@
+{
+  "name": "flask_util_js",
+  "homepage": "https://github.com/kohlmannj/flask_util_js",
+  "_release": "36ab6fd8d9",
+  "_resolution": {
+    "type": "branch",
+    "branch": "master",
+    "commit": "36ab6fd8d917b3577f201b4458313c1afd9b0f8a"
+  },
+  "_source": "https://github.com/kohlmannj/flask_util_js.git",
+  "_target": "*",
+  "_originalSource": "https://github.com/kohlmannj/flask_util_js.git",
+  "_direct": true
+}
