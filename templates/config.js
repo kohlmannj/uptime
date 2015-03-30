@@ -3,6 +3,7 @@
 require.config({
     baseUrl: '/static/',
     paths: {
+        'main':       ['js/main'],
         'flask_util_js':
                       ['{{ url_for("flask_util_js") }}'],
         'jquery':     ['//cdnjs.cloudflare.com/ajax/libs/jquery/1.11.1/jquery.min',
