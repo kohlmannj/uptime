@@ -3,4 +3,34 @@
  * Import this file using the following HTML or equivalent:
  * <link href="/stylesheets/screen.css" media="screen, projection" rel="stylesheet" type="text/css" /> */
 
-@import "compass/reset";
+@import "compass";
+//@import "compass/css3/animation";
+@import "normalize";
+@import "base";
+@import "util";
+@import "header";
+@import "GraphView";
+
+body {
+  font-family: "Avenir", "Helvetica Neue", "Helvetica", sans-serif;
+  background: #999;
+  margin: 0;
+  padding: 0;
+}
+
+#container {
+  max-width: pxtoem(1024px);
+  margin: 0 auto;
+  background: #fff;
+}
+
+.clearfix {
+  clear: both;
+  height: 0;
+}
+
+//#loadAvg, #cpuHive {
+//  .wrapper {
+//    padding: $outerMargin;
+//  }
+//}

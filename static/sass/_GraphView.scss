@@ -1,0 +1,55 @@
+.GraphView {
+  position: relative;
+  background-color: #fff;
+  overflow: hidden;
+
+  .wrapper {
+    position: absolute;
+    left: 0;
+    right: 0;
+    top: 0;
+    bottom: pxtoem(25px);
+
+    svg {
+      width: 100% !important;
+      height: 100% !important;
+    }
+  }
+
+  header {
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    color: $headerBorderColor;
+  }
+}
+
+#GraphLayout {
+  float: left;
+  width: 100%;
+  position: relative;
+}
+
+#loadAvg {
+  width: $loadAvgWidth;
+  position: absolute;
+  left: 0;
+  top: 0;
+  bottom: 0;
+
+  header {
+    margin-right: pxtoem($margin);
+  }
+}
+
+#cpuHive {
+  width: $cpuHiveWidth;
+  height: 0;
+  float: right;
+  padding-bottom: $cpuHiveWidth;
+
+  header {
+    margin-left: pxtoem($margin);
+  }
+}

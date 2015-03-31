@@ -1,0 +1,125 @@
+#refresh {
+  position: absolute;
+  left: 0;
+  @include image-replacement;
+  width: pxtoem($h1LineHeight);
+  height: pxtoem($h1LineHeight);
+  @include transition(opacity 0.25s ease-in-out);
+  border-radius: pxtoem($h1LineHeight / 2);
+  opacity: 0.25;
+  background-color: #000;
+
+  &:after {
+    content: "";
+    position: absolute;
+    left: 0;
+    right: 0;
+    top: 0;
+    bottom: 0;
+    margin: auto;
+    width: pxtoem(14px);
+    height: pxtoem(14px);
+    background: image-url("refresh.svg") no-repeat center;
+    @include transition-property(transform);
+    @include transition-duration(0.25s);
+    @include transition-timing-function(ease-in-out);
+  }
+
+  &:hover, &:focus {
+    opacity: 0.35;
+
+    &:after {
+      @include rotate(45deg);
+    }
+  }
+
+  &:active {
+    @include transition(none);
+    opacity: 0.65;
+  }
+
+  &.refreshing {
+    pointer-events: none;
+
+//    &:after {
+//      @include animation(refreshing 2.0s infinite linear);
+//    }
+  }
+
+  &.alert {
+    background-color: $alertColor;
+    opacity: 0.65;
+
+    &:after {
+      background-image: image-url("alert.svg");
+    }
+
+    &:hover {
+      opacity: 0.75;
+
+      &:after {
+        @include scale(1.25);
+      }
+    }
+
+    &:active {
+      opacity: 1.0;
+    }
+  }
+}
+
+header {
+  padding-top: 0;
+  margin: 0 pxtoem($outerMargin) pxtoem($h1LineHeight / 2 - $headerLineOffset) pxtoem($outerMargin);
+  height: pxtoem($h1LineHeight / 2 + $headerLineOffset);
+  background-color: inherit;
+  border-bottom: pxtoem($headerBorderWidth) solid;
+  color: inherit;
+
+  h1, h2 {
+    float: left;
+    font-size: pxtoem($h1FontSize);
+    font-weight: normal;
+    line-height: pxtoem($h1LineHeight, $h1FontSize);
+    top: pxtoem($headerLineOffset, $h1FontSize);
+    margin: 0;
+    padding-right: pxtoem(8px, $h1FontSize);
+
+    strong {
+      font-weight: 500;
+      color: #000;
+    }
+
+    .uptime {
+      text-transform: uppercase;
+      font-size: pxtoem(12px, $h1FontSize);
+      font-weight: 500;
+    }
+  }
+
+  #refresh + h1 {
+    margin-left: pxtoem($h1LineHeight + $margin, $h1FontSize);
+  }
+
+  .headerInfo {
+    background-color: inherit;
+    float: left;
+    position: relative;
+  }
+}
+
+#mainHeader {
+  padding-top: pxtoem($outerMargin);
+  margin-bottom: pxtoem($h1LineHeight / 2 + $outerMargin - $headerLineOffset);
+  color: $headerBorderColor;
+}
+
+//@include keyframes(refreshing) {
+//  0% {
+//    @include rotate(45deg);
+//  }
+//
+//  100% {
+//    @include rotate(405deg);
+//  }
+//}

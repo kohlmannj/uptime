@@ -14,8 +14,8 @@ def index():
     return render_template("index.html")
 
 
-@app.route('/stats', methods=['GET'])
-def get_stats():
+@app.route('/sample', methods=['GET'])
+def sample():
     from sys import platform as _platform
     if _platform == "linux" or _platform == "linux2":
         # Linux

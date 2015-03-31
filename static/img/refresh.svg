@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<svg width="14px" height="14px" viewBox="0 0 14 14" version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:sketch="http://www.bohemiancoding.com/sketch/ns">
+    <!-- Generator: Sketch 3.2.2 (9983) - http://www.bohemiancoding.com/sketch -->
+    <title>refresh</title>
+    <desc>Created with Sketch.</desc>
+    <defs></defs>
+    <g id="Page-1" stroke="none" stroke-width="1" fill="none" fill-rule="evenodd" sketch:type="MSPage">
+        <g id="Desktop" sketch:type="MSArtboardGroup" transform="translate(-73.000000, -33.000000)" fill="#FFFFFF">
+            <g id="Status-Button" sketch:type="MSLayerGroup" transform="translate(68.000000, 28.000000)">
+                <g id="Refresh-Icon" transform="translate(5.000000, 5.000000)" sketch:type="MSShapeGroup">
+                    <path d="M11.7323733,1.84762667 C10.48544,0.701493333 8.82298667,0 7,0 C3.14048,0 0,3.14048 0,7 C0,10.85952 3.14048,14 7,14 C8.9264,14 10.6743467,13.21768 11.94088,11.9532 L10.55544,10.56776 C9.64394667,11.4770133 8.38618667,12.04 7,12.04 C4.22109333,12.04 1.96,9.77890667 1.96,7 C1.96,4.22109333 4.22109333,1.96 7,1.96 C8.28258667,1.96 9.45429333,2.44272 10.34544,3.23456 L8.68,4.9 L13.44,4.9 L13.44,0.14 L11.7323733,1.84762667 Z"></path>
+                </g>
+            </g>
+        </g>
+    </g>
+</svg>

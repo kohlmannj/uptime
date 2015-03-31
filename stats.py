@@ -2,8 +2,10 @@ __author__ = 'kohlmannj'
 
 import multiprocessing
 import re
+import socket
 import subprocess
 import datetime
+from uptime import uptime
 
 
 def get_stats():
@@ -35,32 +37,29 @@ def get_stats():
     proc_lines = text[12:]
 
     stats = {
-        "cpu": {
-            "count": multiprocessing.cpu_count(),
-            "%user": float(cpu.group("user").strip("%")),
-            "%sys":  float(cpu.group("sys").strip("%")),
-            "%idle": float(cpu.group("idle").strip("%"))
-        },
-        "load_avg": {
-             "1min": float(load_avgs.group("onemin")),
-             "5min": float(load_avgs.group("fivemin")),
-            "15min": float(load_avgs.group("fifteenmin"))
-        },
-        "processes": [],
-        "time": timestamp
+        "cpu_count": multiprocessing.cpu_count(),
+        "cpu_%user": float(cpu.group("user").strip("%")),
+        "cpu_%sys":  float(cpu.group("sys").strip("%")),
+        "cpu_%idle": float(cpu.group("idle").strip("%")),
+        "hostname": socket.gethostname(),
+        "load_avg_1min": float(load_avgs.group("onemin")),
+        "load_avg_5min": float(load_avgs.group("fivemin")),
+        "load_avg_15min": float(load_avgs.group("fifteenmin")),
+        "timestamp": timestamp,
+        "uptime": uptime()
     }
 
-    for line in proc_lines:
-        # Skip empty lines
-        if len(line.strip()) == 0:
-            continue
-        values = re.split("\s+", line.strip())
-        proc = dict(zip(proc_keys, values))
-        # String-to-number conversions
-        if "%cpu" in proc:
-            proc["%cpu"] = float(proc["%cpu"].strip("%"))
-        if "pid" in proc:
-            proc["pid"] = int(proc["pid"].strip("-"))
-        stats["processes"].append(proc)
+    # for line in proc_lines:
+    #     # Skip empty lines
+    #     if len(line.strip()) == 0:
+    #         continue
+    #     values = re.split("\s+", line.strip())
+    #     proc = dict(zip(proc_keys, values))
+    #     # String-to-number conversions
+    #     if "%cpu" in proc:
+    #         proc["%cpu"] = float(proc["%cpu"].strip("%"))
+    #     if "pid" in proc:
+    #         proc["pid"] = int(proc["pid"].strip("-"))
+    #     stats["processes"].append(proc)
 
     return stats

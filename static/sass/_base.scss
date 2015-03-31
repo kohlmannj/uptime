@@ -1,0 +1,19 @@
+$fontSize: 16px;
+$lineHeightFactor: 1.33333333333333333333;
+$lineHeight: $fontSize * $lineHeightFactor;
+$margin: 8px;
+$outerMargin: $margin * 2;
+
+$h1FontSize: 18px;
+$h1LineHeight: $h1FontSize * $lineHeightFactor;
+
+$alertColor: #F5A623;
+
+$loadAvgWidth: 70%;
+$loadAvgPaddingBottom: 1/2.4 * $loadAvgWidth;
+
+$cpuHiveWidth: 100% - $loadAvgWidth;
+
+$headerBorderWidth: 1px;
+$headerBorderColor: #999;
+$headerLineOffset: 1px;

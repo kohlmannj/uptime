@@ -7,13 +7,12 @@
 'use strict';
 
 define(function(require) {
-    var application = require('application');
+    var Application = require('application');
 
-    var instance = new application();
+    var instance = new Application();
 
     instance.on("start", function() {
-        this.setRootLayout();
-        this.root.render();
+        this.fetchSample();
     });
 
     // Load some initial data, and then start our application
