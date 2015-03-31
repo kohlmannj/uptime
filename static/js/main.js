@@ -4,13 +4,18 @@
 
 /* jshint browser:true */
 /* global define */
+'use strict';
 
 define(function(require) {
-    var _ = require('underscore');
-    var Backbone = require('backbone');
-    var $ = require('jquery');
-    var d3 = require('d3');
-    require("marionette");
+    var application = require('application');
 
-    window.alert("Hello world!");
+    var instance = new application();
+
+    instance.on("start", function() {
+        this.setRootLayout();
+        this.root.render();
+    });
+
+    // Load some initial data, and then start our application
+    instance.start();
 });
