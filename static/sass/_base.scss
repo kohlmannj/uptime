@@ -7,6 +7,7 @@ $outerMargin: $margin * 2;
 $h1FontSize: 18px;
 $h1LineHeight: $h1FontSize * $lineHeightFactor;
 
+$successColor: #7ED321;
 $alertColor: #F5A623;
 
 $loadAvgWidth: 70%;
@@ -14,6 +15,6 @@ $loadAvgPaddingBottom: 1/2.4 * $loadAvgWidth;
 
 $cpuHiveWidth: 100% - $loadAvgWidth;
 
-$headerBorderWidth: 1px;
+$headerBorderWidth: 2px;
 $headerBorderColor: #999;
-$headerLineOffset: 1px;
+$headerLineOffset: 0px;

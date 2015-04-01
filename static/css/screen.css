@@ -198,13 +198,13 @@ th {
   overflow: hidden;
   width: 1.5em;
   height: 1.5em;
-  -moz-transition: opacity 0.25s ease-in-out;
-  -o-transition: opacity 0.25s ease-in-out;
-  -webkit-transition: opacity 0.25s ease-in-out;
-  transition: opacity 0.25s ease-in-out;
+  -moz-transition: background-color 0.25s ease-in-out;
+  -o-transition: background-color 0.25s ease-in-out;
+  -webkit-transition: background-color 0.25s ease-in-out;
+  transition: background-color 0.25s ease-in-out;
   border-radius: 0.75em;
-  opacity: 0.25;
-  background-color: #000; }
+  background-color: rgba(0, 0, 0, 0.3);
+  overflow: hidden; }
   #refresh:after {
     content: "";
     position: absolute;
@@ -216,10 +216,10 @@ th {
     width: 0.875em;
     height: 0.875em;
     background: url('../img/refresh.svg?1427834551') no-repeat center;
-    -moz-transition-property: transform;
-    -o-transition-property: transform;
-    -webkit-transition-property: transform;
-    transition-property: transform;
+    -moz-transition-property: transform, -webkit-transform, -moz-transform;
+    -o-transition-property: transform, -webkit-transform, -moz-transform;
+    -webkit-transition-property: transform, -webkit-transform, -moz-transform;
+    transition-property: transform, -webkit-transform, -moz-transform;
     -moz-transition-duration: 0.25s;
     -o-transition-duration: 0.25s;
     -webkit-transition-duration: 0.25s;
@@ -229,7 +229,7 @@ th {
     -webkit-transition-timing-function: ease-in-out;
     transition-timing-function: ease-in-out; }
   #refresh:hover, #refresh:focus {
-    opacity: 0.35; }
+    background-color: rgba(0, 0, 0, 0.5); }
     #refresh:hover:after, #refresh:focus:after {
       -webkit-transform: rotate(45deg);
       -moz-transform: rotate(45deg);
@@ -241,47 +241,101 @@ th {
     -o-transition: none;
     -webkit-transition: none;
     transition: none;
-    opacity: 0.65; }
+    background-color: rgba(0, 0, 0, 0.65); }
   #refresh.refreshing {
-    pointer-events: none; }
+    pointer-events: none;
+    background-color: rgba(0, 0, 0, 0.15); }
+    #refresh.refreshing:after {
+      -webkit-transform: rotate(360deg);
+      -moz-transform: rotate(360deg);
+      -ms-transform: rotate(360deg);
+      -o-transform: rotate(360deg);
+      transform: rotate(360deg);
+      -moz-transition-duration: 3s;
+      -o-transition-duration: 3s;
+      -webkit-transition-duration: 3s;
+      transition-duration: 3s; }
+  #refresh.update:after {
+    -webkit-transform: rotate(360deg);
+    -moz-transform: rotate(360deg);
+    -ms-transform: rotate(360deg);
+    -o-transform: rotate(360deg);
+    transform: rotate(360deg);
+    -moz-transition-duration: 0.25s;
+    -o-transition-duration: 0.25s;
+    -webkit-transition-duration: 0.25s;
+    transition-duration: 0.25s; }
+  #refresh.update:hover, #refresh.update:focus {
+    background-color: rgba(126, 211, 33, 0.8); }
+  #refresh.update:active {
+    background-color: #7ed321; }
+  #refresh.reset-transition:after {
+    -webkit-transform: rotate(0);
+    -moz-transform: rotate(0);
+    -ms-transform: rotate(0);
+    -o-transform: rotate(0);
+    transform: rotate(0);
+    -moz-transition-property: none;
+    -o-transition-property: none;
+    -webkit-transition-property: none;
+    transition-property: none; }
   #refresh.alert {
-    background-color: #f5a623;
-    opacity: 0.65; }
+    background-color: rgba(245, 166, 35, 0.65); }
     #refresh.alert:after {
-      background-image: url('../img/alert.svg?1427834551'); }
-    #refresh.alert:hover {
-      opacity: 0.75; }
-      #refresh.alert:hover:after {
-        -webkit-transform: scale(1.25, 1.25);
-        -moz-transform: scale(1.25, 1.25);
-        -ms-transform: scale(1.25, 1.25);
-        -o-transform: scale(1.25, 1.25);
-        transform: scale(1.25, 1.25); }
+      text-indent: 0;
+      content: "!";
+      text-align: center;
+      line-height: 1em;
+      font-weight: bold; }
+    #refresh.alert:hover, #refresh.alert:focus {
+      background-color: rgba(245, 166, 35, 0.8); }
+      #refresh.alert:hover:after, #refresh.alert:focus:after {
+        -webkit-transform: none;
+        -moz-transform: none;
+        -ms-transform: none;
+        -o-transform: none;
+        transform: none; }
     #refresh.alert:active {
-      opacity: 1.0; }
+      background-color: #f5a623; }
 
 header {
   padding-top: 0;
-  margin: 0 1em 0.6875em 1em;
-  height: 0.8125em;
+  margin: 0 1em 0.75em 1em;
+  height: 0.75em;
   background-color: inherit;
-  border-bottom: 0.0625em solid;
+  border-bottom: 0.125em solid;
   color: inherit; }
   header h1, header h2 {
     float: left;
     font-size: 1.125em;
     font-weight: normal;
     line-height: 1.33333em;
-    top: 0.05556em;
+    top: 0em;
     margin: 0;
     padding-right: 0.44444em; }
     header h1 strong, header h2 strong {
       font-weight: 500;
       color: #000; }
-    header h1 .uptime, header h2 .uptime {
+    header h1 .note, header h2 .note {
       text-transform: uppercase;
       font-size: 0.66667em;
-      font-weight: 500; }
+      font-weight: 700;
+      -moz-transition-property: color opacity;
+      -o-transition-property: color opacity;
+      -webkit-transition-property: color opacity;
+      transition-property: color opacity;
+      -moz-transition-duration: 0.25s;
+      -o-transition-duration: 0.25s;
+      -webkit-transition-duration: 0.25s;
+      transition-duration: 0.25s;
+      -moz-transition-timing-function: ease-in-out;
+      -o-transition-timing-function: ease-in-out;
+      -webkit-transition-timing-function: ease-in-out;
+      transition-timing-function: ease-in-out; }
+      header h1 .note.refreshing, header h2 .note.refreshing {
+        color: #d9d9d9; }
+      header h1 .note.alert, header h2 .note.alert {
+        color: rgba(245, 166, 35, 0.85); }
   header #refresh + h1 {
     margin-left: 1.77778em; }
   header .headerInfo {
@@ -291,8 +345,23 @@ header {
 
 #mainHeader {
   padding-top: 1em;
-  margin-bottom: 1.6875em;
+  margin-bottom: 1.75em;
   color: #999999; }
+
+@-webkit-keyframes refreshing {
+  0% {
+    -webkit-transform: rotate(0deg);
+    -moz-transform: rotate(0deg);
+    -ms-transform: rotate(0deg);
+    -o-transform: rotate(0deg);
+    transform: rotate(0deg); }
+
+  100% {
+    -webkit-transform: rotate(360deg);
+    -moz-transform: rotate(360deg);
+    -ms-transform: rotate(360deg);
+    -o-transform: rotate(360deg);
+    transform: rotate(360deg); } }
 
 .GraphView {
   position: relative;
@@ -340,7 +409,8 @@ body {
   font-family: "Avenir", "Helvetica Neue", "Helvetica", sans-serif;
   background: #999;
   margin: 0;
-  padding: 0; }
+  padding: 0;
+  -webkit-font-smoothing: antialiased; }
 
 #container {
   max-width: 64em;

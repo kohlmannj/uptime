@@ -14,16 +14,16 @@ define(function(require) {
         "id": "time",
 
         defaults: {
-            "cpu_count": 0,
-            "cpu_%user": 0.0,
-            "cpu_%sys":  0.0,
-            "cpu_%idle": 0.0,
-            "hostname": "",
-            "load_avg_1min": 0.0,
-            "load_avg_5min": 0.0,
-            "load_avg_15min": 0.0,
-            "timestamp": "",
-            "uptime": ""
+            "cpu_count": -1,
+            "cpu_%user": -1.0,
+            "cpu_%sys":  -1.0,
+            "cpu_%idle": -1.0,
+            "hostname": null,
+            "load_avg_1min": -1.0,
+            "load_avg_5min": -1.0,
+            "load_avg_15min": -1.0,
+            "timestamp": null,
+            "uptime": null
         },
 
         parse: function(response) {

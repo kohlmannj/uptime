@@ -20,9 +20,59 @@ define(function(require) {
                 return utils.formattedDuration(this.uptime);
             }
         },
+
         modelEvents: {
-            "change": "render"
+            "change": "update"
         },
+
+        ui: {
+            "refresh": "#refresh:not(.alert)",
+            "alert": "#refresh.alert"
+        },
+
+        events: {
+            "click @ui.refresh": "triggerRefresh",
+            "click @ui.alert": "showErrorMessage"
+        },
+
+        initialize: function() {
+            this.errorMessage = "There was a problem fetching status information from the server."
+        },
+
+        triggerRefresh: function(e) {
+            if (e) {
+                e.preventDefault();
+            }
+            this.trigger("refresh");
+        },
+
+        startRefresh: function(e) {
+            this.ui.refresh.removeClass("finishedRefreshing").addClass("refreshing");
+            this.$el.find(".note").addClass("refreshing");
+            console.log("Refreshing!");
+        },
+
+        stopRefresh: function() {
+            this.ui.refresh.removeClass("refreshing alert").addClass("finishedRefreshing");
+            console.log("Done refreshing.");
+            this.errorMessage = null;
+            this.$el.find(".note").removeClass("alert");
+        },
+
+        errorDuringRefresh: function(message) {
+            this.errorMessage = message;
+            this.ui.refresh
+                .removeClass("finishedRefreshing")
+                .removeClass("refreshing")
+                .addClass("alert")
+            ;
+            this.$el.find(".note").addClass("alert");
+        },
+
+        showErrorMessage: function() {
+            window.alert(this.errorMessage);
+        },
+
         // From http://stackoverflow.com/a/14679936
         onRender: function () {
             // Get rid of that pesky wrapping-div.
@@ -32,6 +82,28 @@ define(function(require) {
             // nesting elements during re-render.
             this.$el.unwrap();
             this.setElement(this.$el);
+        },
+
+        update: function() {
+            // Update hostname
+            this.$el.find("strong").text( this.model.get("hostname") );
+            // Update uptime
+            this.$el.find(".note")
+                .removeClass("refreshing")
+                .text( utils.formattedDuration(this.model.get("uptime")) + " uptime")
+            ;
+            // Update "last updated" title text
+            this.$el.find(".headerInfo").attr("title", "Last updated: " + new Date(this.model.get("timestamp")).toString());
+            // Flash the refresh icon to indicate a successful update
+            this.ui.refresh.addClass("update");
+
+            setTimeout(_.bind(function() {
+                this.ui.refresh.removeClass("update").addClass("reset-transition");
+
+                setTimeout(_.bind(function() {
+                    this.ui.refresh.removeClass("reset-transition");
+                }, this), 250);
+            }, this), 500);
         }
     });
 });

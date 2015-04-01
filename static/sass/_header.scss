@@ -4,10 +4,10 @@
   @include image-replacement;
   width: pxtoem($h1LineHeight);
   height: pxtoem($h1LineHeight);
-  @include transition(opacity 0.25s ease-in-out);
+  @include transition(background-color 0.25s ease-in-out);
   border-radius: pxtoem($h1LineHeight / 2);
-  opacity: 0.25;
-  background-color: #000;
+  background-color: rgba(#000, 0.3);
+  overflow: hidden;
 
   &:after {
     content: "";
@@ -20,13 +20,13 @@
     width: pxtoem(14px);
     height: pxtoem(14px);
     background: image-url("refresh.svg") no-repeat center;
-    @include transition-property(transform);
+    @include transition-property(transform, -webkit-transform, -moz-transform);
     @include transition-duration(0.25s);
     @include transition-timing-function(ease-in-out);
   }
 
   &:hover, &:focus {
-    opacity: 0.35;
+    background-color: rgba(#000, 0.5);
 
     &:after {
       @include rotate(45deg);
@@ -35,35 +35,64 @@
 
   &:active {
     @include transition(none);
-    opacity: 0.65;
+    background-color: rgba(#000, 0.65);
   }
 
   &.refreshing {
     pointer-events: none;
+    background-color: rgba(#000, 0.15);
 
-//    &:after {
-//      @include animation(refreshing 2.0s infinite linear);
-//    }
+    &:after {
+      @include rotate(360deg);
+      @include transition-duration(3.0s);
+    }
+  }
+
+  &.update {
+//    background-color: rgba($successColor, 0.65);
+
+    &:after {
+      @include rotate(360deg);
+      @include transition-duration(0.25s);
+    }
+
+    &:hover, &:focus {
+      background-color: rgba($successColor, 0.8);
+    }
+
+    &:active {
+      background-color: rgba($successColor, 1.0);
+    }
+  }
+
+  &.reset-transition {
+    &:after {
+      @include rotate(0);
+      @include transition-property(none)
+    }
   }
 
   &.alert {
-    background-color: $alertColor;
-    opacity: 0.65;
+    background-color: rgba($alertColor, 0.65);
 
     &:after {
-      background-image: image-url("alert.svg");
+      text-indent: 0;
+      content: "!";
+      text-align: center;
+      line-height: pxtoem(16px);
+      font-weight: bold;
     }
 
-    &:hover {
-      opacity: 0.75;
+    &:hover, &:focus {
+      background-color: rgba($alertColor, 0.8);
 
       &:after {
-        @include scale(1.25);
+        @include transform(none);
       }
     }
 
     &:active {
-      opacity: 1.0;
+      background-color: rgba($alertColor, 1.0);
     }
   }
 }
@@ -90,10 +119,21 @@ header {
       color: #000;
     }
 
-    .uptime {
+    .note {
       text-transform: uppercase;
       font-size: pxtoem(12px, $h1FontSize);
-      font-weight: 500;
+      font-weight: 700;
+      @include transition-property(color opacity);
+      @include transition-duration(0.25s);
+      @include transition-timing-function(ease-in-out);
+
+      &.refreshing {
+        color: lighten($headerBorderColor, 25%);
+      }
+
+      &.alert {
+        color: rgba($alertColor, 0.85);
+      }
     }
   }
 
@@ -114,12 +154,12 @@ header {
   color: $headerBorderColor;
 }
 
-//@include keyframes(refreshing) {
-//  0% {
-//    @include rotate(45deg);
-//  }
-//
-//  100% {
-//    @include rotate(405deg);
-//  }
-//}
+@-webkit-keyframes refreshing {
+  0% {
+    @include rotate(0deg);
+  }
+
+  100% {
+    @include rotate(360deg);
+  }
+}

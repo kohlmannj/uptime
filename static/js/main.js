@@ -7,14 +7,9 @@
 'use strict';
 
 define(function(require) {
-    var Application = require('application');
+    var UptimeApplication = require('UptimeApplication');
 
-    var instance = new Application();
+    var instance = new UptimeApplication();
 
-    instance.on("start", function() {
-        this.fetchSample();
-    });
-
-    // Load some initial data, and then start our application
     instance.start();
 });

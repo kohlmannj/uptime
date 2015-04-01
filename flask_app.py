@@ -1,5 +1,6 @@
 from flask import Flask, jsonify, render_template
 from flask_util_js.flask_util_js import FlaskUtilJs
+import json
 import stats
 
 # App Setup
@@ -11,7 +12,7 @@ fujs = FlaskUtilJs(app)
 
 @app.route('/')
 def index():
-    return render_template("index.html")
+    return render_template("index.html", initialSample=json.dumps(stats.get_stats()))
 
 
 @app.route('/sample', methods=['GET'])

@@ -7,7 +7,7 @@ define(function(require) {
 
     return Marionette.LayoutView.extend({
         el: "#container",
-        template: require("text!templates/layout.html"),
+        template: require("text!templates/RootLayout.html"),
         regions: {
             "header": "#mainHeader",
             "loadAvg": "#loadAvg",
