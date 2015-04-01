@@ -8,10 +8,8 @@
 define(function(require) {
     'use strict';
 
-    var _ = require('underscore');
     var Backbone = require('backbone');
     var $ = require('jquery');
-    //var d3 = require('d3');
     var Marionette = require('marionette');
     var flask_util = require('flask_util');
 
@@ -22,28 +20,31 @@ define(function(require) {
 
     var RootLayoutView = require("views/RootLayout");
     var MainHeaderView = require("views/MainHeader");
-    var LoadAverageView = require("views/LoadAverage");
+    var AverageLoadView = require("views/AverageLoad");
     var CPUHiveView = require("views/CPUHive");
 
     return Marionette.Application.extend({
         initialize: function(options) {
-            this.ready = false;
-            // Polling interval, which can be customized in the constructor if you like.
+            // Polling Interval Setup
             this.poll_interval = 10000;
+            // Support for a custom poll interval, passed via constructor's options hash.
             if (options && options.poll_interval) {
                 this.poll_interval = options.poll_interval;
             }
+            // Store a reference to the polling interval.
+            this.poll = -1;
 
-            // Initialize the samples collection, where we store data samples retrieved from the server
-            // (and dummy "error" samples generated when we fail to poll the server for updates).
+            // Samples Collection Setup
             this.samples = new SampleCollection();
+
+            // Sample URL Setup
             this.sample_url = flask_util.url_for("sample");
 
-            // Initialize and render the root layout.
+            // RootLayoutView Setup
             this.rootView = new RootLayoutView();
             this.rootView.render();
 
-            // Create a new Sample from the INITIAL_SAMPLE data contained in the template.
+            // Initial Sample: create a SampleModel from the INITIAL_SAMPLE data contained in the template.
             this.current_data = new SampleModel(INITIAL_SAMPLE);
 
             // MainHeaderView Setup
@@ -52,12 +53,12 @@ define(function(require) {
             });
             this.rootView.getRegion('MainHeaderView').show(this.mainHeaderView);
 
-            // LoadAverageView Setup
-            this.loadAverageView = new LoadAverageView({
+            // AverageLoadView Setup
+            this.averageLoadView = new AverageLoadView({
                 collection: this.samples,
                 current_data: this.current_data
             });
-            this.rootView.getRegion('LoadAverageView').show(this.loadAverageView);
+            this.rootView.getRegion('AverageLoadView').show(this.averageLoadView);
 
             // CPUHiveView Setup
             this.cpuHiveView = new CPUHiveView({
@@ -66,11 +67,8 @@ define(function(require) {
             });
             this.rootView.getRegion('CPUHiveView').show(this.cpuHiveView);
 
-            // Listen for presses of the Refresh button in the header.
+            // MainHeaderView Refresh button: listen for "refresh" event to trigger a fetch.
             this.listenTo(this.mainHeaderView, "refresh", this.fetchSample);
-
-            // Store a reference to the polling interval.
-            this.poll = -1;
         },
 
         onStart: function() {
@@ -79,19 +77,21 @@ define(function(require) {
         },
 
         startPolling: function() {
-            this.ready = true;
             this.poll = setInterval(_.bind(this.fetchSample, this), this.poll_interval);
         },
 
         stopPolling: function() {
-            this.ready = false;
             clearInterval(this.poll);
         },
 
         fetchSample: function() {
+            // Clear the next poll until we complete this fetch.
             this.stopPolling();
+
+            // Update the Refresh button to indicate we're fetching.
             this.mainHeaderView.startRefresh();
-            // GET the new sample data from the server
+
+            // GET the new sample data from the server.
             $.ajax({
                 dataType: "json",
                 url: this.sample_url,
@@ -101,26 +101,36 @@ define(function(require) {
         },
 
         fetchSuccess: function(response) {
+            // Add the fetched sample to the this.samples collection.
+            var fetchedSample = new SampleModel(response);
+            this.samples.add(fetchedSample);
+
             // Update this.current_data with the new values from the server.
             this.current_data.set(response);
-            console.log(this.current_data.toJSON());
-            // Add a deep copy of current_data to this.samples
-            this.samples.add( $.extend(true, {}, this.current_data) );
+
+            // Re-enable the Refresh button.
             this.mainHeaderView.stopRefresh();
+
+            // Schedule the next polling.
             this.startPolling();
         },
 
         fetchError: function(response) {
             // Record an error message to MainHeaderView.
             var message = "There was a problem fetching status information from the server. (Error " + response.status + ": " + response.statusText + ")";
-            this.ready = false;
+
             // Add an error sample to this.samples.
             var dummy_sample = new SampleModel({
                 "hostname": this.current_data.get("hostname"),
                 "error": message
             });
             this.samples.add(dummy_sample);
+
+            // Update the Refresh button to indicate there's been an error.
             this.mainHeaderView.errorDuringRefresh(message);
+
+            // Schedule the next polling.
+            this.startPolling();
         }
     });
 });

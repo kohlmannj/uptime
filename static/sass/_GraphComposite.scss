@@ -44,13 +44,16 @@
   }
 }
 
-#GraphLayout {
+.GraphLayout {
   float: left;
   width: 100%;
   position: relative;
 }
 
-#loadAvg {
+// Average Load View
+
+.AverageLoadCompositeView {
+  @extend .GraphCompositeView;
   width: $loadAvgWidth;
   position: absolute;
   left: 0;
@@ -62,7 +65,21 @@
   }
 }
 
-#cpuHive {
+.AverageLoadView {
+  rect {
+    fill: green;
+    @include transition(fill 0.25s ease-in-out);
+
+    &:hover {
+      fill: blue;
+    }
+  }
+}
+
+// CPU Hive View
+
+.CPUHiveCompositeView {
+  @extend .GraphCompositeView;
   width: $cpuHiveWidth;
   height: 0;
   float: right;
@@ -70,5 +87,16 @@
 
   header {
     margin-left: pxtoem($margin);
+  }
+}
+
+.CPUHiveView {
+  rect {
+    fill: orange;
+    @include transition(fill 0.25s ease-in-out);
+
+    &:hover {
+      fill: yellow;
+    }
   }
 }

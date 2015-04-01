@@ -11,7 +11,7 @@ define(function(require) {
         // Default width and height values; can be overridden in constructor.
         width: 960,
         height: 304,
-        className: "LoadAverageView",
+        className: "AverageLoadView",
 
         events: {
             "mouseover rect": "enterTest",
@@ -27,7 +27,7 @@ define(function(require) {
         },
 
         onRender: function() {
-            console.log("onRender: LoadAverageView");
+            console.log("onRender: AverageLoadView");
             var rect = this.d3El.append("rect")
                 .attr("class", "someRect")
                 .attr("x", this.width / 2 - 64)

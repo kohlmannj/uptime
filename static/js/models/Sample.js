@@ -11,7 +11,7 @@ define(function(require) {
     var Backbone = require('backbone');
 
     return Backbone.Model.extend({
-        "id": "time",
+        idAttribute: "timestamp",
 
         defaults: {
             "cpu_count": -1,

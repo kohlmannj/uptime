@@ -26,8 +26,8 @@ define(function(require) {
         },
 
         ui: {
-            "refresh": "#refresh:not(.alert)",
-            "alert": "#refresh.alert"
+            "refresh": ".refresh:not(.alert)",
+            "alert": ".refresh.alert"
         },
 
         events: {

@@ -1,4 +1,4 @@
-#refresh {
+.refresh {
   position: absolute;
   left: 0;
   @include image-replacement;
@@ -49,8 +49,6 @@
   }
 
   &.update {
-//    background-color: rgba($successColor, 0.65);
-
     &:after {
       @include rotate(360deg);
       @include transition-duration(0.25s);
@@ -137,7 +135,7 @@ header {
     }
   }
 
-  #refresh + h1 {
+  .refresh + h1 {
     margin-left: pxtoem($h1LineHeight + $margin, $h1FontSize);
   }
 
@@ -148,18 +146,8 @@ header {
   }
 }
 
-#mainHeader {
+.mainHeader {
   margin-bottom: pxtoem($h1LineHeight / 2 + $outerMargin - $headerLineOffset);
   color: $headerBorderColor;
   border-color: lighten($headerBorderColor, 25%);
-}
-
-@-webkit-keyframes refreshing {
-  0% {
-    @include rotate(0deg);
-  }
-
-  100% {
-    @include rotate(360deg);
-  }
 }

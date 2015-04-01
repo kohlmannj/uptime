@@ -10,9 +10,9 @@ define(function(require) {
         el: "#container",
         template: require("text!templates/RootLayout.html"),
         regions: {
-            "MainHeaderView": "#mainHeader",
-            "LoadAverageView": "#LoadAverageViewWrapper",
-            "CPUHiveView": "#CPUHiveViewWrapper"
+            "MainHeaderView": ".mainHeader",
+            "AverageLoadView": ".AverageLoadCompositeView .wrapper",
+            "CPUHiveView": ".CPUHiveCompositeView .wrapper"
         }
     });
 });

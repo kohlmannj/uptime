@@ -20,7 +20,6 @@ define(function(require) {
                 .attr("y", this.height / 2 - 64)
                 .attr("width", 128)
                 .attr("height", 128)
-                .style("fill", "orange")
             ;
         }
     });

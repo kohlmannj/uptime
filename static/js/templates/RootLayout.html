@@ -1,38 +1,30 @@
 <div id="container">
-    <header id="mainHeader">
+    <header class="mainHeader">
         <div class="headerInfo">
-            <a id="refresh" href="#">(Refresh Now)</a>
+            <a class="refresh" href="#">(Refresh Now)</a>
             <h1><strong id='hostname' >Hostname</strong> <span class="note">Uptime</span></h1>
         </div>
     </header>
 
-    <div id="GraphLayout">
-        <div id="loadAvg" class="GraphCompositeView">
+    <div class="GraphLayout">
+        <div id="loadAvg" class="AverageLoadCompositeView">
             <header>
                 <div class="headerInfo">
                     <h2><span class="note">Average Load</span></h2>
                 </div>
             </header>
 
-            <div id="LoadAverageViewWrapper" class="wrapper">
-                <svg preserveAspectRatio="none" width="720px" height="304px" viewBox="0 0 720 304" version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
-
-                </svg>
-            </div>
+            <div class="wrapper"><!-- AverageLoadView draws here --></div>
         </div>
 
-        <div id="cpuHive" class="GraphCompositeView">
+        <div class="CPUHiveCompositeView">
             <header>
                 <div class="headerInfo">
                     <h2><span class="note">Load vs. CPU Usage</span></h2>
                 </div>
             </header>
 
-            <div id="CPUHiveViewWrapper" class="wrapper">
-                <svg preserveAspectRatio="none" width="304px" height="304px" viewBox="0 0 304 304" version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
-                    <rect x="0" y="0" width="64" height="64" style="fill: #0000ff;"></rect><ellipse cx="25" cy="25" rx="15" ry="10" fill="red"></ellipse><path fill="#000" d="M7,14c1.104,0,2-0.896,2-2s-0.896-2-2-2s-2,0.896-2,2S5.896,14,7,14z M5,0h4v8H5V0z"></path>
-                </svg>
-            </div>
+            <div class="wrapper"><!-- CPUHiveView draws here --></div>
         </div>
     </div>
 
