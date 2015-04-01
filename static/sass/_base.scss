@@ -10,10 +10,13 @@ $h1LineHeight: $h1FontSize * $lineHeightFactor;
 $successColor: #7ED321;
 $alertColor: #F5A623;
 
-$loadAvgWidth: 70%;
-$loadAvgPaddingBottom: 1/2.4 * $loadAvgWidth;
+$loadAvgWidth: 70.3125%;
+$loadAvgRatio: 1/2.4;
+$loadAvgPaddingBottom: $loadAvgRatio * $loadAvgWidth;
 
 $cpuHiveWidth: 100% - $loadAvgWidth;
+$cpuHiveRatio: 1/1;
+$cupHivePaddingBottom: $cpuHiveRatio * $cpuHiveWidth;
 
 $headerBorderWidth: 2px;
 $headerBorderColor: #999;

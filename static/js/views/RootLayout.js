@@ -1,17 +1,18 @@
 /* jshint browser:true */
 /* global define */
-'use strict';
 
 define(function(require) {
+    'use strict';
+
     require('marionette');
 
     return Marionette.LayoutView.extend({
         el: "#container",
         template: require("text!templates/RootLayout.html"),
         regions: {
-            "header": "#mainHeader",
-            "loadAvg": "#loadAvg",
-            "cpuHive": "#cpuHive"
+            "MainHeaderView": "#mainHeader",
+            "LoadAverageView": "#LoadAverageViewWrapper",
+            "CPUHiveView": "#CPUHiveViewWrapper"
         }
     });
 });

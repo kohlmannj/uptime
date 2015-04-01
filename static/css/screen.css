@@ -363,22 +363,23 @@ header {
     -o-transform: rotate(360deg);
     transform: rotate(360deg); } }
 
-.GraphView {
+.GraphCompositeView {
   position: relative;
   background-color: #fff;
-  overflow: hidden; }
-  .GraphView .wrapper {
+  margin-bottom: 2.0625em; }
+  .GraphCompositeView .wrapper {
     position: absolute;
     left: 0;
     right: 0;
     top: 0;
-    bottom: 1.5625em; }
-    .GraphView .wrapper svg {
+    bottom: 0;
+    overflow: hidden; }
+    .GraphCompositeView .wrapper svg {
       width: 100% !important;
       height: 100% !important; }
-  .GraphView header {
+  .GraphCompositeView header {
     position: absolute;
-    bottom: 0;
+    bottom: -1.5625em;
     left: 0;
     right: 0;
     color: #999999; }
@@ -389,7 +390,7 @@ header {
   position: relative; }
 
 #loadAvg {
-  width: 70%;
+  width: 70.3125%;
   position: absolute;
   left: 0;
   top: 0;
@@ -398,10 +399,10 @@ header {
     margin-right: 0.5em; }
 
 #cpuHive {
-  width: 30%;
+  width: 29.6875%;
   height: 0;
   float: right;
-  padding-bottom: 30%; }
+  padding-bottom: 29.6875%; }
   #cpuHive header {
     margin-left: 0.5em; }
 

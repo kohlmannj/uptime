@@ -49,12 +49,10 @@ define(function(require) {
         startRefresh: function(e) {
             this.ui.refresh.removeClass("finishedRefreshing").addClass("refreshing");
             this.$el.find(".note").addClass("refreshing");
-            console.log("Refreshing!");
         },
 
         stopRefresh: function() {
             this.ui.refresh.removeClass("refreshing alert").addClass("finishedRefreshing");
-            console.log("Done refreshing.");
             this.errorMessage = null;
             this.$el.find(".note").removeClass("alert");
         },

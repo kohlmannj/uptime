@@ -1,14 +1,15 @@
-.GraphView {
+.GraphCompositeView {
   position: relative;
   background-color: #fff;
-  overflow: hidden;
+  margin-bottom: pxtoem(25px + $margin);
 
   .wrapper {
     position: absolute;
     left: 0;
     right: 0;
     top: 0;
-    bottom: pxtoem(25px);
+    bottom: 0;
+    overflow: hidden;
 
     svg {
       width: 100% !important;
@@ -18,7 +19,7 @@
 
   header {
     position: absolute;
-    bottom: 0;
+    bottom: pxtoem(-25px);
     left: 0;
     right: 0;
     color: $headerBorderColor;
