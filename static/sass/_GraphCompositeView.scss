@@ -1,28 +1,46 @@
 .GraphCompositeView {
   position: relative;
   background-color: #fff;
-  margin-bottom: pxtoem(25px + $margin);
+  margin-top: pxtoem($outerMargin);
+  margin-bottom: pxtoem($margin);
 
   .wrapper {
     position: absolute;
     left: 0;
     right: 0;
     top: 0;
-    bottom: 0;
-    overflow: hidden;
+    bottom: pxtoem(-$margin);
+    overflow: auto;
+
+    &::-webkit-scrollbar {
+      width: pxtoem($margin);
+      height: pxtoem($margin);
+    }
+
+    &::-webkit-scrollbar-track {
+      background-color: #e5e5e5;
+      border-radius: pxtoem($margin / 2);
+    }
+
+    &::-webkit-scrollbar-thumb {
+      background-color: $headerBorderColor;
+      border-radius: pxtoem($margin / 2);
+    }
 
     svg {
-      width: 100% !important;
+      display: block;
+      width: auto !important;
       height: 100% !important;
+      background-color: #ccc;
     }
   }
 
   header {
+    color: $headerBorderColor;
     position: absolute;
-    bottom: pxtoem(-25px);
+    top: pxtoem(-25px);
     left: 0;
     right: 0;
-    color: $headerBorderColor;
   }
 }
 

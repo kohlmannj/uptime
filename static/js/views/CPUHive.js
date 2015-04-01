@@ -11,9 +11,10 @@ define(function(require) {
         // Default width and height values; can be overridden in constructor.
         width: 304,
         height: 304,
+        className: "CPUHiveView",
 
-        render: function() {
-            console.log("Rendering LoadAverageView");
+        onRender: function() {
+            console.log("onRender: CPUHiveView");
             var rect = this.d3El.append("rect")
                 .attr("x", this.width / 2 - 64)
                 .attr("y", this.height / 2 - 64)
@@ -21,8 +22,6 @@ define(function(require) {
                 .attr("height", 128)
                 .style("fill", "orange")
             ;
-            // Call onRender() since we're overriding the superclass's render() method.
-            this.onRender();
         }
     });
 });

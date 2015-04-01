@@ -300,7 +300,7 @@ th {
 
 header {
   padding-top: 0;
-  margin: 0 1em 0.75em 1em;
+  margin: 0 0 0.75em 0;
   height: 0.75em;
   background-color: inherit;
   border-bottom: 0.125em solid;
@@ -344,9 +344,9 @@ header {
     position: relative; }
 
 #mainHeader {
-  padding-top: 1em;
   margin-bottom: 1.75em;
-  color: #999999; }
+  color: #999999;
+  border-color: #d9d9d9; }
 
 @-webkit-keyframes refreshing {
   0% {
@@ -366,23 +366,35 @@ header {
 .GraphCompositeView {
   position: relative;
   background-color: #fff;
-  margin-bottom: 2.0625em; }
+  margin-top: 1em;
+  margin-bottom: 0.5em; }
   .GraphCompositeView .wrapper {
     position: absolute;
     left: 0;
     right: 0;
     top: 0;
-    bottom: 0;
-    overflow: hidden; }
+    bottom: -0.5em;
+    overflow: auto; }
+    .GraphCompositeView .wrapper::-webkit-scrollbar {
+      width: 0.5em;
+      height: 0.5em; }
+    .GraphCompositeView .wrapper::-webkit-scrollbar-track {
+      background-color: #e5e5e5;
+      border-radius: 0.25em; }
+    .GraphCompositeView .wrapper::-webkit-scrollbar-thumb {
+      background-color: #999999;
+      border-radius: 0.25em; }
     .GraphCompositeView .wrapper svg {
-      width: 100% !important;
-      height: 100% !important; }
+      display: block;
+      width: auto !important;
+      height: 100% !important;
+      background-color: #ccc; }
   .GraphCompositeView header {
+    color: #999999;
     position: absolute;
-    bottom: -1.5625em;
+    top: -1.5625em;
     left: 0;
-    right: 0;
-    color: #999999; }
+    right: 0; }
 
 #GraphLayout {
   float: left;
@@ -406,6 +418,15 @@ header {
   #cpuHive header {
     margin-left: 0.5em; }
 
+.LoadAverageView rect {
+  fill: green;
+  -moz-transition: fill 0.25s ease-in-out;
+  -o-transition: fill 0.25s ease-in-out;
+  -webkit-transition: fill 0.25s ease-in-out;
+  transition: fill 0.25s ease-in-out; }
+  .LoadAverageView rect:hover {
+    fill: blue; }
+
 body {
   font-family: "Avenir", "Helvetica Neue", "Helvetica", sans-serif;
   background: #999;
@@ -416,7 +437,8 @@ body {
 #container {
   max-width: 64em;
   margin: 0 auto;
-  background: #fff; }
+  background: #fff;
+  padding: 1em; }
 
 .clearfix {
   clear: both;

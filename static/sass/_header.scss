@@ -99,7 +99,7 @@
 
 header {
   padding-top: 0;
-  margin: 0 pxtoem($outerMargin) pxtoem($h1LineHeight / 2 - $headerLineOffset) pxtoem($outerMargin);
+  margin: 0 0 pxtoem($h1LineHeight / 2 - $headerLineOffset) 0;
   height: pxtoem($h1LineHeight / 2 + $headerLineOffset);
   background-color: inherit;
   border-bottom: pxtoem($headerBorderWidth) solid;
@@ -149,9 +149,9 @@ header {
 }
 
 #mainHeader {
-  padding-top: pxtoem($outerMargin);
   margin-bottom: pxtoem($h1LineHeight / 2 + $outerMargin - $headerLineOffset);
   color: $headerBorderColor;
+  border-color: lighten($headerBorderColor, 25%);
 }
 
 @-webkit-keyframes refreshing {

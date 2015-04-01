@@ -9,20 +9,32 @@ define(function(require) {
 
     return D3ShimView.extend({
         // Default width and height values; can be overridden in constructor.
-        width: 720,
+        width: 960,
         height: 304,
+        className: "LoadAverageView",
 
-        render: function() {
-            console.log("Rendering LoadAverageView");
+        events: {
+            "mouseover rect": "enterTest",
+            "mouseout rect": "exitTest"
+        },
+
+        enterTest: function() {
+            console.log("Entered the rect");
+        },
+
+        exitTest: function() {
+            console.log("Left the rect");
+        },
+
+        onRender: function() {
+            console.log("onRender: LoadAverageView");
             var rect = this.d3El.append("rect")
+                .attr("class", "someRect")
                 .attr("x", this.width / 2 - 64)
                 .attr("y", this.height / 2 - 64)
                 .attr("width", 128)
                 .attr("height", 128)
-                .style("fill", "blue")
             ;
-            // Call onRender() since we're overriding the superclass's render() method.
-            this.onRender();
         }
     });
 });

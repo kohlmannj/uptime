@@ -10,6 +10,7 @@
 @import "util";
 @import "header";
 @import "GraphCompositeView";
+@import "LoadAverageView";
 
 body {
   font-family: "Avenir", "Helvetica Neue", "Helvetica", sans-serif;
@@ -23,6 +24,7 @@ body {
   max-width: pxtoem(1024px);
   margin: 0 auto;
   background: #fff;
+  padding: pxtoem($outerMargin);
 }
 
 .clearfix {
