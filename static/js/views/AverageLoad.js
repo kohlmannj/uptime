@@ -12,10 +12,16 @@ define(function(require) {
     return D3ShimView.extend({
         // Default width and height values; can be overridden in constructor.
         defaultWidth: 720,
-        width: 720,
+        width: 0,
         height: 304,
         sampleWidth: 16,
         margin: 8,
+        enterDuration: 2000,
+        yAxisTicks: [0, 2.5, 5, 7.5, 10, 15],
+        autoscroll: true,
+        defaultGlobalWaveMagnitude: 1.0,
+        globalWaveMagnitude: 1.0,
+
         className: "AverageLoadView",
 
         events: {
@@ -27,6 +33,12 @@ define(function(require) {
 
         pauseScrolling: function() {
             this.autoscroll = false;
+            this.globalWaveMagnitude = 0;
+        },
+
+        resumeScrolling: function() {
+            this.autoscroll = true;
+            this.globalWaveMagnitude = this.defaultGlobalWaveMagnitude;
         },
 
         positionTest: function(e) {
@@ -44,14 +56,15 @@ define(function(require) {
 
         drawWave: function(options) {
             var defaults = {
-                "className": "wave-avg-load-1min",
-                "data": this.collection.models,
-                "magnitude": 1.0,
-                "duration": 100,
-                "xAttrName": "uptime",
-                "yAttrName": "avg_load_1min",
-                "interpolation": "linear",
-                "easing": "linear"
+                className: "wave-avg-load-1min",
+                data: this.collection.models,
+                d3DrawMethod: d3.svg.area,
+                magnitude: 1.0,
+                duration: 100,
+                xAttrName: "uptime",
+                yAttrName: "avg_load_1min",
+                interpolation: "linear",
+                easing: "linear"
             };
 
             // Merge defaults with options.
@@ -66,7 +79,7 @@ define(function(require) {
             ////////////////////
 
             // Wave Area (an area showing the actual data points)
-            var waveArea = d3.svg.area()
+            var waveArea = settings.d3DrawMethod()
                 .interpolate(settings.interpolation)
                 .x(_.bind(function(d) {
                     return this.x(d.get(settings.xAttrName));
@@ -84,7 +97,7 @@ define(function(require) {
             // Existing Data
             wavePath
                 .transition()
-                .duration(2000)
+                .duration(this.enterDuration)
                 .attr("d", function(d) {
                     return waveArea(d);
                 })
@@ -93,7 +106,7 @@ define(function(require) {
             // enter() - Incoming Data
             wavePath.enter().append("path").classed(settings.className, true)
                 .transition()
-                .duration(2000)
+                .duration(this.enterDuration)
                 .attr("d", function(d) {
                     return waveArea(d);
                 })
@@ -112,7 +125,7 @@ define(function(require) {
             /////////////////////////
 
             // Rising Wave Area
-            var risingWaveArea = d3.svg.area()
+            var risingWaveArea = settings.d3DrawMethod()
                 .interpolate(settings.interpolation)
                 .x(_.bind(function(d) {
                     return this.x(d.get(settings.xAttrName) + Math.random() * settings.magnitude);
@@ -135,7 +148,7 @@ define(function(require) {
             ;
 
             // Falling Wave Area
-            var fallingWaveArea = d3.svg.area()
+            var fallingWaveArea = settings.d3DrawMethod()
                 .interpolate(settings.interpolation)
                 .x(_.bind(function(d) {
                     return this.x(d.get(settings.xAttrName) - Math.random() * settings.magnitude);
@@ -210,7 +223,7 @@ define(function(require) {
                 .orient("left")
                 .tickSize(-this.defaultWidth)
                 .tickPadding(this.margin)
-                .tickValues([0, 2.5, 5, 7.5, 10])
+                .tickValues(this.yAxisTicks)
                 .tickFormat(function(d) {
                     if (d < 10) {
                         return decimalFormatter(d)
@@ -232,14 +245,24 @@ define(function(require) {
                     .append("g")
                         .attr("transform", "translate(" + this.margin + "," + this.margin + ")")
                 ;
-
-                // Add the y-axis.
-                axisSvg.append("g")
-                    .attr("class", "y axis")
-                    .attr("transform", "translate(" + (this.margin * 4) + ",0)")
-                    .call(this.yAxis)
-                ;
             }
+
+            // Add the y-axis
+            var yAxisGroup = axisSvg.selectAll("g.y.axis").data([0]);
+
+            yAxisGroup
+                .attr("class", "y axis")
+                .attr("transform", "translate(" + (this.margin * 4) + ",0)")
+                .call(this.yAxis)
+            ;
+
+            yAxisGroup.enter().append("g")
+                .attr("class", "y axis")
+                .attr("transform", "translate(" + (this.margin * 4) + ",0)")
+                .call(this.yAxis)
+            ;
+
+            yAxisGroup.exit().remove();
         },
 
         animateViewBoxChange: function() {
@@ -247,22 +270,20 @@ define(function(require) {
             var currentViewBox = d3.select(this.el).attr("viewBox");
             var newViewBox = "0 0 " + this.width + " " + this.height;
             d3.select(this.el).transition()
-                .duration(2000)
+                .duration(this.enterDuration)
                 .attrTween("viewBox", function() {
                     return d3.interpolateString(currentViewBox, newViewBox);
                 })
             ;
 
-            if (this.autoscroll === true) {
-
+            if (this.autoscroll === true && this.$el.parent().get(0)) {
+                this.$el.parent().animate({
+                    scrollLeft: this.$el.parent().get(0).scrollWidth
+                }, this.enterDuration);
             }
         },
 
         onRender: function() {
-            if (typeof this.autoscroll === "undefined") {
-                this.autoscroll = true;
-            }
-
             // Recalculate the svg's (viewBox) width based on the number of samples we currently have.
             if (this.collection.length > 0) {
                 this.width = this.sampleWidth * this.collection.length - 1;
@@ -290,8 +311,13 @@ define(function(require) {
             // Domains
             this.x.domain(d3.extent(this.collection.models, function(d) { return d.get("uptime"); }));
 
-            var yDomainMax = (d3.max(this.collection.models, function(d) { return d.get("cpu_count"); }) + 2);
-            this.y.domain([0, yDomainMax]);
+            // Find the index of the y-axis tick value that's one tick higher than the closest tick to the max value of avg_load_1min in the data.
+            var closestScaleIndex = utils.indexOfClosest(this.yAxisTicks, d3.max(this.collection.models, function(d) { return d.get("avg_load_1min"); }));
+            if (closestScaleIndex < this.yAxisTicks.length - 1) {
+                closestScaleIndex += 1;
+            }
+
+            this.y.domain([0, this.yAxisTicks[closestScaleIndex]]);
 
             // Draw Axes
             this.drawAxes();
@@ -300,23 +326,26 @@ define(function(require) {
             this.drawWave({
                 className: "fifteen-min-area",
                 yAttrName: "avg_load_5min",
-                duration: 500,
-                magnitude: 0.25
+                duration: 250,
+                magnitude: 0.5 * this.globalWaveMagnitude,
+                interpolation: "monotone"
             });
 
             // Draw 5-min Average Load
             this.drawWave({
                 className: "five-min-area",
                 yAttrName: "avg_load_5min",
-                duration: 200,
-                magnitude: 0.5
+                duration: 250,
+                magnitude: 0.5 * this.globalWaveMagnitude,
+                interpolation: "monotone"
             });
 
             this.drawWave({
                 className: "one-min-area",
                 yAttrName: "avg_load_1min",
-                duration: 100,
-                magnitude: 0.75//,
+                duration: 150,
+                magnitude: 0.5 * this.globalWaveMagnitude,
+                interpolation: "monotone"
                 //interpolation: function(points) { return points.join("A 1,1 0 0 1 "); }
             });
         }

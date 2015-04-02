@@ -425,34 +425,35 @@ header {
     fill: rgba(153, 153, 153, 0); }
     .AverageLoadView .brushArea:hover {
       fill: rgba(153, 153, 153, 0.25); }
-  .AverageLoadView .line, .AverageLoadView .one-min-line, .AverageLoadView .five-min-line, .AverageLoadView .fifteen-min-line {
+  .AverageLoadView .area, .AverageLoadView .fifteen-min-area, .AverageLoadView .five-min-area, .AverageLoadView .one-min-area {
+    -moz-transition: fill 0.25s ease-in-out;
+    -o-transition: fill 0.25s ease-in-out;
+    -webkit-transition: fill 0.25s ease-in-out;
+    transition: fill 0.25s ease-in-out;
+    stroke-width: 0; }
+  .AverageLoadView .fifteen-min-area {
+    stroke: #6792a1;
+    stroke-width: 0.125em;
+    fill: none; }
+  .AverageLoadView .five-min-area {
+    stroke: #00acc2;
+    fill: rgba(0, 195, 220, 0.65); }
+  .AverageLoadView .one-min-area {
+    stroke: #051a2f;
+    fill: rgba(16, 77, 139, 0.75); }
+  .AverageLoadView .line, .AverageLoadView .fifteen-min-line, .AverageLoadView .five-min-line, .AverageLoadView .one-min-line {
     stroke-width: 0.125em;
     fill: none;
     -moz-transition: stroke 0.25s ease-in-out;
     -o-transition: stroke 0.25s ease-in-out;
     -webkit-transition: stroke 0.25s ease-in-out;
     transition: stroke 0.25s ease-in-out; }
-  .AverageLoadView .area, .AverageLoadView .one-min-area, .AverageLoadView .five-min-area, .AverageLoadView .fifteen-min-area {
-    -moz-transition: fill 0.25s ease-in-out;
-    -o-transition: fill 0.25s ease-in-out;
-    -webkit-transition: fill 0.25s ease-in-out;
-    transition: fill 0.25s ease-in-out;
-    stroke-width: 0.125em; }
-  .AverageLoadView .one-min-line {
-    stroke: #00acc2; }
-  .AverageLoadView .one-min-area {
-    stroke: #00d9f5;
-    fill: rgba(0, 195, 220, 0.65); }
-  .AverageLoadView .five-min-line {
-    stroke: #082746; }
-  .AverageLoadView .five-min-area {
-    stroke: #051a2f;
-    fill: rgba(16, 77, 139, 0.65); }
   .AverageLoadView .fifteen-min-line {
     stroke: #779eab; }
-  .AverageLoadView .fifteen-min-area {
-    stroke: #86a9b4;
-    fill: rgba(182, 203, 210, 0.65); }
+  .AverageLoadView .five-min-line {
+    stroke: #082746; }
+  .AverageLoadView .one-min-line {
+    stroke: #00acc2; }
 
 .CPUHiveCompositeView {
   width: 29.6875%;
@@ -477,9 +478,9 @@ header {
     fill: yellow; }
 
 @media screen and (max-width: 767px) {
-  .AverageLoadView .line, .AverageLoadView .one-min-line, .AverageLoadView .five-min-line, .AverageLoadView .fifteen-min-line {
+  .AverageLoadView .line, .AverageLoadView .fifteen-min-line, .AverageLoadView .five-min-line, .AverageLoadView .one-min-line {
     stroke-width: 0.25em; }
-  .AverageLoadView .area, .AverageLoadView .one-min-area, .AverageLoadView .five-min-area, .AverageLoadView .fifteen-min-area {
+  .AverageLoadView .fifteen-min-area {
     stroke-width: 0.25em; }
 
   .GraphCompositeView svg.overlay .tick line, .AverageLoadCompositeView svg.overlay .tick line, .CPUHiveCompositeView svg.overlay .tick line {

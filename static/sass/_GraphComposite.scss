@@ -63,7 +63,7 @@
 
     .tick text {
       font-weight: 500;
-      font-size: pxtoem(12px);
+      font-size: pxtoem($tickFontSize);
       fill: rgba(#000, 0.5);
       text-shadow: 2px 2px 0 rgba(#fff, 1);
     }
@@ -110,44 +110,45 @@
   .brushArea {
     stroke: none;
     fill: rgba($headerBorderColor, 0);
-//    @include transition(fill 0.25s ease-in-out);
 
     &:hover {
       fill: rgba($headerBorderColor, 0.25);
     }
   }
 
-  .line {
-    stroke-width: pxtoem(2px);
-    fill: none;
-    @include transition(stroke 0.25s ease-in-out);
-  }
+  // Area Styles
 
   .area {
     @include transition(fill 0.25s ease-in-out);
-    stroke-width: pxtoem(2px);
+    stroke-width: 0;
   }
 
-  .one-min-line {
-    @extend .line;
-    stroke: darken($espyBlueColor, 0%);
-  }
-
-  .one-min-area {
+  .fifteen-min-area {
     @extend .area;
-    stroke: lighten($espyBlueColor, 10%);
-    fill: rgba(lighten($espyBlueColor, 5%), 0.65);
-  }
-
-  .five-min-line {
-    @extend .line;
-    stroke: #082746;
+    stroke: darken(#96b4be, 15%);
+    stroke-width: pxtoem(2px);
+//    fill: rgba(lighten(#96b4be, 10%), 0.85);
+    fill: none;
   }
 
   .five-min-area {
     @extend .area;
+    stroke: lighten($espyBlueColor, 0%);
+    fill: rgba(lighten($espyBlueColor, 5%), $areaFillOpacity);
+  }
+
+  .one-min-area {
+    @extend .area;
     stroke: darken(#082746, 5%);
-    fill: rgba(lighten(#082746, 15%), 0.65);
+    fill: rgba(lighten(#082746, 15%), 0.75);
+  }
+
+  // Unused Line Styles
+
+  .line {
+    stroke-width: pxtoem($lineWidth);
+    fill: none;
+    @include transition(stroke 0.25s ease-in-out);
   }
 
   .fifteen-min-line {
@@ -155,10 +156,14 @@
     stroke: darken(#96b4be, 10%);
   }
 
-  .fifteen-min-area {
-    @extend .area;
-    stroke: darken(#96b4be, 5%);
-    fill: rgba(lighten(#96b4be, 10%), 0.65);
+  .five-min-line {
+    @extend .line;
+    stroke: #082746;
+  }
+
+  .one-min-line {
+    @extend .line;
+    stroke: darken($espyBlueColor, 0%);
   }
 }
 
@@ -197,23 +202,26 @@
 @media screen and (max-width: 767px) {
   .AverageLoadView {
     .line {
-      stroke-width: pxtoem(4px);
+      stroke-width: pxtoem($lineWidthNarrow);
     }
 
-    .area {
-      stroke-width: pxtoem(4px);
+//    .area {
+//      stroke-width: pxtoem($lineWidthNarrow);
+//    }
+
+    .fifteen-min-area {
+      stroke-width: pxtoem($lineWidthNarrow);
     }
   }
 
   .GraphCompositeView {
     svg.overlay {
       .tick line {
-        stroke-width: pxtoem(2px);
+        stroke-width: pxtoem($tickWidthNarrow);
       }
 
       .tick text {
-        font-size: pxtoem(20px);
-//        text-shadow: 2px 2px 0 rgba(#fff, 1);
+        font-size: pxtoem($tickFontSizeNarrow);
       }
     }
   }
