@@ -44,7 +44,7 @@
 
     &:after {
       @include rotate(360deg);
-      @include transition-duration(3.0s);
+      @include transition-duration(2.5s);
     }
   }
 
@@ -121,7 +121,7 @@ header {
       text-transform: uppercase;
       font-size: pxtoem(12px, $h1FontSize);
       font-weight: 700;
-      @include transition-property(color opacity);
+      @include transition-property(color);
       @include transition-duration(0.25s);
       @include transition-timing-function(ease-in-out);
 

@@ -26,6 +26,20 @@ define(function(require) {
             }
             var time = hours + ' hr, ' + minutes + ' min, ' + seconds + " sec";
             return time;
+        },
+
+        getEventRelativePosition: function(event) {
+            var xPosition = 0;
+            var yPosition = 0;
+
+            var element = event.currentTarget;
+
+            while (element) {
+                xPosition += (element.offsetLeft - element.scrollLeft + element.clientLeft);
+                yPosition += (element.offsetTop - element.scrollTop + element.clientTop);
+                element = element.offsetParent;
+            }
+            return { x: event.pageX - xPosition, y: event.pageY - yPosition };
         }
     }
 });

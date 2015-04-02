@@ -4,7 +4,7 @@
   margin-top: pxtoem($outerMargin);
   margin-bottom: pxtoem($margin);
 
-  .wrapper {
+  .wrapper, svg.overlay {
     position: absolute;
     left: 0;
     right: 0;
@@ -18,20 +18,54 @@
     }
 
     &::-webkit-scrollbar-track {
-      background-color: #e5e5e5;
+//      background-color: #e5e5e5;
+      box-sizing: border-box;
+      border: pxtoem(1px) solid #e5e5e5;
       border-radius: pxtoem($margin / 2);
     }
 
     &::-webkit-scrollbar-thumb {
       background-color: $headerBorderColor;
       border-radius: pxtoem($margin / 2);
+
+      &:active {
+        background-color: darken($headerBorderColor, 15%);
+      }
     }
 
     svg {
       display: block;
       width: auto !important;
       height: 100% !important;
-      background-color: #ccc;
+//      background-color: #ccc;
+      margin-left: auto;
+    }
+  }
+
+  svg.overlay {
+    position: absolute;
+    left: 0;
+    top: 0;
+    right: 0;
+    bottom: 0;
+//    background-color: rgba(#ff0000, 0.15);
+    pointer-events: none;
+    margin: 0;
+
+    .tick line {
+      stroke: rgba(#000, 0.25);
+      stroke-width: pxtoem(1px);
+    }
+
+    .domain {
+      fill: none;
+    }
+
+    .tick text {
+      font-weight: 500;
+      font-size: pxtoem(12px);
+      fill: rgba(#000, 0.5);
+      text-shadow: 2px 2px 0 rgba(#fff, 1);
     }
   }
 
@@ -60,19 +94,71 @@
   top: 0;
   bottom: 0;
 
+  .wrapper {
+    overflow-y: hidden;
+    overflow-x: scroll;
+  }
+
   header {
-    margin-right: pxtoem($margin);
+    margin-right: 0;
   }
 }
 
 .AverageLoadView {
-  rect {
-    fill: green;
-    @include transition(fill 0.25s ease-in-out);
+  @include transition(background-color 0.25s ease-in-out);
+
+  .brushArea {
+    stroke: none;
+    fill: rgba($headerBorderColor, 0);
+//    @include transition(fill 0.25s ease-in-out);
 
     &:hover {
-      fill: blue;
+      fill: rgba($headerBorderColor, 0.25);
     }
+  }
+
+  .line {
+    stroke-width: pxtoem(2px);
+    fill: none;
+    @include transition(stroke 0.25s ease-in-out);
+  }
+
+  .area {
+    @include transition(fill 0.25s ease-in-out);
+    stroke-width: pxtoem(2px);
+  }
+
+  .one-min-line {
+    @extend .line;
+    stroke: darken($espyBlueColor, 0%);
+  }
+
+  .one-min-area {
+    @extend .area;
+    stroke: lighten($espyBlueColor, 10%);
+    fill: rgba(lighten($espyBlueColor, 5%), 0.65);
+  }
+
+  .five-min-line {
+    @extend .line;
+    stroke: #082746;
+  }
+
+  .five-min-area {
+    @extend .area;
+    stroke: darken(#082746, 5%);
+    fill: rgba(lighten(#082746, 15%), 0.65);
+  }
+
+  .fifteen-min-line {
+    @extend .line;
+    stroke: darken(#96b4be, 10%);
+  }
+
+  .fifteen-min-area {
+    @extend .area;
+    stroke: darken(#96b4be, 5%);
+    fill: rgba(lighten(#96b4be, 10%), 0.65);
   }
 }
 
@@ -85,18 +171,50 @@
   float: right;
   padding-bottom: $cpuHiveWidth;
 
+  .wrapper {
+    overflow: hidden;
+    bottom: 0;
+  }
+
   header {
-    margin-left: pxtoem($margin);
+    margin-left: pxtoem($outerMargin);
   }
 }
 
 .CPUHiveView {
   rect {
     fill: orange;
+    stroke: black;
+    stroke-width: 1px;
     @include transition(fill 0.25s ease-in-out);
 
     &:hover {
       fill: yellow;
+    }
+  }
+}
+
+@media screen and (max-width: 767px) {
+  .AverageLoadView {
+    .line {
+      stroke-width: pxtoem(4px);
+    }
+
+    .area {
+      stroke-width: pxtoem(4px);
+    }
+  }
+
+  .GraphCompositeView {
+    svg.overlay {
+      .tick line {
+        stroke-width: pxtoem(2px);
+      }
+
+      .tick text {
+        font-size: pxtoem(20px);
+//        text-shadow: 2px 2px 0 rgba(#fff, 1);
+      }
     }
   }
 }

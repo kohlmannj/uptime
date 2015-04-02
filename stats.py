@@ -25,7 +25,7 @@ def get_stats():
     # This is less than ideal (prefer to get time from the output of top),
     # but by using Python we can return an ISO 8601 time stamp (in UTC).
     timestamp = datetime.datetime.now().isoformat()
-    load_avgs = re.search(
+    avg_loads = re.search(
         r"Load Avg: (?P<onemin>\d*\.?\d*),\s*(?P<fivemin>\d*\.?\d*),\s*(?P<fifteenmin>\d*\.?\d*)",
         text[2]
     )
@@ -37,14 +37,14 @@ def get_stats():
     proc_lines = text[12:]
 
     stats = {
+        "avg_load_1min": float(avg_loads.group("onemin")),
+        "avg_load_5min": float(avg_loads.group("fivemin")),
+        "avg_load_15min": float(avg_loads.group("fifteenmin")),
         "cpu_count": multiprocessing.cpu_count(),
         "cpu_%user": float(cpu.group("user").strip("%")),
         "cpu_%sys":  float(cpu.group("sys").strip("%")),
         "cpu_%idle": float(cpu.group("idle").strip("%")),
         "hostname": socket.gethostname(),
-        "load_avg_1min": float(load_avgs.group("onemin")),
-        "load_avg_5min": float(load_avgs.group("fivemin")),
-        "load_avg_15min": float(load_avgs.group("fifteenmin")),
         "timestamp": timestamp,
         "uptime": uptime()
     }

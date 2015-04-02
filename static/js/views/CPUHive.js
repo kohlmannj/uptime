@@ -14,8 +14,7 @@ define(function(require) {
         className: "CPUHiveView",
 
         onRender: function() {
-            console.log("onRender: CPUHiveView");
-            var rect = this.d3El.append("rect")
+            var rect = d3.select(this.d3.el).append("rect")
                 .attr("x", this.width / 2 - 64)
                 .attr("y", this.height / 2 - 64)
                 .attr("width", 128)

@@ -47,12 +47,12 @@ define(function(require) {
         },
 
         startRefresh: function(e) {
-            this.ui.refresh.removeClass("finishedRefreshing").addClass("refreshing");
+            this.ui.refresh.removeClass("reset-transition").addClass("refreshing");
             this.$el.find(".note").addClass("refreshing");
         },
 
         stopRefresh: function() {
-            this.ui.refresh.removeClass("refreshing alert").addClass("finishedRefreshing");
+            this.ui.refresh.removeClass("refreshing alert").addClass("reset-transition");
             this.errorMessage = null;
             this.$el.find(".note").removeClass("alert");
         },
@@ -60,7 +60,7 @@ define(function(require) {
         errorDuringRefresh: function(message) {
             this.errorMessage = message;
             this.ui.refresh
-                .removeClass("finishedRefreshing")
+                .removeClass("reset-transition")
                 .removeClass("refreshing")
                 .addClass("alert")
             ;

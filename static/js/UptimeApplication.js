@@ -8,6 +8,7 @@
 define(function(require) {
     'use strict';
 
+    var _ = require("underscore");
     var Backbone = require('backbone');
     var $ = require('jquery');
     var Marionette = require('marionette');
@@ -26,7 +27,7 @@ define(function(require) {
     return Marionette.Application.extend({
         initialize: function(options) {
             // Polling Interval Setup
-            this.poll_interval = 10000;
+            this.poll_interval = 1000 * 1;
             // Support for a custom poll interval, passed via constructor's options hash.
             if (options && options.poll_interval) {
                 this.poll_interval = options.poll_interval;
@@ -45,7 +46,9 @@ define(function(require) {
             this.rootView.render();
 
             // Initial Sample: create a SampleModel from the INITIAL_SAMPLE data contained in the template.
-            this.current_data = new SampleModel(INITIAL_SAMPLE);
+            this.sample = new SampleModel(INITIAL_SAMPLE);
+            this.current_data = this.sample;
+            this.samples.add(this.sample);
 
             // MainHeaderView Setup
             this.mainHeaderView = new MainHeaderView({
@@ -105,8 +108,8 @@ define(function(require) {
             var fetchedSample = new SampleModel(response);
             this.samples.add(fetchedSample);
 
-            // Update this.current_data with the new values from the server.
-            this.current_data.set(response);
+            // Update this.current_data to point to the new data.
+            this.current_data = fetchedSample;
 
             // Re-enable the Refresh button.
             this.mainHeaderView.stopRefresh();
@@ -125,6 +128,9 @@ define(function(require) {
                 "error": message
             });
             this.samples.add(dummy_sample);
+
+            // Update this.current_data to point to the new data.
+            this.current_data = dummy_sample;
 
             // Update the Refresh button to indicate there's been an error.
             this.mainHeaderView.errorDuringRefresh(message);

@@ -14,15 +14,15 @@ define(function(require) {
         idAttribute: "timestamp",
 
         defaults: {
+            "avg_load_1min": -1.0,
+            "avg_load_5min": -1.0,
+            "avg_load_15min": -1.0,
             "cpu_count": -1,
             "cpu_%user": -1.0,
             "cpu_%sys":  -1.0,
             "cpu_%idle": -1.0,
-            error: null,
+            "error": null,
             "hostname": null,
-            "load_avg_1min": -1.0,
-            "load_avg_5min": -1.0,
-            "load_avg_15min": -1.0,
             "timestamp": null,
             "uptime": null
         },
