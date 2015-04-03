@@ -35,6 +35,18 @@ define(function(require) {
             // Store a reference to the polling interval.
             this.poll = -1;
 
+            // 2-Minute High Load Check
+            this.hasHighLoad = false;
+            this.highLoadThreshold = 2.0;
+            this.highLoadDuration = 120000 / 4;
+            // The collection of samples which have been ABOVE the load threshold.
+            // Empty when we haven't seen any samples above the high load threshold.
+            this.highLoadSamples = [];
+            // The collection of samples which have been BELOW the load threshold.
+            // Empty when we don't have a high load and when we *do* have a high load
+            // but haven't seen any samples BELOW the high load threshold.
+            this.recoveredLoadSamples = [];
+
             // Samples Collection Setup
             this.samples = new SampleCollection();
 
@@ -49,6 +61,8 @@ define(function(require) {
             this.sample = new SampleModel(INITIAL_SAMPLE);
             this.current_data = this.sample;
             this.samples.add(this.sample);
+            // Check for high load.
+            this.checkForHighLoad();
 
             // MainHeaderView Setup
             this.mainHeaderData = new Backbone.Model({
@@ -77,18 +91,6 @@ define(function(require) {
 
             // MainHeaderView Refresh button: listen for "refresh" event to trigger a fetch.
             this.listenTo(this.mainHeaderView, "refresh", this.fetchSample);
-
-            // 2-Minute High Load Check
-            this.hasHighLoad = false;
-            this.highLoadThreshold = 2.0;
-            this.highLoadDuration = 120000 / 4;
-            // The collection of samples which have been ABOVE the load threshold.
-            // Empty when we haven't seen any samples above the high load threshold.
-            this.highLoadSamples = [];
-            // The collection of samples which have been BELOW the load threshold.
-            // Empty when we don't have a high load and when we *do* have a high load
-            // but haven't seen any samples BELOW the high load threshold.
-            this.recoveredLoadSamples = [];
         },
 
         onStart: function() {
@@ -169,7 +171,6 @@ define(function(require) {
 
         checkForHighLoad: function() {
             var loadOneMin = this.current_data.get("avg_load_1min");
-            var currentTimestampDate = new Date(this.current_data.get("timestamp"));
 
             // Is this current sample above the high load threshold?
             if (loadOneMin > this.highLoadThreshold) {
@@ -185,23 +186,22 @@ define(function(require) {
                     // Has the system had a high load value for the duration threshold or longer?
                     if (highForDuration >= this.highLoadDuration) {
                         // We've been under a high load for the past two minutes!
-                        console.log("Experiencing a high load as of " + currentTimestampDate.toString());
                         this.hasHighLoad = true;
                         _.each(this.highLoadSamples, function (sample) {
-                            sample.set("error", "HighLoadPrelude");
+                            sample.set("error", "HighLoadSustained");
                         });
-                        // TODO: Add a message to this.current_data
-                        this.current_data.set("error", "HighLoadStart");
-                        this.current_data.set("message", "High load generated an alert!");
+                        // Add a message to the sample which started this alert (i.e. this.highLoadSamples[0]).
+                        var firstHighLoadSample = this.highLoadSamples[0];
+                        firstHighLoadSample.set("error", "HighLoadStart");
+                        firstHighLoadSample.set("note", "High load generated an alert!");
+                        console.log("Experiencing a high load (> " + this.highLoadThreshold + "), starting at " + new Date(firstHighLoadSample.get("timestamp")).toString());
                     }
                 }
                 // When under high load...
                 else if (this.hasHighLoad === true) {
                     // Add the current sample to this.highLoadSamples.
+                    this.current_data.set("error", "HighLoadSustained");
                     this.highLoadSamples.push(this.current_data);
-                    _.each(this.highLoadSamples, function (sample) {
-                        sample.set("error", "HighLoadSustained");
-                    });
                     // Clear recoveredLoadSamples, since this sample was higher than the load threshold.
                     this.recoveredLoadSamples = [];
                 }
@@ -209,8 +209,6 @@ define(function(require) {
             // Current sample is below or equal to the high load threshold.
             else {
                 if (this.hasHighLoad === true) {
-                    // Add the current sample to this.highLoadSamples, since we're still under high load.
-                    this.highLoadSamples.push(this.current_data);
                     // Add the current sample to this.recoveredLoadSamples.
                     this.recoveredLoadSamples.push(this.current_data);
                     // Find the extent of the timestamps in the recoveredLoadSamples collection.
@@ -218,13 +216,19 @@ define(function(require) {
                     var recoveredForDuration = recoveredExtent[1] - recoveredExtent[0];
                     // Have we recovered?
                     if (recoveredForDuration >= this.highLoadDuration) {
-                        // We've recovered as of this current sample.
-                        console.log("Recovered from high load as of " + currentTimestampDate.toString());
+                        // We've recovered as of the last sample in this.highLoadSamples.
                         this.hasHighLoad = false;
+
+                        // Update the last sample in this.highLoadSamples with a special message.
+                        var lastHighLoadSample = this.highLoadSamples[this.highLoadSamples.length - 1];
+                        lastHighLoadSample.set("error", "HighLoadEnd");
+                        lastHighLoadSample.set("note", "Recovered from high load.");
+                        console.log("Recovered from high load as of " + new Date(lastHighLoadSample.get("timestamp")).toString());
+
+
                         this.highLoadSamples = [];
                         this.recoveredLoadSamples = [];
-                        // TODO: Add a message to this.current_data
-                        this.current_data.set("note", "RecoveredFromHighLoad");
+
                     }
                 }
             }

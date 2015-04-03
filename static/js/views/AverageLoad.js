@@ -9,56 +9,36 @@ define(function(require) {
     var utils = require("utils");
     var D3ShimView = require("views/D3Shim");
     var Smooth = require("smooth");
+    var moment = require("moment");
 
     return D3ShimView.extend({
         // Default width and height values; can be overridden in constructor.
         defaultWidth: 720,
         width: 0,
         height: 304,
-        sampleWidth: 16,
+        sampleWidth: 32,
         margin: 8,
+        marginLeft: 200,
         enterDuration: 2000,
-        yAxisTicks: [0, 2.5, 5, 7.5, 10, 15],
+        yAxisTicks: [0, 1.0, 2.0, 2.5, 5, 7.5, 10, 15],
         autoscroll: true,
         defaultGlobalWaveMagnitude: 1.0,
         globalWaveMagnitude: 1.0,
         pauseTimeout: 0,
+        dateFormat: "ddd, L · LTS [(GMT] Z[)]",
 
         className: "AverageLoadView",
-
-        //events: {
-        //    "mouseover": "pauseScrolling",
-        //    "mouseout": "resumeScrolling",
-        //    "mouseover g.foobar": "enterTest",
-        //    "mouseout g.foobar": "exitTest"
-        //},
 
         pauseScrolling: function() {
             this.autoscroll = false;
             d3.select(this.el).classed("paused", true);
             this.globalWaveMagnitude = 0;
-            //clearTimeout(this.pauseTimeout);
         },
 
         resumeScrolling: function() {
-            //this.pauseTimeout = setTimeout(_.bind(function() {
-                this.autoscroll = true;
-                d3.select(this.el).classed("paused", false);
-                this.globalWaveMagnitude = this.defaultGlobalWaveMagnitude;
-            //}, this), 500);
-        },
-
-        positionTest: function(e) {
-            var relativePosition = utils.getEventRelativePosition(e);
-            console.log("mouse cursor at " + (relativePosition.x) + ", " + (relativePosition.y) );
-        },
-
-        enterTest: function() {
-            console.log("Entered the group");
-        },
-
-        exitTest: function() {
-            console.log("Left the group");
+            this.autoscroll = true;
+            d3.select(this.el).classed("paused", false);
+            this.globalWaveMagnitude = this.defaultGlobalWaveMagnitude;
         },
 
         drawWave: function(options) {
@@ -314,6 +294,149 @@ define(function(require) {
             yAxisGroup.exit().remove();
         },
 
+        drawBrushRects: function() {
+            // Select the g.brush groups and map the data to them.
+            var existingGroups = d3.select(this.d3.el).selectAll("g.brush").data(this.collection.models);
+
+            existingGroups
+                .attr("data-error", function(d) {
+                    return d.get("error");
+                })
+            ;
+
+            ///////////////////////////
+            //// Existing Elements ////
+            ///////////////////////////
+
+            // Existing <title> elements inside <rect> elements
+            // Update title text to include any error or note messages.
+            existingGroups.selectAll("rect title")
+                .text(_.bind(function(d) {
+                    return (
+                        moment(d.get("timestamp")).format(this.dateFormat) + "\n" +
+                        " 1 min: " + d.get("avg_load_1min") + "\n" +
+                        " 5 min: " + d.get("avg_load_5min") + "\n" +
+                        "15 min: " + d.get("avg_load_15min") +
+                        (d.get("error") !== null ? "\n\n**" + d.get("error") + "**" : "") +
+                        (d.get("note") !== null ? "\n\nNote: " + d.get("note") : "")
+                    );
+                }, this))
+            ;
+
+            // Existing <ellipse> elements
+            // Adjust y-coordinate to account for y-axis mapping change.
+            existingGroups.selectAll("ellipse")
+                // Update the y values since the y-axis mapping could change.
+                .attr("cy", _.bind(function(d) {
+                    return this.y(d.get("avg_load_1min"));
+                }, this))
+            ;
+
+            // Existing relative timestamp <text> labels
+            existingGroups.selectAll("text.timestamp")
+                .text(function(d) { return moment().calendar(d.get("timestamp")); })
+            ;
+
+            //////////////////////
+            //// New Elements ////
+            //////////////////////
+
+            var newGroups = existingGroups.enter()
+                .append("g")
+                .classed("brush", true)
+                .attr("data-error", function(d) {
+                    return d.get("error");
+                })
+                .attr("transform", "translate(0,0)")
+            ;
+
+            // New <rect> elements
+            var newRects = newGroups.append("rect")
+                .attr("x", _.bind(function(d, i) {
+                    // Get the previous data point. If it doesn't exist, use the current one instead.
+                    var prevD = d;
+                    if (0 <= i - 1) {
+                        prevD = d.collection.at(i - 1);
+                        return this.x(prevD.get("uptime"))
+                    } else {
+                        return this.x(d.get("uptime")) - this.sampleWidth
+                    }
+                }, this))
+                .attr("y", -this.margin)
+                .attr("width", _.bind(function(d, i) {
+                    // Get the previous data point. If it doesn't exist, use the current one instead.
+                    var prevD = d;
+                    if (0 <= i - 1) {
+                        prevD = d.collection.at(i - 1);
+                        return this.x(d.get("uptime")) - this.x(prevD.get("uptime"));
+                    } else {
+                        return this.sampleWidth
+                    }
+                }, this))
+                .attr("height", this.height)
+            ;
+
+            // New <title> elements inside new <rect> elements
+            newRects.append("title")
+                .text(_.bind(function(d) {
+                    return (
+                        moment(d.get("timestamp")).format(this.dateFormat) + "\n" +
+                        " 1 min: " + d.get("avg_load_1min") + "\n" +
+                        " 5 min: " + d.get("avg_load_5min") + "\n" +
+                        "15 min: " + d.get("avg_load_15min") +
+                        (d.get("error") !== null ? "\n\n**" + d.get("error") + "**" : "") +
+                        (d.get("note") !== null ? "\n\nNote: " + d.get("note") : "")
+                    );
+                }, this))
+            ;
+
+            // New <line> elements
+            newGroups.append("line")
+                .classed("marker", true)
+                .attr("x1", _.bind(function(d) {
+                    return this.x(d.get("uptime"));
+                }, this))
+                .attr("x2", _.bind(function(d) {
+                    return this.x(d.get("uptime"));
+                }, this))
+                .attr("y1", -this.margin)
+                .attr("y2", this.height)
+            ;
+
+            // New <ellipse> elements
+            newGroups.append("ellipse")
+                .attr("cx", _.bind(function(d) {
+                    return this.x(d.get("uptime"));
+                }, this))
+                .attr("cy", _.bind(function(d) {
+                    return this.y(d.get("avg_load_1min"));
+                }, this))
+                .attr("rx", 4)
+                .attr("ry", 4)
+            ;
+
+            // New 1-min average load <text> labels
+            newGroups.append("text")
+                .attr("text-anchor", "end")
+                .attr("x", _.bind(function(d) {
+                    return this.x(d.get("uptime")) - this.margin;
+                }, this))
+                .attr("y", this.y(0) - this.margin * 3.5)
+                .text(function(d) { return "1 min: " + d.get("avg_load_1min"); })
+            ;
+
+            // New relative timestamp <text> labels
+            newGroups.append("text")
+                .classed("timestamp", true)
+                .attr("text-anchor", "end")
+                .attr("x", _.bind(function(d) {
+                    return this.x(d.get("uptime")) - this.margin;
+                }, this))
+                .attr("y", this.y(0) - this.margin)
+                .text(function(d) { return moment().calendar(d.get("timestamp")); })
+            ;
+        },
+
         animateViewBoxChange: function() {
             // Update the <svg> element's viewBox attribute.
             var currentViewBox = d3.select(this.el).attr("viewBox");
@@ -337,8 +460,8 @@ define(function(require) {
             // Recalculate the svg's (viewBox) width based on the samples we currently have.
             var xExtent = d3.extent(this.collection.models, function(d) { return d.get("uptime"); })
             if (this.collection.length > 0) {
-                this.width = (xExtent[1] - xExtent[0]) * 3;
-                this.innerWidth = this.width;
+                this.width = (xExtent[1] - xExtent[0]) * 3 + this.marginLeft;
+                this.innerWidth = this.width - this.marginLeft;
                 this.innerHeight = this.height - this.margin * 2;
             }
 
@@ -347,13 +470,13 @@ define(function(require) {
             // Join the data to the <g> element.
             // We're removing the left and right margins as well.
             d3.select(this.d3.el)
-                .attr("transform", "translate(0," + this.margin + ")")
+                .attr("transform", "translate(" + this.marginLeft + "," + this.margin + ")")
                 .datum(this.collection.models)
             ;
 
             // X Drawing Coordinates (Ignore this.margin for this)
             this.x = d3.time.scale()
-                .range([0, this.width]);
+                .range([0, this.innerWidth]);
 
             // Y Drawing Coordinates
             this.y = d3.scale.linear()
@@ -401,85 +524,7 @@ define(function(require) {
                 //interpolation: function(points) { return points.join("A 1,1 0 0 1 "); }
             });
 
-            var brushRectGroup = d3.select(this.d3.el).selectAll("g.brush").data(this.collection.models);
-
-            var enterGroup = brushRectGroup.enter()
-                .append("g")
-                .classed("brush", true)
-                .classed("error", function(d) {
-                    return (typeof d.get("error") !== "undefined" && d.get("error") !== null);
-                })
-                .attr("transform", _.bind(function(d, i) {
-                    return "translate(0,0)";
-                }, this))
-            ;
-
-            enterGroup.append("rect")
-                //.attr("x", _.bind(function(d, i) {
-                //    return i * this.sampleWidth;
-                //}, this))
-                .attr("x", _.bind(function(d, i) {
-                    // Get the previous data point. If it doesn't exist, use the current one instead.
-                    var prevD = d;
-                    if (0 <= i - 1) {
-                        prevD = d.collection.at(i - 1);
-                    }
-                    // Hard-coded width value for $tickWidth: 1px
-                    return this.x(prevD.get("uptime"));
-                }, this))
-                .attr("y", -this.margin)
-                .attr("width", _.bind(function(d, i) {
-                    // Get the previous data point. If it doesn't exist, use the current one instead.
-                    var prevD = d;
-                    if (0 <= i - 1) {
-                        prevD = d.collection.at(i - 1);
-                    }
-                    // Hard-coded width value for $tickWidth: 1px
-                    return this.x(d.get("uptime")) - this.x(prevD.get("uptime"));
-                }, this))
-                .attr("height", this.height)
-                .append("title")
-                    .text(function(d, i) {
-                        return (
-                            "Sample " + i + "\n" +
-                            " 1 min: " + d.get("avg_load_1min") + "\n" +
-                            " 5 min: " + d.get("avg_load_5min") + "\n" +
-                            "15 min: " + d.get("avg_load_15min")
-                        );
-                    })
-            ;
-
-            enterGroup.append("line")
-                .classed("marker", true)
-                .attr("x1", _.bind(function(d) {
-                    return this.x(d.get("uptime"));
-                }, this))
-                .attr("x2", _.bind(function(d) {
-                    return this.x(d.get("uptime"));
-                }, this))
-                .attr("y1", -this.margin)
-                .attr("y2", this.height)
-            ;
-
-            enterGroup.append("ellipse")
-                .attr("cx", _.bind(function(d) {
-                    return this.x(d.get("uptime"));
-                }, this))
-                .attr("cy", _.bind(function(d) {
-                    return this.y(d.get("avg_load_1min"));
-                }, this))
-                .attr("rx", 4)
-                .attr("ry", 4)
-            ;
-
-            enterGroup.append("text")
-                .attr("text-anchor", "end")
-                .attr("x", _.bind(function(d) {
-                    return this.x(d.get("uptime")) - this.margin;
-                }, this))
-                .attr("y", this.y(0) - this.margin)
-                .text(function(d) { return "1 min: " + d.get("avg_load_1min"); })
-            ;
+            this.drawBrushRects();
         }
     });
 });

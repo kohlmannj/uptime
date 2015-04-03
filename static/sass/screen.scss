@@ -15,7 +15,7 @@ body {
 }
 
 #container {
-//  max-width: pxtoem(1024px);
+  max-width: pxtoem(1024px);
   margin: 0 auto;
   background: #fff;
   padding: pxtoem($outerMargin);

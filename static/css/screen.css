@@ -501,17 +501,36 @@ header {
   .AverageLoadView .brush text {
     opacity: 0;
     pointer-events: none; }
+    .AverageLoadView .brush text.timestamp {
+      text-transform: uppercase;
+      font-size: 0.5em; }
+  .AverageLoadView .brush:hover rect {
+    fill: rgba(153, 153, 153, 0.25); }
   .AverageLoadView .brush:hover line, .AverageLoadView .brush:hover ellipse {
     stroke: rgba(0, 0, 0, 0.5); }
   .AverageLoadView .brush:hover text {
     fill: black;
     opacity: 1.0; }
-  .AverageLoadView .brush.error rect {
+    .AverageLoadView .brush:hover text.timestamp {
+      opacity: 0.5; }
+  .AverageLoadView .brush[data-error="HighLoadStart"] rect {
+    fill: rgba(204, 0, 0, 0.25); }
+  .AverageLoadView .brush[data-error="HighLoadStart"]:hover rect {
+    fill: rgba(204, 0, 0, 0.5); }
+  .AverageLoadView .brush[data-error="HighLoadStart"]:hover line, .AverageLoadView .brush[data-error="HighLoadStart"]:hover ellipse {
+    stroke: rgba(26, 0, 0, 0.75); }
+  .AverageLoadView .brush[data-error="HighLoadSustained"] rect {
     fill: rgba(245, 166, 35, 0.25); }
-  .AverageLoadView .brush.error:hover rect {
+  .AverageLoadView .brush[data-error="HighLoadSustained"]:hover rect {
     fill: rgba(245, 166, 35, 0.5); }
-  .AverageLoadView .brush.error:hover line, .AverageLoadView .brush.error:hover ellipse {
+  .AverageLoadView .brush[data-error="HighLoadSustained"]:hover line, .AverageLoadView .brush[data-error="HighLoadSustained"]:hover ellipse {
     stroke: rgba(97, 62, 4, 0.75); }
+  .AverageLoadView .brush[data-error="HighLoadEnd"] rect {
+    fill: rgba(126, 211, 33, 0.25); }
+  .AverageLoadView .brush[data-error="HighLoadEnd"]:hover rect {
+    fill: rgba(126, 211, 33, 0.5); }
+  .AverageLoadView .brush[data-error="HighLoadEnd"]:hover line, .AverageLoadView .brush[data-error="HighLoadEnd"]:hover ellipse {
+    stroke: rgba(34, 57, 9, 0.75); }
   .AverageLoadView .area, .AverageLoadView .fifteen-min-area, .AverageLoadView .five-min-area, .AverageLoadView .one-min-area {
     -moz-transition: fill 0.25s ease-in-out;
     -o-transition: fill 0.25s ease-in-out;
@@ -572,6 +591,8 @@ header {
     stroke-width: 0.125em; }
   .AverageLoadView .brush text {
     font-size: 1.375em; }
+    .AverageLoadView .brush text.timestamp {
+      font-size: 1.25em; }
 
   .GraphCompositeView svg.overlay .tick line, .GraphLayout .MessagesCompositeView svg.overlay .tick line, .AverageLoadCompositeView svg.overlay .tick line, .CPUHiveCompositeView svg.overlay .tick line {
     stroke-width: 0.125em; }
@@ -585,6 +606,7 @@ body {
   -webkit-font-smoothing: antialiased; }
 
 #container {
+  max-width: 64em;
   margin: 0 auto;
   background: #fff;
   padding: 1em; }

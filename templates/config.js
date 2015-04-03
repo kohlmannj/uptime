@@ -18,7 +18,8 @@ require.config({
                        '../bower_components/d3/d3.min.js'],
         'marionette': ['//cdnjs.cloudflare.com/ajax/libs/backbone.marionette/2.2.2/backbone.marionette',
                        '../bower_components/marionette/lib/backbone.marionette.min'],
-        'smooth':     ['../bower_components/Smooth.js/Smooth']
+        'smooth':     ['../bower_components/Smooth.js/Smooth'],
+        'moment':     ['../bower_components/moment/moment']
     },
 
     shim: {

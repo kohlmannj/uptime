@@ -196,9 +196,17 @@
       @extend %tick-text;
       opacity: 0;
       pointer-events: none;
+
+      &.timestamp {
+        text-transform: uppercase;
+        font-size: pxtoem($tickFontSize - 4px);
+      }
     }
 
     &:hover {
+      rect {
+        fill: rgba($headerBorderColor, 0.25);
+      }
 
       line, ellipse {
         stroke: rgba(#000, 0.5);
@@ -207,10 +215,30 @@
       text {
         fill: rgba(#000, 1.0);
         opacity: 1.0;
+
+        &.timestamp {
+          opacity: 0.5;
+        }
       }
     }
 
-    &.error {
+    &[data-error="HighLoadStart"] {
+      rect {
+        fill: rgba(#cc0000, 0.25);
+      }
+
+      &:hover {
+        rect {
+          fill: rgba(#cc0000, 0.5);
+        }
+
+        line, ellipse {
+          stroke: rgba(darken(#cc0000, 35%), 0.75);
+        }
+      }
+    }
+
+    &[data-error="HighLoadSustained"] {
       rect {
         fill: rgba($alertColor, 0.25);
       }
@@ -222,6 +250,22 @@
 
         line, ellipse {
           stroke: rgba(darken($alertColor, 35%), 0.75);
+        }
+      }
+    }
+
+    &[data-error="HighLoadEnd"] {
+      rect {
+        fill: rgba($successColor, 0.25);
+      }
+
+      &:hover {
+        rect {
+          fill: rgba($successColor, 0.5);
+        }
+
+        line, ellipse {
+          stroke: rgba(darken($successColor, 35%), 0.75);
         }
       }
     }
@@ -342,6 +386,10 @@
 
       text {
         font-size: pxtoem($tickFontSizeNarrow);
+
+        &.timestamp {
+          font-size: pxtoem($tickFontSizeNarrow - 2px);
+        }
       }
     }
   }

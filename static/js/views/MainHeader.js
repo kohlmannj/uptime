@@ -11,6 +11,7 @@ define(function(require) {
     var _ = require("underscore");
     var Marionette = require('marionette');
     var utils = require("utils");
+    var moment = require("moment");
     var template = require("text!templates/MainHeader.html");
 
     return Marionette.ItemView.extend({
@@ -19,6 +20,14 @@ define(function(require) {
             formattedUptime: function() {
                 if (typeof this.uptime === "number") {
                     return utils.formattedDuration(this.uptime);
+                } else {
+                    return "Unknown";
+                }
+            },
+
+            lastUpdated: function() {
+                if (typeof this.timestamp === "string") {
+                    return moment().calendar(this.timestamp);
                 } else {
                     return "Unknown";
                 }
@@ -99,7 +108,7 @@ define(function(require) {
                 .text(newFormattedUptime + " uptime")
             ;
             // Update "last updated" title text
-            this.$el.find(".headerInfo").attr("title", "Last updated: " + new Date(this.model.get("timestamp")).toString());
+            this.$el.find(".headerInfo").attr("title", "Last updated: " + moment().calendar(this.model.get("timestamp")));
             // Flash the refresh icon to indicate a successful update
             this.ui.refresh.addClass("update");
 
