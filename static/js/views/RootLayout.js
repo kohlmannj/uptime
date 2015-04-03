@@ -13,6 +13,22 @@ define(function(require) {
             "MainHeaderView": ".mainHeader",
             "AverageLoadView": ".AverageLoadCompositeView .wrapper",
             "CPUHiveView": ".CPUHiveCompositeView .wrapper"
+        },
+
+        events: {
+            "mouseover .AverageLoadCompositeView": "pauseAverageLoadView",
+            "mouseout .AverageLoadCompositeView": "resumeAverageLoadView"
+        },
+
+        pauseAverageLoadView: function(e) {
+            e.stopPropagation();
+            this.$el.find(".AverageLoadCompositeView").addClass("paused");
+            this.getRegion("AverageLoadView").currentView.pauseScrolling();
+        },
+
+        resumeAverageLoadView: function(e) {
+            this.$el.find(".AverageLoadCompositeView").removeClass("paused");
+            this.getRegion("AverageLoadView").currentView.pauseScrolling();
         }
     });
 });

@@ -261,10 +261,6 @@ th {
     -o-transition-duration: 0.25s;
     -webkit-transition-duration: 0.25s;
     transition-duration: 0.25s; }
-  .refresh.update:hover, .refresh.update:focus {
-    background-color: rgba(126, 211, 33, 0.8); }
-  .refresh.update:active {
-    background-color: #7ed321; }
   .refresh.reset-transition:after {
     -webkit-transform: rotate(0);
     -moz-transform: rotate(0);
@@ -355,13 +351,17 @@ header {
     right: 0;
     top: 0;
     bottom: -0.5em;
-    overflow: auto; }
+    overflow: auto;
+    -moz-transition: background-color 0.25s ease-in-out;
+    -o-transition: background-color 0.25s ease-in-out;
+    -webkit-transition: background-color 0.25s ease-in-out;
+    transition: background-color 0.25s ease-in-out; }
     .GraphCompositeView .wrapper::-webkit-scrollbar, .AverageLoadCompositeView .wrapper::-webkit-scrollbar, .CPUHiveCompositeView .wrapper::-webkit-scrollbar, .GraphCompositeView svg.overlay::-webkit-scrollbar, .AverageLoadCompositeView svg.overlay::-webkit-scrollbar, .CPUHiveCompositeView svg.overlay::-webkit-scrollbar {
       width: 0.5em;
       height: 0.5em; }
     .GraphCompositeView .wrapper::-webkit-scrollbar-track, .AverageLoadCompositeView .wrapper::-webkit-scrollbar-track, .CPUHiveCompositeView .wrapper::-webkit-scrollbar-track, .GraphCompositeView svg.overlay::-webkit-scrollbar-track, .AverageLoadCompositeView svg.overlay::-webkit-scrollbar-track, .CPUHiveCompositeView svg.overlay::-webkit-scrollbar-track {
       box-sizing: border-box;
-      border: 0.0625em solid #e5e5e5;
+      border: 0.0625em solid rgba(153, 153, 153, 0.5);
       border-radius: 0.25em; }
     .GraphCompositeView .wrapper::-webkit-scrollbar-thumb, .AverageLoadCompositeView .wrapper::-webkit-scrollbar-thumb, .CPUHiveCompositeView .wrapper::-webkit-scrollbar-thumb, .GraphCompositeView svg.overlay::-webkit-scrollbar-thumb, .AverageLoadCompositeView svg.overlay::-webkit-scrollbar-thumb, .CPUHiveCompositeView svg.overlay::-webkit-scrollbar-thumb {
       background-color: #999999;
@@ -374,8 +374,6 @@ header {
       height: 100% !important;
       background-color: #fff;
       margin-left: auto; }
-      .GraphCompositeView .wrapper svg.paused, .AverageLoadCompositeView .wrapper svg.paused, .CPUHiveCompositeView .wrapper svg.paused, .GraphCompositeView svg.overlay svg.paused, .AverageLoadCompositeView svg.overlay svg.paused, .CPUHiveCompositeView svg.overlay svg.paused {
-        background-color: #e5e5e5; }
   .GraphCompositeView svg.overlay, .AverageLoadCompositeView svg.overlay, .CPUHiveCompositeView svg.overlay {
     position: absolute;
     left: 0;
@@ -390,7 +388,11 @@ header {
     .GraphCompositeView svg.overlay .domain, .AverageLoadCompositeView svg.overlay .domain, .CPUHiveCompositeView svg.overlay .domain {
       fill: none; }
     .GraphCompositeView svg.overlay .bg, .AverageLoadCompositeView svg.overlay .bg, .CPUHiveCompositeView svg.overlay .bg {
-      fill: rgba(255, 255, 255, 0.5); }
+      fill: rgba(255, 255, 255, 0.5);
+      -moz-transition: fill 0.25s ease-in-out;
+      -o-transition: fill 0.25s ease-in-out;
+      -webkit-transition: fill 0.25s ease-in-out;
+      transition: fill 0.25s ease-in-out; }
     .GraphCompositeView svg.overlay .tick text, .AverageLoadCompositeView svg.overlay .tick text, .CPUHiveCompositeView svg.overlay .tick text {
       font-weight: 500;
       font-size: 0.75em;
@@ -402,6 +404,10 @@ header {
     top: -1.5625em;
     left: 0;
     right: 0; }
+  .GraphCompositeView.paused .wrapper, .paused.AverageLoadCompositeView .wrapper, .paused.CPUHiveCompositeView .wrapper, .GraphCompositeView.paused .wrapper svg, .paused.AverageLoadCompositeView .wrapper svg, .paused.CPUHiveCompositeView .wrapper svg {
+    background-color: #e5e5e5; }
+  .GraphCompositeView.paused svg.overlay .bg, .paused.AverageLoadCompositeView svg.overlay .bg, .paused.CPUHiveCompositeView svg.overlay .bg {
+    fill: rgba(229, 229, 229, 0.5); }
 
 .GraphLayout {
   float: left;

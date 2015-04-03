@@ -25,12 +25,12 @@ define(function(require) {
 
         className: "AverageLoadView",
 
-        events: {
-            "mouseover": "pauseScrolling",
-            "mouseout": "resumeScrolling",
-            "mouseover g.foobar": "enterTest",
-            "mouseout g.foobar": "exitTest"
-        },
+        //events: {
+        //    "mouseover": "pauseScrolling",
+        //    "mouseout": "resumeScrolling",
+        //    "mouseover g.foobar": "enterTest",
+        //    "mouseout g.foobar": "exitTest"
+        //},
 
         pauseScrolling: function() {
             this.autoscroll = false;
@@ -344,12 +344,13 @@ define(function(require) {
             this.x.domain(d3.extent(this.collection.models, function(d) { return d.get("uptime"); }));
 
             // Find the index of the y-axis tick value that's one tick higher than the closest tick to the max value of avg_load_1min in the data.
-            var closestScaleIndex = utils.indexOfClosest(this.yAxisTicks, d3.max(this.collection.models, function(d) { return d.get("avg_load_1min"); }));
-            if (closestScaleIndex < this.yAxisTicks.length - 1) {
+            var maxAvgLoad1Min = d3.max(this.collection.models, function(d) { return d.get("avg_load_1min"); });
+            var closestScaleIndex = utils.indexOfClosest(this.yAxisTicks, maxAvgLoad1Min);
+            if (closestScaleIndex < this.yAxisTicks.length - 1 && maxAvgLoad1Min >= this.yAxisTicks[closestScaleIndex]) {
                 closestScaleIndex += 1;
             }
 
-            this.y.domain([0, 10]);
+            this.y.domain([0, this.yAxisTicks[closestScaleIndex]]);
 
             // Draw Axes
             this.drawAxes();
@@ -376,7 +377,7 @@ define(function(require) {
                 className: "one-min-area",
                 yAttrName: "avg_load_1min",
                 duration: 150,
-                magnitude: 0.5 * this.globalWaveMagnitude,
+                magnitude: 0.25 * this.globalWaveMagnitude,
                 interpolation: "linear"
                 //interpolation: function(points) { return points.join("A 1,1 0 0 1 "); }
             });

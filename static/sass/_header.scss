@@ -54,13 +54,13 @@
       @include transition-duration(0.25s);
     }
 
-    &:hover, &:focus {
-      background-color: rgba($successColor, 0.8);
-    }
-
-    &:active {
-      background-color: rgba($successColor, 1.0);
-    }
+//    &:hover, &:focus {
+//      background-color: rgba($successColor, 0.8);
+//    }
+//
+//    &:active {
+//      background-color: rgba($successColor, 1.0);
+//    }
   }
 
   &.reset-transition {
