@@ -1,3 +1,9 @@
+%tick-text {
+  font-weight: 500;
+  font-size: pxtoem($tickFontSize);
+  fill: rgba(#000, 0.5);
+}
+
 .GraphCompositeView {
   position: relative;
   background-color: #fff;
@@ -38,7 +44,6 @@
       display: block;
       width: auto !important;
       height: 100% !important;
-      background-color: #fff;
       margin-left: auto;
     }
   }
@@ -47,15 +52,16 @@
     position: absolute;
     left: 0;
     top: 0;
-    right: 0;
     bottom: 0;
+    height: 100% !important;
+    width: auto !important;
 //    background-color: rgba(#ff0000, 0.15);
     pointer-events: none;
     margin: 0;
 
     .tick line {
       stroke: rgba(#000, 0.25);
-      stroke-width: pxtoem(1px);
+      stroke-width: pxtoem($tickWidth);
     }
 
     .domain {
@@ -68,10 +74,7 @@
     }
 
     .tick text {
-      font-weight: 500;
-      font-size: pxtoem($tickFontSize);
-      fill: rgba(#000, 0.5);
-      text-shadow: 2px 2px 0 rgba(#fff, 1);
+      @extend %tick-text;
     }
   }
 
@@ -84,7 +87,7 @@
   }
 
   &.paused {
-    .wrapper, .wrapper svg {
+    .wrapper {
       background-color: #e5e5e5;
     }
 
@@ -96,65 +99,130 @@
   }
 }
 
+// Define the layout and widths here.
+
 .GraphLayout {
   float: left;
   width: 100%;
   position: relative;
+  height: 0;
+  padding-bottom: 32.03125%;
+
+  .AverageLoadCompositeView {
+    width: $loadAvgWidth;
+    position: absolute;
+    left: 0;
+    top: 0;
+    bottom: 0;
+    @include transition(width 0.5s ease-in-out);
+
+    header {
+      margin-right: 0;
+    }
+  }
+
+  .CPUHiveCompositeView {
+    width: $cpuHiveWidth;
+    position: absolute;
+    right: 0;
+    top: 0;
+    bottom: 0;
+    @include transition(right 0.5s ease-in-out);
+
+    header {
+      margin-left: pxtoem($outerMargin);
+    }
+  }
+
+  .MessagesCompositeView {
+    @extend .GraphCompositeView;
+    @include transition-property(-webkit-transform -moz-transform transform opacity);
+    @include transition-duration(0.5s);
+    @include transition-timing-function(ease-in-out);
+    width: $messagesWidthMinusMargin;
+    position: absolute;
+    right: 0;
+    top: 0;
+    bottom: 0;
+    pointer-events: none;
+    @include scale(0,1);
+    @include transform-origin(right center);
+    opacity: 0;
+  }
+
+  &.withMessages {
+    .AverageLoadCompositeView {
+      width: $loadAvgWidthWithMessages;
+    }
+
+    .CPUHiveCompositeView {
+      right: $messagesWidth;
+    }
+
+    .MessagesCompositeView {
+      @include scale(1,1);
+      opacity: 1.0;
+    }
+  }
 }
 
 // Average Load View
 
 .AverageLoadCompositeView {
   @extend .GraphCompositeView;
-  width: $loadAvgWidth;
-  position: absolute;
-  left: 0;
-  top: 0;
-  bottom: 0;
 
   .wrapper {
     overflow-y: hidden;
     overflow-x: scroll;
   }
-
-  header {
-    margin-right: 0;
-  }
 }
 
 .AverageLoadView {
-  @include transition(background-color 0.25s ease-in-out);
+  @include transition(background-color 0.5s ease-in-out);
 
   .brush {
     rect {
       stroke: none;
       fill: rgba($headerBorderColor, 0);
-//      fill: none;
     }
 
-    rect:hover {
-      fill: rgba($headerBorderColor, 0.25);
+    ellipse, line {
+      fill: none;
+      stroke: rgba(#000, 0);
+      stroke-width: pxtoem($tickWidth);
     }
 
-    ellipse {
-      fill: rgba(#000, 0.5);
-//      stroke: rgba(#000, 0.5);
-//      stroke-width: pxtoem(1px);
-    }
-
-    line {
-      stroke: rgba(green, 0.65);
-      stroke-width: pxtoem(2px);
-    }
-
-    .updated {
-      stroke: rgba(orange, 0.65);
-      stroke-width: pxtoem(2px);
+    text {
+      @extend %tick-text;
+      opacity: 0;
+      pointer-events: none;
     }
 
     &:hover {
+
+      line, ellipse {
+        stroke: rgba(#000, 0.5);
+      }
+
+      text {
+        fill: rgba(#000, 1.0);
+        opacity: 1.0;
+      }
+    }
+
+    &.error {
       rect {
-        fill: rgba($headerBorderColor, 0.5);
+        fill: rgba($alertColor, 0.25);
+      }
+
+      &:hover {
+        rect {
+          fill: rgba($alertColor, 0.5);
+        }
+
+        line, ellipse {
+          stroke: rgba(darken($alertColor, 35%), 0.75);
+        }
       }
     }
   }
@@ -214,18 +282,10 @@
 
 .CPUHiveCompositeView {
   @extend .GraphCompositeView;
-  width: $cpuHiveWidth;
-  height: 0;
-  float: right;
-  padding-bottom: $cpuHiveWidth;
 
   .wrapper {
     overflow: hidden;
     bottom: 0;
-  }
-
-  header {
-    margin-left: pxtoem($outerMargin);
   }
 }
 
@@ -242,6 +302,25 @@
   }
 }
 
+@media screen and (min-width: 768px) and (max-width: 960px) {
+  .AverageLoadView {
+    .brush {
+      text {
+        font-size: pxtoem($tickFontSizeMedium);
+      }
+    }
+  }
+
+  .GraphCompositeView {
+    svg.overlay {
+      .tick text {
+        font-size: pxtoem($tickFontSizeMedium);
+      }
+    }
+  }
+}
+
+
 @media screen and (max-width: 767px) {
   .AverageLoadView {
     .line {
@@ -254,6 +333,16 @@
 
     .fifteen-min-area {
       stroke-width: pxtoem($lineWidthNarrow);
+    }
+
+    .brush {
+      line {
+        stroke-width: pxtoem($tickWidthNarrow);
+      }
+
+      text {
+        font-size: pxtoem($tickFontSizeNarrow);
+      }
     }
   }
 

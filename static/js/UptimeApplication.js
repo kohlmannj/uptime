@@ -77,11 +77,23 @@ define(function(require) {
 
             // MainHeaderView Refresh button: listen for "refresh" event to trigger a fetch.
             this.listenTo(this.mainHeaderView, "refresh", this.fetchSample);
+
+            // 2-Minute High Load Check
+            this.hasHighLoad = false;
+            this.highLoadThreshold = 2.0;
+            this.highLoadDuration = 120000 / 4;
+            // The collection of samples which have been ABOVE the load threshold.
+            // Empty when we haven't seen any samples above the high load threshold.
+            this.highLoadSamples = [];
+            // The collection of samples which have been BELOW the load threshold.
+            // Empty when we don't have a high load and when we *do* have a high load
+            // but haven't seen any samples BELOW the high load threshold.
+            this.recoveredLoadSamples = [];
         },
 
         onStart: function() {
             // Start the application by starting the status update poll.
-            this.startPolling();
+            this.fetchSample();
         },
 
         startPolling: function() {
@@ -109,12 +121,16 @@ define(function(require) {
         },
 
         fetchSuccess: function(response) {
-            // Add the fetched sample to the this.samples collection.
             var fetchedSample = new SampleModel(response);
-            this.samples.add(fetchedSample);
 
             // Update this.current_data to point to the new data.
             this.current_data = fetchedSample;
+
+            // Determine if there is an excessive load on the remote system.
+            this.checkForHighLoad();
+
+            // Add the fetched sample to this.samples.
+            this.samples.add(fetchedSample);
 
             // Update MainHeaderView's data.
             this.mainHeaderData.set({
@@ -149,6 +165,69 @@ define(function(require) {
 
             // Schedule the next polling.
             this.startPolling();
+        },
+
+        checkForHighLoad: function() {
+            var loadOneMin = this.current_data.get("avg_load_1min");
+            var currentTimestampDate = new Date(this.current_data.get("timestamp"));
+
+            // Is this current sample above the high load threshold?
+            if (loadOneMin > this.highLoadThreshold) {
+                // No high load yet.
+                if (this.hasHighLoad === false) {
+                    // Add the current sample to this.highLoadSamples.
+                    this.highLoadSamples.push(this.current_data);
+                    // Find the extent of the timestamps in the highLoadSamples collection.
+                    var highExtent = d3.extent(this.highLoadSamples, function (d) {
+                        return new Date(d.get("timestamp"))
+                    });
+                    var highForDuration = highExtent[1] - highExtent[0];
+                    // Has the system had a high load value for the duration threshold or longer?
+                    if (highForDuration >= this.highLoadDuration) {
+                        // We've been under a high load for the past two minutes!
+                        console.log("Experiencing a high load as of " + currentTimestampDate.toString());
+                        this.hasHighLoad = true;
+                        _.each(this.highLoadSamples, function (sample) {
+                            sample.set("error", "HighLoadPrelude");
+                        });
+                        // TODO: Add a message to this.current_data
+                        this.current_data.set("error", "HighLoadStart");
+                        this.current_data.set("message", "High load generated an alert!");
+                    }
+                }
+                // When under high load...
+                else if (this.hasHighLoad === true) {
+                    // Add the current sample to this.highLoadSamples.
+                    this.highLoadSamples.push(this.current_data);
+                    _.each(this.highLoadSamples, function (sample) {
+                        sample.set("error", "HighLoadSustained");
+                    });
+                    // Clear recoveredLoadSamples, since this sample was higher than the load threshold.
+                    this.recoveredLoadSamples = [];
+                }
+            }
+            // Current sample is below or equal to the high load threshold.
+            else {
+                if (this.hasHighLoad === true) {
+                    // Add the current sample to this.highLoadSamples, since we're still under high load.
+                    this.highLoadSamples.push(this.current_data);
+                    // Add the current sample to this.recoveredLoadSamples.
+                    this.recoveredLoadSamples.push(this.current_data);
+                    // Find the extent of the timestamps in the recoveredLoadSamples collection.
+                    var recoveredExtent = d3.extent(this.recoveredLoadSamples, function(d) { return new Date(d.get("timestamp")) });
+                    var recoveredForDuration = recoveredExtent[1] - recoveredExtent[0];
+                    // Have we recovered?
+                    if (recoveredForDuration >= this.highLoadDuration) {
+                        // We've recovered as of this current sample.
+                        console.log("Recovered from high load as of " + currentTimestampDate.toString());
+                        this.hasHighLoad = false;
+                        this.highLoadSamples = [];
+                        this.recoveredLoadSamples = [];
+                        // TODO: Add a message to this.current_data
+                        this.current_data.set("note", "RecoveredFromHighLoad");
+                    }
+                }
+            }
         }
     });
 });

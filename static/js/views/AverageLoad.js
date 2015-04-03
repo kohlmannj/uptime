@@ -8,6 +8,7 @@ define(function(require) {
     var d3 = require("d3");
     var utils = require("utils");
     var D3ShimView = require("views/D3Shim");
+    var Smooth = require("smooth");
 
     return D3ShimView.extend({
         // Default width and height values; can be overridden in constructor.
@@ -36,15 +37,15 @@ define(function(require) {
             this.autoscroll = false;
             d3.select(this.el).classed("paused", true);
             this.globalWaveMagnitude = 0;
-            clearTimeout(this.pauseTimeout);
+            //clearTimeout(this.pauseTimeout);
         },
 
         resumeScrolling: function() {
-            this.pauseTimeout = setTimeout(_.bind(function() {
+            //this.pauseTimeout = setTimeout(_.bind(function() {
                 this.autoscroll = true;
                 d3.select(this.el).classed("paused", false);
                 this.globalWaveMagnitude = this.defaultGlobalWaveMagnitude;
-            }, this), 500);
+            //}, this), 500);
         },
 
         positionTest: function(e) {
@@ -69,7 +70,24 @@ define(function(require) {
                 duration: 100,
                 xAttrName: "uptime",
                 yAttrName: "avg_load_1min",
-                interpolation: "linear",
+                interpolation: function(points) {
+                    if (points.length > 1) {
+                        var path = "";
+                        // Double the number of samples.
+                        var iStep = 1.0 / 4;
+                        var s = Smooth(points);
+                        for (var i = 0; i < points.length; i += iStep) {
+                            if (i) path += "L";
+                            for (var j = 0; j < points[0].length; j += iStep) {
+                                if (j) path += "L";
+                                path += s(i, j) + "," + s(i, j);
+                            }
+                        }
+                        return path;
+                    } else {
+                        return points.join("L");
+                    }
+                },
                 easing: "linear"
             };
 
@@ -134,7 +152,7 @@ define(function(require) {
             var risingWaveArea = settings.d3DrawMethod()
                 .interpolate(settings.interpolation)
                 .x(_.bind(function(d) {
-                    return this.x(d.get(settings.xAttrName) + Math.random() * settings.magnitude);
+                    return this.x(d.get(settings.xAttrName) + Math.random() * settings.magnitude * 4);
                 }, this))
                 .y0(this.innerHeight)
                 .y1(_.bind(function(d, i) {
@@ -157,7 +175,7 @@ define(function(require) {
             var fallingWaveArea = settings.d3DrawMethod()
                 .interpolate(settings.interpolation)
                 .x(_.bind(function(d) {
-                    return this.x(d.get(settings.xAttrName) - Math.random() * settings.magnitude);
+                    return this.x(d.get(settings.xAttrName) - Math.random() * settings.magnitude * 2);
                 }, this))
                 .y0(this.innerHeight)
                 .y1(_.bind(function(d, i) {
@@ -308,7 +326,7 @@ define(function(require) {
             ;
 
             // Keep scrolling right if the scroll bar is within one sample width of the rightmost edge.
-            if (this.autoscroll === true && this.$el.parent().get(0) && this.$el.parent().get(0).scrollLeft >= this.$el.parent().get(0).scrollWidth - this.$el.parent().width() - this.sampleWidth * 2) {
+            if (this.autoscroll === true && this.$el.parent().get(0) && this.$el.parent().get(0).scrollLeft >= this.$el.parent().get(0).scrollWidth / 3 - this.$el.parent().width()) {
                 this.$el.parent().animate({
                     scrollLeft: this.$el.parent().get(0).scrollWidth
                 }, this.enterDuration);
@@ -316,9 +334,10 @@ define(function(require) {
         },
 
         onRender: function() {
-            // Recalculate the svg's (viewBox) width based on the number of samples we currently have.
+            // Recalculate the svg's (viewBox) width based on the samples we currently have.
+            var xExtent = d3.extent(this.collection.models, function(d) { return d.get("uptime"); })
             if (this.collection.length > 0) {
-                this.width = this.sampleWidth * this.collection.length - 1;
+                this.width = (xExtent[1] - xExtent[0]) * 3;
                 this.innerWidth = this.width;
                 this.innerHeight = this.height - this.margin * 2;
             }
@@ -341,7 +360,7 @@ define(function(require) {
                 .range([this.innerHeight, 0]);
 
             // Domains
-            this.x.domain(d3.extent(this.collection.models, function(d) { return d.get("uptime"); }));
+            this.x.domain(xExtent);
 
             // Find the index of the y-axis tick value that's one tick higher than the closest tick to the max value of avg_load_1min in the data.
             var maxAvgLoad1Min = d3.max(this.collection.models, function(d) { return d.get("avg_load_1min"); });
@@ -358,10 +377,10 @@ define(function(require) {
             // Draw 15-min Average Load
             this.drawWave({
                 className: "fifteen-min-area",
-                yAttrName: "avg_load_5min",
+                yAttrName: "avg_load_15min",
                 duration: 250,
-                magnitude: 0.5 * this.globalWaveMagnitude,
-                interpolation: "linear"
+                magnitude: 0.5 * this.globalWaveMagnitude//,
+                //interpolation: "cardinal"
             });
 
             // Draw 5-min Average Load
@@ -369,52 +388,27 @@ define(function(require) {
                 className: "five-min-area",
                 yAttrName: "avg_load_5min",
                 duration: 250,
-                magnitude: 0.5 * this.globalWaveMagnitude,
-                interpolation: "linear"
+                magnitude: 0.5 * this.globalWaveMagnitude//,
+                //interpolation: "cardinal"
             });
 
             this.drawWave({
                 className: "one-min-area",
                 yAttrName: "avg_load_1min",
                 duration: 150,
-                magnitude: 0.25 * this.globalWaveMagnitude,
-                interpolation: "linear"
+                magnitude: 0.25 * this.globalWaveMagnitude//,
+                //interpolation: "linear"
                 //interpolation: function(points) { return points.join("A 1,1 0 0 1 "); }
             });
 
             var brushRectGroup = d3.select(this.d3.el).selectAll("g.brush").data(this.collection.models);
 
-            brushRectGroup.selectAll("line")
-                .attr("x1", _.bind(function(d, i) {
-                    // Get the previous data point. If it doesn't exist, use the current one instead.
-                    var prevD = d;
-                    if (0 <= i - 1) {
-                        prevD = d.collection.at(i - 1);
-                    }
-                    return this.x(prevD.get("uptime"));
-                }, this))
-                .attr("stroke-linecap", "butt")
-                .attr("x2", _.bind(function(d) {
-                    return this.x(d.get("uptime"));
-                }, this))
-                .attr("y1", _.bind(function(d, i) {
-                    // Get the previous data point. If it doesn't exist, use the current one instead.
-                    var prevD = d;
-                    if (0 <= i - 1) {
-                        prevD = d.collection.at(i - 1);
-                    }
-                    return this.y(prevD.get("avg_load_1min"));
-                }, this))
-                .attr("y2", _.bind(function(d) {
-                    return this.y(d.get("avg_load_1min"));
-                }, this))
-                .classed("new", false)
-                .classed("updated", true)
-            ;
-
             var enterGroup = brushRectGroup.enter()
                 .append("g")
                 .classed("brush", true)
+                .classed("error", function(d) {
+                    return (typeof d.get("error") !== "undefined" && d.get("error") !== null);
+                })
                 .attr("transform", _.bind(function(d, i) {
                     return "translate(0,0)";
                 }, this))
@@ -430,6 +424,7 @@ define(function(require) {
                     if (0 <= i - 1) {
                         prevD = d.collection.at(i - 1);
                     }
+                    // Hard-coded width value for $tickWidth: 1px
                     return this.x(prevD.get("uptime"));
                 }, this))
                 .attr("y", -this.margin)
@@ -439,12 +434,14 @@ define(function(require) {
                     if (0 <= i - 1) {
                         prevD = d.collection.at(i - 1);
                     }
+                    // Hard-coded width value for $tickWidth: 1px
                     return this.x(d.get("uptime")) - this.x(prevD.get("uptime"));
                 }, this))
                 .attr("height", this.height)
                 .append("title")
-                    .text(function(d) {
+                    .text(function(d, i) {
                         return (
+                            "Sample " + i + "\n" +
                             " 1 min: " + d.get("avg_load_1min") + "\n" +
                             " 5 min: " + d.get("avg_load_5min") + "\n" +
                             "15 min: " + d.get("avg_load_15min")
@@ -452,43 +449,37 @@ define(function(require) {
                     })
             ;
 
-            //brushRectGroup.enter()
-            //    .append("rect")
-            //    //.attr("x", _.bind(function(d, i) {
-            //    //    return i * this.sampleWidth;
-            //    //}, this))
-            //    //.attr("y", -this.margin)
-            //    .attr("width", this.sampleWidth)
-            //    .attr("height", this.height)
-            //;
+            enterGroup.append("line")
+                .classed("marker", true)
+                .attr("x1", _.bind(function(d) {
+                    return this.x(d.get("uptime"));
+                }, this))
+                .attr("x2", _.bind(function(d) {
+                    return this.x(d.get("uptime"));
+                }, this))
+                .attr("y1", -this.margin)
+                .attr("y2", this.height)
+            ;
 
-            //enterGroup
-            //    .append("line")
-            //    .attr("x1", _.bind(function(d, i) {
-            //        // Get the previous data point. If it doesn't exist, use the current one instead.
-            //        var prevD = d;
-            //        if (0 <= i - 1) {
-            //            prevD = d.collection.at(i - 1);
-            //        }
-            //        return this.x(prevD.get("uptime"));
-            //    }, this))
-            //    .attr("stroke-linecap", "butt")
-            //    .attr("x2", _.bind(function(d) {
-            //        return this.x(d.get("uptime"));
-            //    }, this))
-            //    .attr("y1", _.bind(function(d, i) {
-            //        // Get the previous data point. If it doesn't exist, use the current one instead.
-            //        var prevD = d;
-            //        if (0 <= i - 1) {
-            //            prevD = d.collection.at(i - 1);
-            //        }
-            //        return this.y(prevD.get("avg_load_1min"));
-            //    }, this))
-            //    .attr("y2", _.bind(function(d) {
-            //        return this.y(d.get("avg_load_1min"));
-            //    }, this))
-            //    .classed("new", true)
-            //;
+            enterGroup.append("ellipse")
+                .attr("cx", _.bind(function(d) {
+                    return this.x(d.get("uptime"));
+                }, this))
+                .attr("cy", _.bind(function(d) {
+                    return this.y(d.get("avg_load_1min"));
+                }, this))
+                .attr("rx", 4)
+                .attr("ry", 4)
+            ;
+
+            enterGroup.append("text")
+                .attr("text-anchor", "end")
+                .attr("x", _.bind(function(d) {
+                    return this.x(d.get("uptime")) - this.margin;
+                }, this))
+                .attr("y", this.y(0) - this.margin)
+                .text(function(d) { return "1 min: " + d.get("avg_load_1min"); })
+            ;
         }
     });
 });

@@ -17,12 +17,16 @@ require.config({
         'd3':         ['//cdnjs.cloudflare.com/ajax/libs/d3/3.5.5/d3.min',
                        '../bower_components/d3/d3.min.js'],
         'marionette': ['//cdnjs.cloudflare.com/ajax/libs/backbone.marionette/2.2.2/backbone.marionette',
-                       '../bower_components/marionette/lib/backbone.marionette.min']
+                       '../bower_components/marionette/lib/backbone.marionette.min'],
+        'smooth':     ['../bower_components/Smooth.js/Smooth']
     },
 
     shim: {
         'flask_util': {
 			exports: "flask_util"
-		}
+		},
+        'smooth': {
+            exports: "Smooth"
+        }
     }
 });

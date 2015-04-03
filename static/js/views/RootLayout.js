@@ -28,7 +28,7 @@ define(function(require) {
 
         resumeAverageLoadView: function(e) {
             this.$el.find(".AverageLoadCompositeView").removeClass("paused");
-            this.getRegion("AverageLoadView").currentView.pauseScrolling();
+            this.getRegion("AverageLoadView").currentView.resumeScrolling();
         }
     });
 });

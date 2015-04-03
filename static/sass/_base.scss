@@ -24,10 +24,18 @@ $headerBorderColor: #999;
 $headerLineOffset: 0px;
 
 $lineWidth: 2px;
-$tickWidth: 2px;
+$tickWidth: 1px;
 $areaFillOpacity: 0.65;
 $tickFontSize: 12px;
 
+$tickFontSizeMedium: 14px;
+
 $lineWidthNarrow: 4px;
 $tickWidthNarrow: 2px;
-$tickFontSizeNarrow: 20px;
+$tickFontSizeNarrow: 22px;
+
+$loadAvgWidthWithMessages: 52.734375%;
+
+$messagesWidth: 17.578125%;
+
+$messagesWidthMinusMargin: 16.015625%;

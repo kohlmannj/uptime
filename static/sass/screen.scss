@@ -15,7 +15,7 @@ body {
 }
 
 #container {
-  max-width: pxtoem(1024px);
+//  max-width: pxtoem(1024px);
   margin: 0 auto;
   background: #fff;
   padding: pxtoem($outerMargin);
@@ -24,4 +24,10 @@ body {
 .clearfix {
   clear: both;
   height: 0;
+}
+
+@media screen and (min-width: 1080px) {
+  body {
+    font-size: 24px;
+  }
 }

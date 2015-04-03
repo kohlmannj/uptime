@@ -20,6 +20,7 @@
     width: pxtoem(14px);
     height: pxtoem(14px);
     background: image-url("refresh.svg") no-repeat center;
+    background-size: pxtoem(14px) pxtoem(14px);
     @include transition-property(transform, -webkit-transform, -moz-transform);
     @include transition-duration(0.25s);
     @include transition-timing-function(ease-in-out);

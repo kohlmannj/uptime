@@ -23,14 +23,15 @@ define(function(require) {
             "cpu_%idle": -1.0,
             "error": null,
             "hostname": null,
+            "note": null,
             "timestamp": null,
             "uptime": null
-        },
-
-        parse: function(response) {
-            if (response.hasOwnProperty("processes")) {
-                var processes = this.set("processes", []);
-            }
-        }
+        }//,
+        //
+        //parse: function(response) {
+        //    if (response.hasOwnProperty("processes")) {
+        //        var processes = this.set("processes", []);
+        //    }
+        //}
     });
 });
