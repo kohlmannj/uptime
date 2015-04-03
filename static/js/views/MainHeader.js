@@ -17,7 +17,11 @@ define(function(require) {
         template: _.template(template),
         templateHelpers: {
             formattedUptime: function() {
-                return utils.formattedDuration(this.uptime);
+                if (typeof this.uptime === "number") {
+                    return utils.formattedDuration(this.uptime);
+                } else {
+                    return "Unknown";
+                }
             }
         },
 
@@ -86,9 +90,13 @@ define(function(require) {
             // Update hostname
             this.$el.find("strong").text( this.model.get("hostname") );
             // Update uptime
+            var newFormattedUptime = "Unknown";
+            if (typeof this.model.get("uptime") === "number") {
+                newFormattedUptime = utils.formattedDuration(this.model.get("uptime"));
+            }
             this.$el.find(".note")
                 .removeClass("refreshing")
-                .text( utils.formattedDuration(this.model.get("uptime")) + " uptime")
+                .text(newFormattedUptime + " uptime")
             ;
             // Update "last updated" title text
             this.$el.find(".headerInfo").attr("title", "Last updated: " + new Date(this.model.get("timestamp")).toString());

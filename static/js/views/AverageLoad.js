@@ -21,6 +21,7 @@ define(function(require) {
         autoscroll: true,
         defaultGlobalWaveMagnitude: 1.0,
         globalWaveMagnitude: 1.0,
+        pauseTimeout: 0,
 
         className: "AverageLoadView",
 
@@ -33,12 +34,17 @@ define(function(require) {
 
         pauseScrolling: function() {
             this.autoscroll = false;
+            d3.select(this.el).classed("paused", true);
             this.globalWaveMagnitude = 0;
+            clearTimeout(this.pauseTimeout);
         },
 
         resumeScrolling: function() {
-            this.autoscroll = true;
-            this.globalWaveMagnitude = this.defaultGlobalWaveMagnitude;
+            this.pauseTimeout = setTimeout(_.bind(function() {
+                this.autoscroll = true;
+                d3.select(this.el).classed("paused", false);
+                this.globalWaveMagnitude = this.defaultGlobalWaveMagnitude;
+            }, this), 500);
         },
 
         positionTest: function(e) {
@@ -97,7 +103,7 @@ define(function(require) {
             // Existing Data
             wavePath
                 .transition()
-                .duration(this.enterDuration)
+                .duration(this.autoscroll ? this.enterDuration : 0)
                 .attr("d", function(d) {
                     return waveArea(d);
                 })
@@ -106,7 +112,7 @@ define(function(require) {
             // enter() - Incoming Data
             wavePath.enter().append("path").classed(settings.className, true)
                 .transition()
-                .duration(this.enterDuration)
+                .duration(this.autoscroll ? this.enterDuration : 0)
                 .attr("d", function(d) {
                     return waveArea(d);
                 })
@@ -172,35 +178,50 @@ define(function(require) {
 
             // Animate wavePath between waveArea, risingWaveArea, and fallingWaveArea.
             // Based on http://stackoverflow.com/a/17127850
-            var waveAnimation = function() {
-                wavePath.transition()
-                    .duration(settings.duration)
-                    .ease(settings.easing)
-                    .attr("d", function (d) {
-                        return risingWaveArea(d);
-                    })
-                    .each("end", function() {
-                        wavePath.transition()
-                            .duration(settings.duration)
-                            .ease(settings.easing)
-                            .attr("d", function (d) {
-                                return fallingWaveArea(d);
-                            })
-                            .each("end", function() {
-                                wavePath.transition()
-                                .duration(settings.duration * 1.5)
-                                .ease("linear")
+            var waveAnimation = _.bind(function() {
+                if (this.autoscroll === true) {
+                    wavePath.transition()
+                        .duration(settings.duration)
+                        .ease(settings.easing)
+                        .attr("d", function (d) {
+                            return risingWaveArea(d);
+                        })
+                        .each("end", function () {
+                            wavePath.transition()
+                                .duration(settings.duration)
+                                .ease(settings.easing)
                                 .attr("d", function (d) {
-                                    return waveArea(d);
+                                    return fallingWaveArea(d);
                                 })
-                                .each("end", function() {
-                                    waveAnimation();
+                                .each("end", function () {
+                                    wavePath.transition()
+                                        .duration(settings.duration * 1.5)
+                                        .ease(settings.easing)
+                                        .attr("d", function (d) {
+                                            return waveArea(d);
+                                        })
+                                        .each("end", function () {
+                                            waveAnimation();
+                                        })
                                 })
-                            })
-                        ;
-                    })
-                ;
-            };
+                            ;
+                        })
+                    ;
+                } else {
+                    // Transition back to the normal wave area (and stop animating).
+                    wavePath.transition()
+                        .duration(settings.duration)
+                        .attr("d", function (d) {
+                            return waveArea(d);
+                        })
+                        .each("end", function () {
+                            waveAnimation();
+                        })
+                    ;
+                }
+            }, this);
+
+            // Kick off the wave animation.
             waveAnimation();
         },
 
@@ -256,11 +277,21 @@ define(function(require) {
                 .call(this.yAxis)
             ;
 
-            yAxisGroup.enter().append("g")
-                .attr("class", "y axis")
-                .attr("transform", "translate(" + (this.margin * 4) + ",0)")
-                .call(this.yAxis)
+            yAxisGroup.enter()
+                .append("rect")
+                    .classed("bg", true)
+                    .attr("width", this.margin * 5)
+                    .attr("height", this.height)
+                    .attr("x", -this.margin)
+                    .attr("y", -this.margin)
             ;
+
+            yAxisGroup.enter()
+                .append("g")
+                    .attr("class", "y axis")
+                    .attr("transform", "translate(" + (this.margin * 4) + ",0)")
+                    .call(this.yAxis)
+                ;
 
             yAxisGroup.exit().remove();
         },
@@ -276,7 +307,8 @@ define(function(require) {
                 })
             ;
 
-            if (this.autoscroll === true && this.$el.parent().get(0)) {
+            // Keep scrolling right if the scroll bar is within one sample width of the rightmost edge.
+            if (this.autoscroll === true && this.$el.parent().get(0) && this.$el.parent().get(0).scrollLeft >= this.$el.parent().get(0).scrollWidth - this.$el.parent().width() - this.sampleWidth * 2) {
                 this.$el.parent().animate({
                     scrollLeft: this.$el.parent().get(0).scrollWidth
                 }, this.enterDuration);
@@ -317,7 +349,7 @@ define(function(require) {
                 closestScaleIndex += 1;
             }
 
-            this.y.domain([0, this.yAxisTicks[closestScaleIndex]]);
+            this.y.domain([0, 10]);
 
             // Draw Axes
             this.drawAxes();
@@ -328,7 +360,7 @@ define(function(require) {
                 yAttrName: "avg_load_5min",
                 duration: 250,
                 magnitude: 0.5 * this.globalWaveMagnitude,
-                interpolation: "monotone"
+                interpolation: "linear"
             });
 
             // Draw 5-min Average Load
@@ -337,7 +369,7 @@ define(function(require) {
                 yAttrName: "avg_load_5min",
                 duration: 250,
                 magnitude: 0.5 * this.globalWaveMagnitude,
-                interpolation: "monotone"
+                interpolation: "linear"
             });
 
             this.drawWave({
@@ -345,9 +377,117 @@ define(function(require) {
                 yAttrName: "avg_load_1min",
                 duration: 150,
                 magnitude: 0.5 * this.globalWaveMagnitude,
-                interpolation: "monotone"
+                interpolation: "linear"
                 //interpolation: function(points) { return points.join("A 1,1 0 0 1 "); }
             });
+
+            var brushRectGroup = d3.select(this.d3.el).selectAll("g.brush").data(this.collection.models);
+
+            brushRectGroup.selectAll("line")
+                .attr("x1", _.bind(function(d, i) {
+                    // Get the previous data point. If it doesn't exist, use the current one instead.
+                    var prevD = d;
+                    if (0 <= i - 1) {
+                        prevD = d.collection.at(i - 1);
+                    }
+                    return this.x(prevD.get("uptime"));
+                }, this))
+                .attr("stroke-linecap", "butt")
+                .attr("x2", _.bind(function(d) {
+                    return this.x(d.get("uptime"));
+                }, this))
+                .attr("y1", _.bind(function(d, i) {
+                    // Get the previous data point. If it doesn't exist, use the current one instead.
+                    var prevD = d;
+                    if (0 <= i - 1) {
+                        prevD = d.collection.at(i - 1);
+                    }
+                    return this.y(prevD.get("avg_load_1min"));
+                }, this))
+                .attr("y2", _.bind(function(d) {
+                    return this.y(d.get("avg_load_1min"));
+                }, this))
+                .classed("new", false)
+                .classed("updated", true)
+            ;
+
+            var enterGroup = brushRectGroup.enter()
+                .append("g")
+                .classed("brush", true)
+                .attr("transform", _.bind(function(d, i) {
+                    return "translate(0,0)";
+                }, this))
+            ;
+
+            enterGroup.append("rect")
+                //.attr("x", _.bind(function(d, i) {
+                //    return i * this.sampleWidth;
+                //}, this))
+                .attr("x", _.bind(function(d, i) {
+                    // Get the previous data point. If it doesn't exist, use the current one instead.
+                    var prevD = d;
+                    if (0 <= i - 1) {
+                        prevD = d.collection.at(i - 1);
+                    }
+                    return this.x(prevD.get("uptime"));
+                }, this))
+                .attr("y", -this.margin)
+                .attr("width", _.bind(function(d, i) {
+                    // Get the previous data point. If it doesn't exist, use the current one instead.
+                    var prevD = d;
+                    if (0 <= i - 1) {
+                        prevD = d.collection.at(i - 1);
+                    }
+                    return this.x(d.get("uptime")) - this.x(prevD.get("uptime"));
+                }, this))
+                .attr("height", this.height)
+                .append("title")
+                    .text(function(d) {
+                        return (
+                            " 1 min: " + d.get("avg_load_1min") + "\n" +
+                            " 5 min: " + d.get("avg_load_5min") + "\n" +
+                            "15 min: " + d.get("avg_load_15min")
+                        );
+                    })
+            ;
+
+            //brushRectGroup.enter()
+            //    .append("rect")
+            //    //.attr("x", _.bind(function(d, i) {
+            //    //    return i * this.sampleWidth;
+            //    //}, this))
+            //    //.attr("y", -this.margin)
+            //    .attr("width", this.sampleWidth)
+            //    .attr("height", this.height)
+            //;
+
+            //enterGroup
+            //    .append("line")
+            //    .attr("x1", _.bind(function(d, i) {
+            //        // Get the previous data point. If it doesn't exist, use the current one instead.
+            //        var prevD = d;
+            //        if (0 <= i - 1) {
+            //            prevD = d.collection.at(i - 1);
+            //        }
+            //        return this.x(prevD.get("uptime"));
+            //    }, this))
+            //    .attr("stroke-linecap", "butt")
+            //    .attr("x2", _.bind(function(d) {
+            //        return this.x(d.get("uptime"));
+            //    }, this))
+            //    .attr("y1", _.bind(function(d, i) {
+            //        // Get the previous data point. If it doesn't exist, use the current one instead.
+            //        var prevD = d;
+            //        if (0 <= i - 1) {
+            //            prevD = d.collection.at(i - 1);
+            //        }
+            //        return this.y(prevD.get("avg_load_1min"));
+            //    }, this))
+            //    .attr("y2", _.bind(function(d) {
+            //        return this.y(d.get("avg_load_1min"));
+            //    }, this))
+            //    .classed("new", true)
+            //;
         }
     });
 });

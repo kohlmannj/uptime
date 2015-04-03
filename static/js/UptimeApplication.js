@@ -27,7 +27,7 @@ define(function(require) {
     return Marionette.Application.extend({
         initialize: function(options) {
             // Polling Interval Setup
-            this.poll_interval = 1000 * 1;
+            this.poll_interval = 1000 * 10;
             // Support for a custom poll interval, passed via constructor's options hash.
             if (options && options.poll_interval) {
                 this.poll_interval = options.poll_interval;
@@ -51,8 +51,13 @@ define(function(require) {
             this.samples.add(this.sample);
 
             // MainHeaderView Setup
+            this.mainHeaderData = new Backbone.Model({
+                "hostname": this.current_data.get("hostname"),
+                "timestamp": this.current_data.get("timestamp"),
+                "uptime": this.current_data.get("uptime")
+            });
             this.mainHeaderView = new MainHeaderView({
-                model: this.current_data
+                model: this.mainHeaderData
             });
             this.rootView.getRegion('MainHeaderView').show(this.mainHeaderView);
 
@@ -110,6 +115,13 @@ define(function(require) {
 
             // Update this.current_data to point to the new data.
             this.current_data = fetchedSample;
+
+            // Update MainHeaderView's data.
+            this.mainHeaderData.set({
+                "hostname": this.current_data.get("hostname"),
+                "timestamp": this.current_data.get("timestamp"),
+                "uptime": this.current_data.get("uptime")
+            });
 
             // Re-enable the Refresh button.
             this.mainHeaderView.stopRefresh();

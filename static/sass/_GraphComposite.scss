@@ -37,8 +37,12 @@
       display: block;
       width: auto !important;
       height: 100% !important;
-//      background-color: #ccc;
+      background-color: #fff;
       margin-left: auto;
+
+      &.paused {
+        background-color: #e5e5e5;
+      }
     }
   }
 
@@ -59,6 +63,10 @@
 
     .domain {
       fill: none;
+    }
+
+    .bg {
+      fill: rgba(#fff, 0.5);
     }
 
     .tick text {
@@ -107,12 +115,37 @@
 .AverageLoadView {
   @include transition(background-color 0.25s ease-in-out);
 
-  .brushArea {
-    stroke: none;
-    fill: rgba($headerBorderColor, 0);
+  .brush {
+    rect {
+      stroke: none;
+      fill: rgba($headerBorderColor, 0);
+//      fill: none;
+    }
+
+    rect:hover {
+      fill: rgba($headerBorderColor, 0.25);
+    }
+
+    ellipse {
+      fill: rgba(#000, 0.5);
+//      stroke: rgba(#000, 0.5);
+//      stroke-width: pxtoem(1px);
+    }
+
+    line {
+      stroke: rgba(green, 0.65);
+      stroke-width: pxtoem(2px);
+    }
+
+    .updated {
+      stroke: rgba(orange, 0.65);
+      stroke-width: pxtoem(2px);
+    }
 
     &:hover {
-      fill: rgba($headerBorderColor, 0.25);
+      rect {
+        fill: rgba($headerBorderColor, 0.5);
+      }
     }
   }
 

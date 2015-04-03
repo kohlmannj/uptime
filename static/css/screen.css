@@ -372,7 +372,10 @@ header {
       display: block;
       width: auto !important;
       height: 100% !important;
+      background-color: #fff;
       margin-left: auto; }
+      .GraphCompositeView .wrapper svg.paused, .AverageLoadCompositeView .wrapper svg.paused, .CPUHiveCompositeView .wrapper svg.paused, .GraphCompositeView svg.overlay svg.paused, .AverageLoadCompositeView svg.overlay svg.paused, .CPUHiveCompositeView svg.overlay svg.paused {
+        background-color: #e5e5e5; }
   .GraphCompositeView svg.overlay, .AverageLoadCompositeView svg.overlay, .CPUHiveCompositeView svg.overlay {
     position: absolute;
     left: 0;
@@ -386,6 +389,8 @@ header {
       stroke-width: 0.0625em; }
     .GraphCompositeView svg.overlay .domain, .AverageLoadCompositeView svg.overlay .domain, .CPUHiveCompositeView svg.overlay .domain {
       fill: none; }
+    .GraphCompositeView svg.overlay .bg, .AverageLoadCompositeView svg.overlay .bg, .CPUHiveCompositeView svg.overlay .bg {
+      fill: rgba(255, 255, 255, 0.5); }
     .GraphCompositeView svg.overlay .tick text, .AverageLoadCompositeView svg.overlay .tick text, .CPUHiveCompositeView svg.overlay .tick text {
       font-weight: 500;
       font-size: 0.75em;
@@ -420,11 +425,21 @@ header {
   -o-transition: background-color 0.25s ease-in-out;
   -webkit-transition: background-color 0.25s ease-in-out;
   transition: background-color 0.25s ease-in-out; }
-  .AverageLoadView .brushArea {
+  .AverageLoadView .brush rect {
     stroke: none;
     fill: rgba(153, 153, 153, 0); }
-    .AverageLoadView .brushArea:hover {
-      fill: rgba(153, 153, 153, 0.25); }
+  .AverageLoadView .brush rect:hover {
+    fill: rgba(153, 153, 153, 0.25); }
+  .AverageLoadView .brush ellipse {
+    fill: rgba(0, 0, 0, 0.5); }
+  .AverageLoadView .brush line {
+    stroke: rgba(0, 128, 0, 0.65);
+    stroke-width: 0.125em; }
+  .AverageLoadView .brush .updated {
+    stroke: rgba(255, 165, 0, 0.65);
+    stroke-width: 0.125em; }
+  .AverageLoadView .brush:hover rect {
+    fill: rgba(153, 153, 153, 0.5); }
   .AverageLoadView .area, .AverageLoadView .fifteen-min-area, .AverageLoadView .five-min-area, .AverageLoadView .one-min-area {
     -moz-transition: fill 0.25s ease-in-out;
     -o-transition: fill 0.25s ease-in-out;
