@@ -18,9 +18,9 @@ define(function(require) {
         height: 304,
         sampleWidth: 32,
         margin: 8,
-        marginLeft: 200,
+        marginLeft: 220,
         enterDuration: 2000,
-        yAxisTicks: [0, 1.0, 2.0, 2.5, 5, 7.5, 10, 15],
+        yAxisTicks: [0, 1.0, 2.5, 5, 10, 15, 20],
         autoscroll: true,
         defaultGlobalWaveMagnitude: 1.0,
         globalWaveMagnitude: 1.0,
@@ -101,7 +101,7 @@ define(function(require) {
             // Existing Data
             wavePath
                 .transition()
-                .duration(this.autoscroll ? this.enterDuration : 0)
+                .duration(0)
                 .attr("d", function(d) {
                     return waveArea(d);
                 })
@@ -110,7 +110,7 @@ define(function(require) {
             // enter() - Incoming Data
             wavePath.enter().append("path").classed(settings.className, true)
                 .transition()
-                .duration(this.autoscroll ? this.enterDuration : 0)
+                .duration(0)
                 .attr("d", function(d) {
                     return waveArea(d);
                 })
@@ -120,9 +120,9 @@ define(function(require) {
             wavePath.exit().remove();
 
             // Return wavePath now (without setting up the wave animations) if `magnitude` and `duration` are both <= 0.
-            if (settings.magnitude <= 0 || settings.duration <= 0) {
-                return wavePath;
-            }
+            //if (settings.magnitude <= 0 || settings.duration <= 0) {
+            //    return wavePath;
+            //}
 
             /////////////////////////
             //// Animation Setup //// (if magnitude and duration are both greater than zero)
@@ -177,20 +177,21 @@ define(function(require) {
             // Animate wavePath between waveArea, risingWaveArea, and fallingWaveArea.
             // Based on http://stackoverflow.com/a/17127850
             var waveAnimation = _.bind(function() {
+                // When automatically scrolling to the rightmost position.
                 if (this.autoscroll === true) {
                     wavePath.transition()
                         .duration(settings.duration)
                         .ease(settings.easing)
-                        .attr("d", function (d) {
+                        .attr("d", _.bind(function (d) {
                             return risingWaveArea(d);
-                        })
+                        }, this))
                         .each("end", function () {
                             wavePath.transition()
                                 .duration(settings.duration)
                                 .ease(settings.easing)
-                                .attr("d", function (d) {
+                                .attr("d", _.bind(function (d) {
                                     return fallingWaveArea(d);
-                                })
+                                }, this))
                                 .each("end", function () {
                                     wavePath.transition()
                                         .duration(settings.duration * 1.5)
@@ -205,10 +206,13 @@ define(function(require) {
                             ;
                         })
                     ;
-                } else {
-                    // Transition back to the normal wave area (and stop animating).
+                }
+                // When autoscrolling is disabled
+                else {
+                    // Transition back to the normal wave area (i.e. stop animating).
                     wavePath.transition()
                         .duration(settings.duration)
+                        .ease(settings.easing)
                         .attr("d", function (d) {
                             return waveArea(d);
                         })
@@ -294,13 +298,65 @@ define(function(require) {
             yAxisGroup.exit().remove();
         },
 
-        drawBrushRects: function() {
-            // Select the g.brush groups and map the data to them.
-            var existingGroups = d3.select(this.d3.el).selectAll("g.brush").data(this.collection.models);
+        // Unused
+        drawBgRects: function() {
+            // Select the g.bg groups and map the data to them.
+            var existingGroups = d3.select(this.d3.el).selectAll("g.bg").data(this.collection.models);
 
             existingGroups
                 .attr("data-error", function(d) {
                     return d.get("error");
+                })
+                .classed("note", function(d) {
+                    return (typeof d.get("note") === "string");
+                })
+            ;
+
+            // New Groups
+            var newGroups = existingGroups.enter()
+                .append("g")
+                .classed("bg", true)
+            ;
+
+            // New <rect> elements
+            var newRects = newGroups.append("rect")
+                .attr("x", _.bind(function(d, i) {
+                    // Get the previous data point. If it doesn't exist, use the current one instead.
+                    var prevD = d;
+                    if (0 <= i - 1) {
+                        prevD = d.collection.at(i - 1);
+                        return this.x(prevD.get("uptime"))
+                    } else {
+                        return this.x(d.get("uptime")) - this.sampleWidth
+                    }
+                }, this))
+                .attr("y", this.innerHeight)
+                .attr("width", _.bind(function(d, i) {
+                    // Get the previous data point. If it doesn't exist, use the current one instead.
+                    var prevD = d;
+                    if (0 <= i - 1) {
+                        prevD = d.collection.at(i - 1);
+                        return this.x(d.get("uptime")) - this.x(prevD.get("uptime"));
+                    } else {
+                        return this.sampleWidth
+                    }
+                }, this))
+                .attr("height", this.height)
+            ;
+        },
+
+        drawBrushRects: function() {
+            // Select the g.brush groups and map the data to them.
+            var existingGroups = d3.select(this.d3.el).selectAll("g.brush").data(this.collection.models);
+
+            // Add a data-error attribute so we can visually indicate which type of message is there.
+            // Also add a .note class if this group has a note.
+            existingGroups
+                .attr("data-error", function(d) {
+                    return d.get("error");
+                })
+                .classed("note", function(d) {
+                    return (typeof d.get("note") === "string");
                 })
             ;
 
@@ -334,7 +390,7 @@ define(function(require) {
 
             // Existing relative timestamp <text> labels
             existingGroups.selectAll("text.timestamp")
-                .text(function(d) { return moment().calendar(d.get("timestamp")); })
+                .text(function(d) { return moment(d.get("timestamp")).calendar(); })
             ;
 
             //////////////////////
@@ -344,10 +400,13 @@ define(function(require) {
             var newGroups = existingGroups.enter()
                 .append("g")
                 .classed("brush", true)
+                //.attr("transform", "translate(0,0)")
+                .classed("note", function(d) {
+                    return (typeof d.get("note") === "string");
+                })
                 .attr("data-error", function(d) {
                     return d.get("error");
                 })
-                .attr("transform", "translate(0,0)")
             ;
 
             // New <rect> elements
@@ -433,7 +492,7 @@ define(function(require) {
                     return this.x(d.get("uptime")) - this.margin;
                 }, this))
                 .attr("y", this.y(0) - this.margin)
-                .text(function(d) { return moment().calendar(d.get("timestamp")); })
+                .text(function(d) { return moment(d.get("timestamp")).calendar(); })
             ;
         },
 
@@ -449,7 +508,7 @@ define(function(require) {
             ;
 
             // Keep scrolling right if the scroll bar is within one sample width of the rightmost edge.
-            if (this.autoscroll === true && this.$el.parent().get(0) && this.$el.parent().get(0).scrollLeft >= this.$el.parent().get(0).scrollWidth / 3 - this.$el.parent().width()) {
+            if (this.autoscroll === true && this.$el.parent().get(0) && this.$el.parent().get(0).scrollLeft >= this.$el.parent().get(0).scrollWidth * 2/3 - this.$el.parent().width()) {
                 this.$el.parent().animate({
                     scrollLeft: this.$el.parent().get(0).scrollWidth
                 }, this.enterDuration);
@@ -486,7 +545,7 @@ define(function(require) {
             this.x.domain(xExtent);
 
             // Find the index of the y-axis tick value that's one tick higher than the closest tick to the max value of avg_load_1min in the data.
-            var maxAvgLoad1Min = d3.max(this.collection.models, function(d) { return d.get("avg_load_1min"); });
+            var maxAvgLoad1Min = d3.max(this.collection.models, function(d) { return d3.max([d.get("avg_load_1min"), d.get("avg_load_5min"), d.get("avg_load_15min")]); });
             var closestScaleIndex = utils.indexOfClosest(this.yAxisTicks, maxAvgLoad1Min);
             if (closestScaleIndex < this.yAxisTicks.length - 1 && maxAvgLoad1Min >= this.yAxisTicks[closestScaleIndex]) {
                 closestScaleIndex += 1;
@@ -502,8 +561,8 @@ define(function(require) {
                 className: "fifteen-min-area",
                 yAttrName: "avg_load_15min",
                 duration: 250,
-                magnitude: 0.5 * this.globalWaveMagnitude//,
-                //interpolation: "cardinal"
+                magnitude: 0.5 * this.globalWaveMagnitude,
+                //interpolation: "linear"
             });
 
             // Draw 5-min Average Load
@@ -511,17 +570,16 @@ define(function(require) {
                 className: "five-min-area",
                 yAttrName: "avg_load_5min",
                 duration: 250,
-                magnitude: 0.5 * this.globalWaveMagnitude//,
-                //interpolation: "cardinal"
+                magnitude: 0.5 * this.globalWaveMagnitude,
+                //interpolation: "linear"
             });
 
             this.drawWave({
                 className: "one-min-area",
                 yAttrName: "avg_load_1min",
                 duration: 150,
-                magnitude: 0.25 * this.globalWaveMagnitude//,
+                magnitude: 0.25 * this.globalWaveMagnitude,
                 //interpolation: "linear"
-                //interpolation: function(points) { return points.join("A 1,1 0 0 1 "); }
             });
 
             this.drawBrushRects();

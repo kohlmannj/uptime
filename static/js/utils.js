@@ -9,6 +9,25 @@ define(function(require) {
 
     var moment = require("moment");
 
+    // Configure application-wide Moment.js locale settings
+    moment.locale('en', {
+        calendar : {
+            lastDay :  '[Yesterday at] LTS',
+            sameDay :  '[Today at] LTS',
+            nextDay :  '[Tomorrow at] LTS',
+            lastWeek : '[Last] dddd [at] LTS',
+            nextWeek : '[This coming] dddd [at] LTS',
+            sameElse : 'L at LTS'
+        }
+    });
+
+    // Array Remove - By John Resig (MIT Licensed)
+    Array.prototype.remove = function(from, to) {
+      var rest = this.slice((to || from) + 1 || this.length);
+      this.length = from < 0 ? this.length + from : from;
+      return this.push.apply(this, rest);
+    };
+
     return {
         // Adapted from http://stackoverflow.com/a/6313008
         formattedDuration: function(seconds) {

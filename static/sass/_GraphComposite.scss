@@ -69,7 +69,7 @@
     }
 
     .bg {
-      fill: rgba(#fff, 0.5);
+      fill: rgba(#fff, 1.0);
       @include transition(fill 0.25s ease-in-out);
     }
 
@@ -93,7 +93,7 @@
 
     svg.overlay {
       .bg {
-        fill: rgba(#e5e5e5, 0.5);
+        fill: rgba(#e5e5e5, 1.0);
       }
     }
   }
@@ -180,7 +180,7 @@
 .AverageLoadView {
   @include transition(background-color 0.5s ease-in-out);
 
-  .brush {
+  .brush, .bg {
     rect {
       stroke: none;
       fill: rgba($headerBorderColor, 0);
@@ -188,7 +188,7 @@
 
     ellipse, line {
       fill: none;
-      stroke: rgba(#000, 0);
+      stroke: rgba(#fff, 0);
       stroke-width: pxtoem($tickWidth);
     }
 
@@ -196,11 +196,18 @@
       @extend %tick-text;
       opacity: 0;
       pointer-events: none;
+      fill: #fff;
+      text-shadow: 0 $tickWidth $tickWidth rgba(#000, 0.65);
+      font-size: pxtoem($tickFontSize + 4px);
 
       &.timestamp {
         text-transform: uppercase;
-        font-size: pxtoem($tickFontSize - 4px);
+        font-size: pxtoem($tickFontSize);
       }
+    }
+
+    &.note, &[data-error] {
+      @include transition(fill 0.25s ease-in-out);
     }
 
     &:hover {
@@ -213,32 +220,41 @@
       }
 
       text {
-        fill: rgba(#000, 1.0);
         opacity: 1.0;
 
         &.timestamp {
-          opacity: 0.5;
+          opacity: 0.65;
         }
       }
     }
 
-    &[data-error="HighLoadStart"] {
+    &.note {
       rect {
-        fill: rgba(#cc0000, 0.25);
+        fill: rgba($espyBlueColor, 0.25);
       }
 
       &:hover {
         rect {
-          fill: rgba(#cc0000, 0.5);
-        }
-
-        line, ellipse {
-          stroke: rgba(darken(#cc0000, 35%), 0.75);
+          fill: rgba($espyBlueColor, 0.5);
         }
       }
     }
 
-    &[data-error="HighLoadSustained"] {
+//    &[data-error="HighLoadStart"] {
+//      rect {
+//        fill: rgba(#cc0000, 0.25);
+//      }
+//
+//      &:hover {
+//        rect {
+//          fill: rgba(#cc0000, 0.5);
+//        }
+//      }
+//    }
+
+    &[data-error="HighLoadStart"],
+    &[data-error="HighLoadSustained"],
+    &[data-error="HighLoadEnd"] {
       rect {
         fill: rgba($alertColor, 0.25);
       }
@@ -247,34 +263,36 @@
         rect {
           fill: rgba($alertColor, 0.5);
         }
-
-        line, ellipse {
-          stroke: rgba(darken($alertColor, 35%), 0.75);
-        }
       }
     }
 
-    &[data-error="HighLoadEnd"] {
-      rect {
-        fill: rgba($successColor, 0.25);
-      }
+//    &[data-error="HighLoadEnd"] {
+//      rect {
+//        fill: rgba($successColor, 0.25);
+//      }
+//
+//      &:hover {
+//        rect {
+//          fill: rgba($successColor, 0.5);
+//        }
+//      }
+//    }
+  }
 
-      &:hover {
-        rect {
-          fill: rgba($successColor, 0.5);
-        }
-
-        line, ellipse {
-          stroke: rgba(darken($successColor, 35%), 0.75);
-        }
-      }
+  path + g.brush,
+  path + g.brush + g.brush,
+  path + g.brush + g.brush + g.brush,
+  path + g.brush + g.brush + g.brush + g.brush,
+  path + g.brush + g.brush + g.brush + g.brush + g.brush {
+    text {
+      fill: #000;
+      text-shadow: 0 $tickWidth $tickWidth rgba(#fff, 0.65);
     }
   }
 
   // Area Styles
 
   .area {
-    @include transition(fill 0.25s ease-in-out);
     stroke-width: 0;
   }
 
@@ -346,14 +364,27 @@
   }
 }
 
-@media screen and (min-width: 768px) and (max-width: 960px) {
-  .AverageLoadView {
-    .brush {
-      text {
-        font-size: pxtoem($tickFontSizeMedium);
+@media screen and (min-width: 1080px) {
+  .GraphCompositeView {
+    svg.overlay {
+      .tick text {
+        font-size: pxtoem($tickFontSize, 24px);
       }
     }
   }
+}
+
+@media screen and (min-width: 768px) and (max-width: 960px) {
+//  .AverageLoadView {
+//    text {
+//        font-size: pxtoem($tickFontSizeMedium);
+//        text-shadow: 0 $tickWidth $tickWidth rgba(#fff, 0.5);
+//
+//        &.timestamp {
+//          font-size: pxtoem($tickFontSizeMedium - 2px);
+//        }
+//      }
+//  }
 
   .GraphCompositeView {
     svg.overlay {
@@ -364,6 +395,19 @@
   }
 }
 
+@media screen and (min-width: 1080px) {
+  .AverageLoadView {
+    .brush {
+      text {
+        font-size: pxtoem($fontSize - 4px);
+
+        &.timestamp {
+          font-size: pxtoem($fontSize - 8px);
+        }
+      }
+    }
+  }
+}
 
 @media screen and (max-width: 767px) {
   .AverageLoadView {
@@ -380,17 +424,18 @@
     }
 
     .brush {
-      line {
+      line, ellipse {
         stroke-width: pxtoem($tickWidthNarrow);
       }
 
-      text {
-        font-size: pxtoem($tickFontSizeNarrow);
-
-        &.timestamp {
-          font-size: pxtoem($tickFontSizeNarrow - 2px);
-        }
-      }
+//      text {
+//        font-size: pxtoem($tickFontSizeNarrow);
+//        text-shadow: 0 $tickWidthNarrow $tickWidthNarrow rgba(#fff, 0.5);
+//
+//        &.timestamp {
+//          font-size: pxtoem($tickFontSizeNarrow - 4px);
+//        }
+//      }
     }
   }
 

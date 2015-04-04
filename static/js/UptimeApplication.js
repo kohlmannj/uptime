@@ -37,7 +37,7 @@ define(function(require) {
 
             // 2-Minute High Load Check
             this.hasHighLoad = false;
-            this.highLoadThreshold = 2.0;
+            this.highLoadThreshold = 2.5;
             this.highLoadDuration = 120000 / 4;
             // The collection of samples which have been ABOVE the load threshold.
             // Empty when we haven't seen any samples above the high load threshold.
@@ -209,6 +209,9 @@ define(function(require) {
             // Current sample is below or equal to the high load threshold.
             else {
                 if (this.hasHighLoad === true) {
+                    // We're still under high load, so add the current sample to this.highLoadSamples.
+                    this.current_data.set("error", "HighLoadSustained");
+                    this.highLoadSamples.push(this.current_data);
                     // Add the current sample to this.recoveredLoadSamples.
                     this.recoveredLoadSamples.push(this.current_data);
                     // Find the extent of the timestamps in the recoveredLoadSamples collection.
@@ -219,17 +222,36 @@ define(function(require) {
                         // We've recovered as of the last sample in this.highLoadSamples.
                         this.hasHighLoad = false;
 
-                        // Update the last sample in this.highLoadSamples with a special message.
+                        // All the samples in recoveredLoadSamples are okay now, so remove the error from them.
+                        _.each(this.recoveredLoadSamples, _.bind(function(sample) {
+                            if (sample.get("error") === "HighLoadSustained") {
+                                sample.set("error", null);
+                                var indexInHighLoadSamples = this.highLoadSamples.indexOf(sample);
+                                // Remove this sample from this.highLoadSamples.
+                                this.highLoadSamples.remove(indexInHighLoadSamples);
+                            }
+                        }, this));
+
+                        // Update the last "HighLoadSustained" sample in this.highLoadSamples to have the error "HighLoadEnd" instead.
                         var lastHighLoadSample = this.highLoadSamples[this.highLoadSamples.length - 1];
                         lastHighLoadSample.set("error", "HighLoadEnd");
-                        lastHighLoadSample.set("note", "Recovered from high load.");
-                        console.log("Recovered from high load as of " + new Date(lastHighLoadSample.get("timestamp")).toString());
+                        lastHighLoadSample.set("note", "The last sample for which the system load was above the alert threshold.");
 
+                        // Separately, update the first sample in this.recoveredLoadSamples with a special "recovered" message.
+                        var firstRecoveredLoadSample = this.recoveredLoadSamples[0];
+                        firstRecoveredLoadSample.set("error", "HighLoadRecovered");
+                        firstRecoveredLoadSample.set("note", "Recovered from high load.");
+                        console.log("Recovered from high load as of " + new Date(firstRecoveredLoadSample.get("timestamp")).toString());
 
                         this.highLoadSamples = [];
                         this.recoveredLoadSamples = [];
 
                     }
+                }
+                // Not under high load and this value is below or equal to the high load threshold.
+                else if (this.hasHighLoad === false) {
+                    // Empty this.highLoadSamples since this sample should break the current "streak".
+                    this.highLoadSamples = [];
                 }
             }
         }

@@ -228,10 +228,9 @@ th {
   .refresh:hover, .refresh:focus {
     background-color: rgba(0, 0, 0, 0.5); }
     .refresh:hover:after, .refresh:focus:after {
-      -webkit-transform: rotate(45deg);
       -moz-transform: rotate(45deg);
       -ms-transform: rotate(45deg);
-      -o-transform: rotate(45deg);
+      -webkit-transform: rotate(45deg);
       transform: rotate(45deg); }
   .refresh:active {
     -moz-transition: none;
@@ -243,30 +242,27 @@ th {
     pointer-events: none;
     background-color: rgba(0, 0, 0, 0.15); }
     .refresh.refreshing:after {
-      -webkit-transform: rotate(360deg);
       -moz-transform: rotate(360deg);
       -ms-transform: rotate(360deg);
-      -o-transform: rotate(360deg);
+      -webkit-transform: rotate(360deg);
       transform: rotate(360deg);
       -moz-transition-duration: 2.5s;
       -o-transition-duration: 2.5s;
       -webkit-transition-duration: 2.5s;
       transition-duration: 2.5s; }
   .refresh.update:after {
-    -webkit-transform: rotate(360deg);
     -moz-transform: rotate(360deg);
     -ms-transform: rotate(360deg);
-    -o-transform: rotate(360deg);
+    -webkit-transform: rotate(360deg);
     transform: rotate(360deg);
     -moz-transition-duration: 0.25s;
     -o-transition-duration: 0.25s;
     -webkit-transition-duration: 0.25s;
     transition-duration: 0.25s; }
   .refresh.reset-transition:after {
-    -webkit-transform: rotate(0);
     -moz-transform: rotate(0);
     -ms-transform: rotate(0);
-    -o-transform: rotate(0);
+    -webkit-transform: rotate(0);
     transform: rotate(0);
     -moz-transition-property: none;
     -o-transition-property: none;
@@ -283,10 +279,9 @@ th {
     .refresh.alert:hover, .refresh.alert:focus {
       background-color: rgba(245, 166, 35, 0.8); }
       .refresh.alert:hover:after, .refresh.alert:focus:after {
-        -webkit-transform: none;
         -moz-transform: none;
         -ms-transform: none;
-        -o-transform: none;
+        -webkit-transform: none;
         transform: none; }
     .refresh.alert:active {
       background-color: #f5a623; }
@@ -338,10 +333,10 @@ header {
 
 .mainHeader {
   margin-bottom: 1.75em;
-  color: #999999;
+  color: #999;
   border-color: #d9d9d9; }
 
-.GraphCompositeView svg.overlay .tick text, .GraphLayout .MessagesCompositeView svg.overlay .tick text, .AverageLoadCompositeView svg.overlay .tick text, .CPUHiveCompositeView svg.overlay .tick text, .AverageLoadView .brush text {
+.GraphCompositeView svg.overlay .tick text, .GraphLayout .MessagesCompositeView svg.overlay .tick text, .AverageLoadCompositeView svg.overlay .tick text, .CPUHiveCompositeView svg.overlay .tick text, .AverageLoadView .brush text, .AverageLoadView .bg text {
   font-weight: 500;
   font-size: 0.75em;
   fill: rgba(0, 0, 0, 0.5); }
@@ -370,7 +365,7 @@ header {
       border: 0.0625em solid rgba(153, 153, 153, 0.5);
       border-radius: 0.25em; }
     .GraphCompositeView .wrapper::-webkit-scrollbar-thumb, .GraphLayout .MessagesCompositeView .wrapper::-webkit-scrollbar-thumb, .AverageLoadCompositeView .wrapper::-webkit-scrollbar-thumb, .CPUHiveCompositeView .wrapper::-webkit-scrollbar-thumb, .GraphCompositeView svg.overlay::-webkit-scrollbar-thumb, .GraphLayout .MessagesCompositeView svg.overlay::-webkit-scrollbar-thumb, .AverageLoadCompositeView svg.overlay::-webkit-scrollbar-thumb, .CPUHiveCompositeView svg.overlay::-webkit-scrollbar-thumb {
-      background-color: #999999;
+      background-color: #999;
       border-radius: 0.25em; }
       .GraphCompositeView .wrapper::-webkit-scrollbar-thumb:active, .GraphLayout .MessagesCompositeView .wrapper::-webkit-scrollbar-thumb:active, .AverageLoadCompositeView .wrapper::-webkit-scrollbar-thumb:active, .CPUHiveCompositeView .wrapper::-webkit-scrollbar-thumb:active, .GraphCompositeView svg.overlay::-webkit-scrollbar-thumb:active, .GraphLayout .MessagesCompositeView svg.overlay::-webkit-scrollbar-thumb:active, .AverageLoadCompositeView svg.overlay::-webkit-scrollbar-thumb:active, .CPUHiveCompositeView svg.overlay::-webkit-scrollbar-thumb:active {
         background-color: #737373; }
@@ -394,13 +389,13 @@ header {
     .GraphCompositeView svg.overlay .domain, .GraphLayout .MessagesCompositeView svg.overlay .domain, .AverageLoadCompositeView svg.overlay .domain, .CPUHiveCompositeView svg.overlay .domain {
       fill: none; }
     .GraphCompositeView svg.overlay .bg, .GraphLayout .MessagesCompositeView svg.overlay .bg, .AverageLoadCompositeView svg.overlay .bg, .CPUHiveCompositeView svg.overlay .bg {
-      fill: rgba(255, 255, 255, 0.5);
+      fill: white;
       -moz-transition: fill 0.25s ease-in-out;
       -o-transition: fill 0.25s ease-in-out;
       -webkit-transition: fill 0.25s ease-in-out;
       transition: fill 0.25s ease-in-out; }
   .GraphCompositeView header, .GraphLayout .MessagesCompositeView header, .AverageLoadCompositeView header, .CPUHiveCompositeView header {
-    color: #999999;
+    color: #999;
     position: absolute;
     top: -1.5625em;
     left: 0;
@@ -408,7 +403,7 @@ header {
   .GraphCompositeView.paused .wrapper, .GraphLayout .paused.MessagesCompositeView .wrapper, .paused.AverageLoadCompositeView .wrapper, .paused.CPUHiveCompositeView .wrapper {
     background-color: #e5e5e5; }
   .GraphCompositeView.paused svg.overlay .bg, .GraphLayout .paused.MessagesCompositeView svg.overlay .bg, .paused.AverageLoadCompositeView svg.overlay .bg, .paused.CPUHiveCompositeView svg.overlay .bg {
-    fill: rgba(229, 229, 229, 0.5); }
+    fill: #e5e5e5; }
 
 .GraphLayout {
   float: left;
@@ -459,15 +454,13 @@ header {
     top: 0;
     bottom: 0;
     pointer-events: none;
-    -webkit-transform: scale(0, 1);
     -moz-transform: scale(0, 1);
     -ms-transform: scale(0, 1);
-    -o-transform: scale(0, 1);
+    -webkit-transform: scale(0, 1);
     transform: scale(0, 1);
-    -webkit-transform-origin: right center 50%;
     -moz-transform-origin: right center 50%;
     -ms-transform-origin: right center 50%;
-    -o-transform-origin: right center 50%;
+    -webkit-transform-origin: right center 50%;
     transform-origin: right center 50%;
     opacity: 0; }
   .GraphLayout.withMessages .AverageLoadCompositeView {
@@ -475,10 +468,9 @@ header {
   .GraphLayout.withMessages .CPUHiveCompositeView {
     right: 17.57813%; }
   .GraphLayout.withMessages .MessagesCompositeView {
-    -webkit-transform: scale(1, 1);
     -moz-transform: scale(1, 1);
     -ms-transform: scale(1, 1);
-    -o-transform: scale(1, 1);
+    -webkit-transform: scale(1, 1);
     transform: scale(1, 1);
     opacity: 1.0; }
 
@@ -491,51 +483,51 @@ header {
   -o-transition: background-color 0.5s ease-in-out;
   -webkit-transition: background-color 0.5s ease-in-out;
   transition: background-color 0.5s ease-in-out; }
-  .AverageLoadView .brush rect {
+  .AverageLoadView .brush rect, .AverageLoadView .bg rect {
     stroke: none;
     fill: rgba(153, 153, 153, 0); }
-  .AverageLoadView .brush ellipse, .AverageLoadView .brush line {
+  .AverageLoadView .brush ellipse, .AverageLoadView .brush line, .AverageLoadView .bg ellipse, .AverageLoadView .bg line {
     fill: none;
-    stroke: rgba(0, 0, 0, 0);
+    stroke: rgba(255, 255, 255, 0);
     stroke-width: 0.0625em; }
-  .AverageLoadView .brush text {
+  .AverageLoadView .brush text, .AverageLoadView .bg text {
     opacity: 0;
-    pointer-events: none; }
-    .AverageLoadView .brush text.timestamp {
+    pointer-events: none;
+    fill: #fff;
+    text-shadow: 0 1px 1px rgba(0, 0, 0, 0.65);
+    font-size: 1em; }
+    .AverageLoadView .brush text.timestamp, .AverageLoadView .bg text.timestamp {
       text-transform: uppercase;
-      font-size: 0.5em; }
-  .AverageLoadView .brush:hover rect {
-    fill: rgba(153, 153, 153, 0.25); }
-  .AverageLoadView .brush:hover line, .AverageLoadView .brush:hover ellipse {
-    stroke: rgba(0, 0, 0, 0.5); }
-  .AverageLoadView .brush:hover text {
-    fill: black;
-    opacity: 1.0; }
-    .AverageLoadView .brush:hover text.timestamp {
-      opacity: 0.5; }
-  .AverageLoadView .brush[data-error="HighLoadStart"] rect {
-    fill: rgba(204, 0, 0, 0.25); }
-  .AverageLoadView .brush[data-error="HighLoadStart"]:hover rect {
-    fill: rgba(204, 0, 0, 0.5); }
-  .AverageLoadView .brush[data-error="HighLoadStart"]:hover line, .AverageLoadView .brush[data-error="HighLoadStart"]:hover ellipse {
-    stroke: rgba(26, 0, 0, 0.75); }
-  .AverageLoadView .brush[data-error="HighLoadSustained"] rect {
-    fill: rgba(245, 166, 35, 0.25); }
-  .AverageLoadView .brush[data-error="HighLoadSustained"]:hover rect {
-    fill: rgba(245, 166, 35, 0.5); }
-  .AverageLoadView .brush[data-error="HighLoadSustained"]:hover line, .AverageLoadView .brush[data-error="HighLoadSustained"]:hover ellipse {
-    stroke: rgba(97, 62, 4, 0.75); }
-  .AverageLoadView .brush[data-error="HighLoadEnd"] rect {
-    fill: rgba(126, 211, 33, 0.25); }
-  .AverageLoadView .brush[data-error="HighLoadEnd"]:hover rect {
-    fill: rgba(126, 211, 33, 0.5); }
-  .AverageLoadView .brush[data-error="HighLoadEnd"]:hover line, .AverageLoadView .brush[data-error="HighLoadEnd"]:hover ellipse {
-    stroke: rgba(34, 57, 9, 0.75); }
-  .AverageLoadView .area, .AverageLoadView .fifteen-min-area, .AverageLoadView .five-min-area, .AverageLoadView .one-min-area {
+      font-size: 0.75em; }
+  .AverageLoadView .brush.note, .AverageLoadView .brush[data-error], .AverageLoadView .bg.note, .AverageLoadView .bg[data-error] {
     -moz-transition: fill 0.25s ease-in-out;
     -o-transition: fill 0.25s ease-in-out;
     -webkit-transition: fill 0.25s ease-in-out;
-    transition: fill 0.25s ease-in-out;
+    transition: fill 0.25s ease-in-out; }
+  .AverageLoadView .brush:hover rect, .AverageLoadView .bg:hover rect {
+    fill: rgba(153, 153, 153, 0.25); }
+  .AverageLoadView .brush:hover line, .AverageLoadView .brush:hover ellipse, .AverageLoadView .bg:hover line, .AverageLoadView .bg:hover ellipse {
+    stroke: rgba(0, 0, 0, 0.5); }
+  .AverageLoadView .brush:hover text, .AverageLoadView .bg:hover text {
+    opacity: 1.0; }
+    .AverageLoadView .brush:hover text.timestamp, .AverageLoadView .bg:hover text.timestamp {
+      opacity: 0.65; }
+  .AverageLoadView .brush.note rect, .AverageLoadView .bg.note rect {
+    fill: rgba(0, 172, 194, 0.25); }
+  .AverageLoadView .brush.note:hover rect, .AverageLoadView .bg.note:hover rect {
+    fill: rgba(0, 172, 194, 0.5); }
+  .AverageLoadView .brush[data-error="HighLoadStart"] rect, .AverageLoadView .brush[data-error="HighLoadSustained"] rect, .AverageLoadView .brush[data-error="HighLoadEnd"] rect, .AverageLoadView .bg[data-error="HighLoadStart"] rect, .AverageLoadView .bg[data-error="HighLoadSustained"] rect, .AverageLoadView .bg[data-error="HighLoadEnd"] rect {
+    fill: rgba(245, 166, 35, 0.25); }
+  .AverageLoadView .brush[data-error="HighLoadStart"]:hover rect, .AverageLoadView .brush[data-error="HighLoadSustained"]:hover rect, .AverageLoadView .brush[data-error="HighLoadEnd"]:hover rect, .AverageLoadView .bg[data-error="HighLoadStart"]:hover rect, .AverageLoadView .bg[data-error="HighLoadSustained"]:hover rect, .AverageLoadView .bg[data-error="HighLoadEnd"]:hover rect {
+    fill: rgba(245, 166, 35, 0.5); }
+  .AverageLoadView path + g.brush text,
+  .AverageLoadView path + g.brush + g.brush text,
+  .AverageLoadView path + g.brush + g.brush + g.brush text,
+  .AverageLoadView path + g.brush + g.brush + g.brush + g.brush text,
+  .AverageLoadView path + g.brush + g.brush + g.brush + g.brush + g.brush text {
+    fill: #000;
+    text-shadow: 0 1px 1px rgba(255, 255, 255, 0.65); }
+  .AverageLoadView .area, .AverageLoadView .fifteen-min-area, .AverageLoadView .five-min-area, .AverageLoadView .one-min-area {
     stroke-width: 0; }
   .AverageLoadView .fifteen-min-area {
     stroke: #6792a1;
@@ -576,23 +568,24 @@ header {
   .CPUHiveView rect:hover {
     fill: yellow; }
 
+@media screen and (min-width: 1080px) {
+  .GraphCompositeView svg.overlay .tick text, .GraphLayout .MessagesCompositeView svg.overlay .tick text, .AverageLoadCompositeView svg.overlay .tick text, .CPUHiveCompositeView svg.overlay .tick text {
+    font-size: 0.5em; } }
 @media screen and (min-width: 768px) and (max-width: 960px) {
-  .AverageLoadView .brush text {
-    font-size: 0.875em; }
-
   .GraphCompositeView svg.overlay .tick text, .GraphLayout .MessagesCompositeView svg.overlay .tick text, .AverageLoadCompositeView svg.overlay .tick text, .CPUHiveCompositeView svg.overlay .tick text {
     font-size: 0.875em; } }
+@media screen and (min-width: 1080px) {
+  .AverageLoadView .brush text {
+    font-size: 0.75em; }
+    .AverageLoadView .brush text.timestamp {
+      font-size: 0.5em; } }
 @media screen and (max-width: 767px) {
   .AverageLoadView .line, .AverageLoadView .fifteen-min-line, .AverageLoadView .five-min-line, .AverageLoadView .one-min-line {
     stroke-width: 0.25em; }
   .AverageLoadView .fifteen-min-area {
     stroke-width: 0.25em; }
-  .AverageLoadView .brush line {
+  .AverageLoadView .brush line, .AverageLoadView .brush ellipse {
     stroke-width: 0.125em; }
-  .AverageLoadView .brush text {
-    font-size: 1.375em; }
-    .AverageLoadView .brush text.timestamp {
-      font-size: 1.25em; }
 
   .GraphCompositeView svg.overlay .tick line, .GraphLayout .MessagesCompositeView svg.overlay .tick line, .AverageLoadCompositeView svg.overlay .tick line, .CPUHiveCompositeView svg.overlay .tick line {
     stroke-width: 0.125em; }
