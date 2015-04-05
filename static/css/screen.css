@@ -453,7 +453,6 @@ header {
     right: 0;
     top: 0;
     bottom: 0;
-    pointer-events: none;
     -moz-transform: scale(0, 1);
     -ms-transform: scale(0, 1);
     -webkit-transform: scale(0, 1);
@@ -472,7 +471,8 @@ header {
     -ms-transform: scale(1, 1);
     -webkit-transform: scale(1, 1);
     transform: scale(1, 1);
-    opacity: 1.0; }
+    opacity: 1.0;
+    pointer-events: auto; }
 
 .AverageLoadCompositeView .wrapper {
   overflow-y: hidden;

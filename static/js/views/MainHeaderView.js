@@ -27,7 +27,7 @@ define(function(require) {
 
             lastUpdated: function() {
                 if (typeof this.timestamp === "string") {
-                    return moment().calendar(this.timestamp);
+                    return moment(this.timestamp).calendar();
                 } else {
                     return "Unknown";
                 }

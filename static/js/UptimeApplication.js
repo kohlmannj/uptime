@@ -14,15 +14,16 @@ define(function(require) {
     var Marionette = require('marionette');
     var flask_util = require('flask_util');
 
-    var SampleModel = require("models/Sample");
-    var SampleCollection = Backbone.Collection.extend({
-        "model": SampleModel
-    });
+    var SampleModel = require("models/SampleModel");
+    var SampleCollection = require("models/SampleCollection");
+    var MessageModel = require("models/MessageModel");
+    var MessageCollection = require("models/MessageCollection");
 
-    var RootLayoutView = require("views/RootLayout");
-    var MainHeaderView = require("views/MainHeader");
-    var AverageLoadView = require("views/AverageLoad");
-    var CPUHiveView = require("views/CPUHive");
+    var RootLayoutView = require("views/RootLayoutView");
+    var MainHeaderView = require("views/MainHeaderView");
+    var AverageLoadView = require("views/AverageLoadView");
+    var CPUHiveView = require("views/CPUHiveView");
+    var MessageCollectionView = require("views/MessageCollectionView");
 
     return Marionette.Application.extend({
         initialize: function(options) {
@@ -88,6 +89,13 @@ define(function(require) {
                 current_data: this.current_data
             });
             this.rootView.getRegion('CPUHiveView').show(this.cpuHiveView);
+
+            // MessagesCollectionView Setup
+            this.messages = new MessageCollection();
+            this.messageCollectionView = new MessageCollectionView({
+                collection: this.messages
+            });
+            this.rootView.getRegion('MessageCollectionView').show(this.messageCollectionView);
 
             // MainHeaderView Refresh button: listen for "refresh" event to trigger a fetch.
             this.listenTo(this.mainHeaderView, "refresh", this.fetchSample);
@@ -155,8 +163,10 @@ define(function(require) {
             // Add an error sample to this.samples.
             var dummy_sample = new SampleModel({
                 "hostname": this.current_data.get("hostname"),
-                "error": message
+                "error": "FetchError",
+                "note": message
             });
+            // Add to the samples collection as well.
             this.samples.add(dummy_sample);
 
             // Update this.current_data to point to the new data.
@@ -194,6 +204,9 @@ define(function(require) {
                         var firstHighLoadSample = this.highLoadSamples[0];
                         firstHighLoadSample.set("error", "HighLoadStart");
                         firstHighLoadSample.set("note", "High load generated an alert!");
+                        this.messages.add(new MessageModel({
+                            sample: firstHighLoadSample
+                        }));
                         console.log("Experiencing a high load (> " + this.highLoadThreshold + "), starting at " + new Date(firstHighLoadSample.get("timestamp")).toString());
                     }
                 }
@@ -241,6 +254,9 @@ define(function(require) {
                         var firstRecoveredLoadSample = this.recoveredLoadSamples[0];
                         firstRecoveredLoadSample.set("error", "HighLoadRecovered");
                         firstRecoveredLoadSample.set("note", "Recovered from high load.");
+                        this.messages.add(new MessageModel({
+                            sample: firstRecoveredLoadSample
+                        }));
                         console.log("Recovered from high load as of " + new Date(firstRecoveredLoadSample.get("timestamp")).toString());
 
                         this.highLoadSamples = [];

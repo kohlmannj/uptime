@@ -144,7 +144,6 @@
     right: 0;
     top: 0;
     bottom: 0;
-    pointer-events: none;
     @include scale(0,1);
     @include transform-origin(right center);
     opacity: 0;
@@ -162,6 +161,7 @@
     .MessagesCompositeView {
       @include scale(1,1);
       opacity: 1.0;
+      pointer-events: auto;
     }
   }
 }

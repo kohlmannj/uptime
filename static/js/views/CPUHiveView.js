@@ -5,7 +5,7 @@ define(function(require) {
     'use strict';
 
     var d3 = require("d3");
-    var D3ShimView = require("views/D3Shim");
+    var D3ShimView = require("views/D3ShimView");
 
     return D3ShimView.extend({
         // Default width and height values; can be overridden in constructor.

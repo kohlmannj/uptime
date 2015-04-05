@@ -12,7 +12,8 @@ define(function(require) {
         regions: {
             "MainHeaderView": ".mainHeader",
             "AverageLoadView": ".AverageLoadCompositeView .wrapper",
-            "CPUHiveView": ".CPUHiveCompositeView .wrapper"
+            "CPUHiveView": ".CPUHiveCompositeView .wrapper",
+            "MessageCollectionView": ".MessagesCompositeView .wrapper"
         },
 
         events: {

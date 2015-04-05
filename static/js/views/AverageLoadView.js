@@ -7,7 +7,7 @@ define(function(require) {
     var _ = require("underscore");
     var d3 = require("d3");
     var utils = require("utils");
-    var D3ShimView = require("views/D3Shim");
+    var D3ShimView = require("views/D3ShimView");
     var Smooth = require("smooth");
     var moment = require("moment");
 
