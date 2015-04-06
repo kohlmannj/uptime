@@ -208,7 +208,7 @@ define(function(require) {
                 // Subtract the difference between this data and the previous data, multiplied by a random value and `magnitude`.
                 return this.y(
                     d.get(settings.yAttrName) - (
-                    d.get(settings.yAttrName) - prevD.get(settings.yAttrName)
+                        d.get(settings.yAttrName) - prevD.get(settings.yAttrName)
                     ) * Math.random() * settings.magnitude
                 );
             }, this);
@@ -448,7 +448,10 @@ define(function(require) {
                     var prevD = d;
                     if (0 <= i - 1) {
                         prevD = d.collection.at(i - 1);
-                        return this.x(d.get("uptime")) - this.x(prevD.get("uptime"));
+                        var delta = this.x(d.get("uptime")) - this.x(prevD.get("uptime"));
+                        if (delta < 0) {
+                            return this.sampleWidth;
+                        }
                     } else {
                         return this.sampleWidth
                     }
