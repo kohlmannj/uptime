@@ -59,7 +59,7 @@ define(function(require) {
                 d3DrawMethod: d3.svg.area,
                 magnitude: 1.0,
                 duration: 100,
-                xAttrName: "datestamp",
+                xAttrName: "datecreated",
                 yAttrName: "avg_load_1min",
                 // Bilinear 4x resampling for smoother curves (and smoother waves)
                 interpolation: function(points) {
@@ -454,9 +454,9 @@ define(function(require) {
                     var prevD = d;
                     if (0 <= i - 1) {
                         prevD = d.collection.at(i - 1);
-                        return this.x(prevD.get("datestamp"))
+                        return this.x(prevD.get("datecreated"))
                     } else {
-                        return this.x(d.get("datestamp")) - this.sampleWidth
+                        return this.x(d.get("datecreated")) - this.sampleWidth
                     }
                 }, this))
                 .attr("y", -this.margin)
@@ -465,7 +465,7 @@ define(function(require) {
                     var prevD = d;
                     if (0 <= i - 1) {
                         prevD = d.collection.at(i - 1);
-                        var delta = this.x(d.get("datestamp")) - this.x(prevD.get("datestamp"));
+                        var delta = this.x(d.get("datecreated")) - this.x(prevD.get("datecreated"));
                         if (delta < 0) {
                             return this.sampleWidth;
                         } else {
@@ -502,10 +502,10 @@ define(function(require) {
             newGroups.append("line")
                 .classed("marker", true)
                 .attr("x1", _.bind(function(d) {
-                    return this.x(d.get("datestamp"));
+                    return this.x(d.get("datecreated"));
                 }, this))
                 .attr("x2", _.bind(function(d) {
-                    return this.x(d.get("datestamp"));
+                    return this.x(d.get("datecreated"));
                 }, this))
                 .attr("y1", -this.margin)
                 .attr("y2", this.height)
@@ -514,7 +514,7 @@ define(function(require) {
             // New <ellipse> elements
             newGroups.append("ellipse")
                 .attr("cx", _.bind(function(d) {
-                    return this.x(d.get("datestamp"));
+                    return this.x(d.get("datecreated"));
                 }, this))
                 .attr("cy", _.bind(function(d) {
                     return this.y(d.get("avg_load_1min"));
@@ -527,7 +527,7 @@ define(function(require) {
             newGroups.append("text")
                 .attr("text-anchor", "end")
                 .attr("x", _.bind(function(d) {
-                    return this.x(d.get("datestamp")) - this.margin;
+                    return this.x(d.get("datecreated")) - this.margin;
                 }, this))
                 .attr("y", this.y(0) - this.margin * 4.5)
                 .text(function(d) { return "Load: " + d.get("avg_load_1min"); })
@@ -538,7 +538,7 @@ define(function(require) {
                 .classed("timestamp", true)
                 .attr("text-anchor", "end")
                 .attr("x", _.bind(function(d) {
-                    return this.x(d.get("datestamp")) - this.margin;
+                    return this.x(d.get("datecreated")) - this.margin;
                 }, this))
                 .attr("y", this.y(0) - this.margin * 2)
                 .text(function(d) { return moment( moment.utc(d.get("timestamp")).toDate() ).calendar(); })
@@ -574,7 +574,7 @@ define(function(require) {
 
         onRender: function() {
             // Recalculate the svg's (viewBox) width based on the samples we currently have.
-            var xExtent = d3.extent(this.collection.last(this.sampleLimit), function(d) { return d.get("datestamp"); })
+            var xExtent = d3.extent(this.collection.last(this.sampleLimit), function(d) { return d.get("datecreated"); })
             if (this.collection.length > 0) {
                 this.width = (xExtent[1] - xExtent[0]) / (12000/this.sampleWidth) + this.marginLeft;
                 this.innerWidth = this.width - this.marginLeft;

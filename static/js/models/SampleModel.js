@@ -34,6 +34,7 @@ define(function(require) {
             // convert a Date object to time in milliseconds
             // From https://github.com/mbostock/d3/wiki/Time-Formatting
             this.set("datestamp", + moment.utc(this.get("timestamp")).toDate() );
+            this.set("datecreated", + new Date() );
         }
     });
 });
