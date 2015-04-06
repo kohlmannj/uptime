@@ -163,14 +163,12 @@ define(function(require) {
         },
 
         focusSample: function(sample) {
-            console.log("Heard focusSample", sample);
             d3.selectAll("*[data-id='" + sample.id + "']").classed("focused", true);
             // Pause the graph animation
             this.rootView.pauseAverageLoadView();
         },
 
         blurSample: function(sample) {
-            console.log("Heard blurSample", sample);
             d3.selectAll("*[data-id='" + sample.id + "']").classed("focused", false);
             // Resume the graph animation
             this.rootView.resumeAverageLoadView();

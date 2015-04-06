@@ -88,7 +88,6 @@ define(function(require) {
                       'tag' : this.model.get("sample").get("timestamp")
                     }
                 );
-                console.log('Notification shown');
                 // Remove the notification from Notification Center when clicked.
                 n.onclick = this.focusSample;
                 // Callback function when the notification is closed.

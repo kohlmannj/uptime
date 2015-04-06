@@ -20,7 +20,7 @@ def sample():
     from sys import platform as _platform
     if _platform == "linux" or _platform == "linux2":
         # Linux
-        return jsonify({})
+        return jsonify(stats.get_stats())
     elif _platform == "darwin":
         # OS X
         return jsonify(stats.get_stats())
@@ -30,4 +30,7 @@ def sample():
 
 
 if __name__ == '__main__':
-    app.run()
+    app.run(
+      host="0.0.0.0",
+      port=3000
+    )
