@@ -8,6 +8,8 @@
 define(function(require) {
     'use strict';
 
+    var d3 = require("d3");
+    var moment = require("moment");
     var Backbone = require('backbone');
 
     return Backbone.Model.extend({
@@ -26,12 +28,12 @@ define(function(require) {
             "note": null,
             "timestamp": null,
             "uptime": null
-        }//,
-        //
-        //parse: function(response) {
-        //    if (response.hasOwnProperty("processes")) {
-        //        var processes = this.set("processes", []);
-        //    }
-        //}
+        },
+
+        initialize: function() {
+            // convert a Date object to time in milliseconds
+            // From https://github.com/mbostock/d3/wiki/Time-Formatting
+            this.set("datestamp", + moment.utc(this.get("timestamp")).toDate() );
+        }
     });
 });

@@ -59,7 +59,7 @@ define(function(require) {
                 d3DrawMethod: d3.svg.area,
                 magnitude: 1.0,
                 duration: 100,
-                xAttrName: "uptime",
+                xAttrName: "datestamp",
                 yAttrName: "avg_load_1min",
                 // Bilinear 4x resampling for smoother curves (and smoother waves)
                 interpolation: function(points) {
@@ -90,6 +90,16 @@ define(function(require) {
                 return;
             }
 
+            //////////////////////////
+            //// Area Group Setup ////
+            //////////////////////////
+            var waveGroup = d3.select(this.d3.el).selectAll("g.waves").data([0]);
+
+            waveGroup.enter()
+                .append("g")
+                .classed("waves", true)
+            ;
+
             ////////////////////
             //// Area Setup ////
             ////////////////////
@@ -119,7 +129,7 @@ define(function(require) {
 
             // Map the data to a <path> element with the specified className.
             // Wrap the data in an extra array (yes, that's important)
-            var wavePath = d3.select(this.d3.el).selectAll("path." + settings.className).data([settings.data]);
+            var wavePath = waveGroup.selectAll("path." + settings.className).data([settings.data]);
 
             // Existing Data
             wavePath
@@ -437,9 +447,9 @@ define(function(require) {
                     var prevD = d;
                     if (0 <= i - 1) {
                         prevD = d.collection.at(i - 1);
-                        return this.x(prevD.get("uptime"))
+                        return this.x(prevD.get("datestamp"))
                     } else {
-                        return this.x(d.get("uptime")) - this.sampleWidth
+                        return this.x(d.get("datestamp")) - this.sampleWidth
                     }
                 }, this))
                 .attr("y", -this.margin)
@@ -448,9 +458,11 @@ define(function(require) {
                     var prevD = d;
                     if (0 <= i - 1) {
                         prevD = d.collection.at(i - 1);
-                        var delta = this.x(d.get("uptime")) - this.x(prevD.get("uptime"));
+                        var delta = this.x(d.get("datestamp")) - this.x(prevD.get("datestamp"));
                         if (delta < 0) {
                             return this.sampleWidth;
+                        } else {
+                            return delta;
                         }
                     } else {
                         return this.sampleWidth
@@ -483,10 +495,10 @@ define(function(require) {
             newGroups.append("line")
                 .classed("marker", true)
                 .attr("x1", _.bind(function(d) {
-                    return this.x(d.get("uptime"));
+                    return this.x(d.get("datestamp"));
                 }, this))
                 .attr("x2", _.bind(function(d) {
-                    return this.x(d.get("uptime"));
+                    return this.x(d.get("datestamp"));
                 }, this))
                 .attr("y1", -this.margin)
                 .attr("y2", this.height)
@@ -495,7 +507,7 @@ define(function(require) {
             // New <ellipse> elements
             newGroups.append("ellipse")
                 .attr("cx", _.bind(function(d) {
-                    return this.x(d.get("uptime"));
+                    return this.x(d.get("datestamp"));
                 }, this))
                 .attr("cy", _.bind(function(d) {
                     return this.y(d.get("avg_load_1min"));
@@ -508,7 +520,7 @@ define(function(require) {
             newGroups.append("text")
                 .attr("text-anchor", "end")
                 .attr("x", _.bind(function(d) {
-                    return this.x(d.get("uptime")) - this.margin;
+                    return this.x(d.get("datestamp")) - this.margin;
                 }, this))
                 .attr("y", this.y(0) - this.margin * 4.5)
                 .text(function(d) { return "Load: " + d.get("avg_load_1min"); })
@@ -519,7 +531,7 @@ define(function(require) {
                 .classed("timestamp", true)
                 .attr("text-anchor", "end")
                 .attr("x", _.bind(function(d) {
-                    return this.x(d.get("uptime")) - this.margin;
+                    return this.x(d.get("datestamp")) - this.margin;
                 }, this))
                 .attr("y", this.y(0) - this.margin * 2)
                 .text(function(d) { return moment( moment.utc(d.get("timestamp")).toDate() ).calendar(); })
@@ -555,9 +567,9 @@ define(function(require) {
 
         onRender: function() {
             // Recalculate the svg's (viewBox) width based on the samples we currently have.
-            var xExtent = d3.extent(this.collection.last(this.sampleLimit), function(d) { return d.get("uptime"); })
+            var xExtent = d3.extent(this.collection.last(this.sampleLimit), function(d) { return d.get("datestamp"); })
             if (this.collection.length > 0) {
-                this.width = (xExtent[1] - xExtent[0]) * 3 + this.marginLeft;
+                this.width = (xExtent[1] - xExtent[0]) / (12000/this.sampleWidth) + this.marginLeft;
                 this.innerWidth = this.width - this.marginLeft;
                 this.innerHeight = this.height - this.margin * 2;
             }
