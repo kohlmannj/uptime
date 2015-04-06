@@ -403,6 +403,13 @@
       }
     }
   }
+
+  .MessagesCompositeView .wrapper {
+    dl {
+      font-size: pxtoem(10px);
+      border-left-width: pxtoem(2px, 10px);
+    }
+  }
 }
 
 @media screen and (max-width: 767px) {
@@ -481,6 +488,7 @@
   .MessagesCompositeView .wrapper {
     dl {
       font-size: pxtoem(10px);
+      border-left-width: pxtoem(2px, 10px);
     }
   }
 }

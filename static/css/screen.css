@@ -590,7 +590,11 @@ header {
   .AverageLoadView .brush text {
     font-size: 0.75em; }
     .AverageLoadView .brush text.timestamp {
-      font-size: 0.5em; } }
+      font-size: 0.5em; }
+
+  .MessagesCompositeView .wrapper dl {
+    font-size: 0.625em;
+    border-left-width: 0.2em; } }
 @media screen and (max-width: 767px) {
   .GraphLayout .AverageLoadCompositeView {
     width: 70.3125%; }
@@ -624,7 +628,8 @@ header {
     stroke-width: 0.125em; }
 
   .MessagesCompositeView .wrapper dl {
-    font-size: 0.625em; } }
+    font-size: 0.625em;
+    border-left-width: 0.2em; } }
 body {
   font-family: "Avenir", "Helvetica Neue", "Helvetica", sans-serif;
   background: #999;
