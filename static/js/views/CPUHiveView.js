@@ -146,7 +146,7 @@ define(function(require) {
                 .text(_.bind(function(d) {
                     return "Load: " + d.get("avg_load_1min") + "\n" +
                         "CPU: " + (100 - parseFloat(d.get("cpu_%idle"))).toFixed(2) + "%" + "\n" +
-                        moment(d.get("timestamp")).calendar()
+                        moment( moment.utc(d.get("timestamp")) ).calendar()
                     ;
                 }))
             ;
@@ -167,7 +167,7 @@ define(function(require) {
                 .text(_.bind(function(d) {
                     return "Load: " + d.get("avg_load_1min") + "\n" +
                         "CPU: " + (100 - parseFloat(d.get("cpu_%idle"))).toFixed(2) + "%" + "\n" +
-                        moment(d.get("timestamp")).calendar()
+                        moment( moment.utc(d.get("timestamp")).toDate() ).calendar()
                     ;
                 }))
             ;

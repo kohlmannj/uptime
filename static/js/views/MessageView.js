@@ -29,7 +29,7 @@ define(function(require) {
             return {
                 formattedTimestamp: _.bind(function() {
                     if (typeof sample.get("timestamp") === "string") {
-                        return moment(sample.get("timestamp")).calendar();
+                        return moment( moment.utc(sample.get("timestamp")).toDate() ).calendar();
                     } else {
                         return "Unknown";
                     }

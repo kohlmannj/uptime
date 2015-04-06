@@ -391,7 +391,7 @@ define(function(require) {
                         "15 min: " + d.get("avg_load_15min") +
                         (d.get("error") !== null ? "\n\n**" + d.get("error") + "**" : "") +
                         (d.get("note") !== null ? "\n\nNote: " + d.get("note") : "") + "\n" +
-                        moment(d.get("timestamp")).calendar()
+                        moment( moment.utc(d.get("timestamp")).toDate() ).calendar()
                     );
                 }, this))
             ;
@@ -407,7 +407,7 @@ define(function(require) {
 
             // Existing relative timestamp <text> labels
             existingGroups.selectAll("text.timestamp")
-                .text(function(d) { return moment(d.get("timestamp")).calendar(); })
+                .text(function(d) { return moment( moment.utc(d.get("timestamp")).toDate() ).calendar(); })
             ;
 
             //////////////////////
@@ -470,7 +470,7 @@ define(function(require) {
                         "15 min: " + d.get("avg_load_15min") +
                         (d.get("error") !== null ? "\n\n**" + d.get("error") + "**" : "") +
                         (d.get("note") !== null ? "\n\nNote: " + d.get("note") : "") + "\n" +
-                        moment(d.get("timestamp")).calendar()
+                        moment( moment.utc(d.get("timestamp")).toDate() ).calendar()
                     );
                 }, this))
             ;
@@ -518,7 +518,7 @@ define(function(require) {
                     return this.x(d.get("uptime")) - this.margin;
                 }, this))
                 .attr("y", this.y(0) - this.margin * 2)
-                .text(function(d) { return moment(d.get("timestamp")).calendar(); })
+                .text(function(d) { return moment( moment.utc(d.get("timestamp")).toDate() ).calendar(); })
             ;
 
             //////////////////////////

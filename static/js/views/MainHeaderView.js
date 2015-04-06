@@ -27,7 +27,7 @@ define(function(require) {
 
             lastUpdated: function() {
                 if (typeof this.timestamp === "string") {
-                    return moment(this.timestamp).calendar();
+                    return moment( moment.utc(this.timestamp).toDate() ).calendar();
                 } else {
                     return "Unknown";
                 }
@@ -108,7 +108,7 @@ define(function(require) {
                 .text(newFormattedUptime + " uptime")
             ;
             // Update "last updated" title text
-            this.$el.find(".headerInfo").attr("title", "Last updated: " + moment().calendar(this.model.get("timestamp")));
+            this.$el.find(".headerInfo").attr("title", "Last updated: " + moment( moment.utc(this.model.get("timestamp")).toDate() ).calendar());
             // Flash the refresh icon to indicate a successful update
             this.ui.refresh.addClass("update");
 

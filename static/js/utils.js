@@ -21,6 +21,10 @@ define(function(require) {
         }
     });
 
+    // From http://www.digitoffee.com/programming/get-local-time-utc-using-moment-js/94/
+    // Note: do crazy MomentJS UTC unwrapping like this:
+    // moment( moment.utc(this.timestamp).toDate() ).calendar()
+
     // Array Remove - By John Resig (MIT Licensed)
     Array.prototype.remove = function(from, to) {
       var rest = this.slice((to || from) + 1 || this.length);
