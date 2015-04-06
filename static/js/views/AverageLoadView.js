@@ -376,12 +376,12 @@ define(function(require) {
             existingGroups.selectAll("rect title")
                 .text(_.bind(function(d) {
                     return (
-                        moment(d.get("timestamp")).format(this.dateFormat) + "\n" +
                         " 1 min: " + d.get("avg_load_1min") + "\n" +
                         " 5 min: " + d.get("avg_load_5min") + "\n" +
                         "15 min: " + d.get("avg_load_15min") +
                         (d.get("error") !== null ? "\n\n**" + d.get("error") + "**" : "") +
-                        (d.get("note") !== null ? "\n\nNote: " + d.get("note") : "")
+                        (d.get("note") !== null ? "\n\nNote: " + d.get("note") : "") + "\n" +
+                        moment(d.get("timestamp")).calendar()
                     );
                 }, this))
             ;
@@ -446,12 +446,12 @@ define(function(require) {
             newRects.append("title")
                 .text(_.bind(function(d) {
                     return (
-                        moment(d.get("timestamp")).format(this.dateFormat) + "\n" +
                         " 1 min: " + d.get("avg_load_1min") + "\n" +
                         " 5 min: " + d.get("avg_load_5min") + "\n" +
                         "15 min: " + d.get("avg_load_15min") +
                         (d.get("error") !== null ? "\n\n**" + d.get("error") + "**" : "") +
-                        (d.get("note") !== null ? "\n\nNote: " + d.get("note") : "")
+                        (d.get("note") !== null ? "\n\nNote: " + d.get("note") : "") + "\n" +
+                        moment(d.get("timestamp")).calendar()
                     );
                 }, this))
             ;
