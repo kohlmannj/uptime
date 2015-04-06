@@ -111,6 +111,7 @@ define(function(require) {
         onStart: function() {
             // Start the application by starting the status update poll.
             this.fetchSample();
+            $("head title").text(this.current_data.get("hostname") + " - Uptime Monitor");
         },
 
         startPolling: function() {
