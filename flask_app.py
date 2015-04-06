@@ -1,6 +1,7 @@
 from flask import Flask, jsonify, render_template
 from flask_util_js.flask_util_js import FlaskUtilJs
 import json
+import os
 import stats
 
 # App Setup
@@ -12,7 +13,12 @@ fujs = FlaskUtilJs(app)
 
 @app.route('/')
 def index():
-    return render_template("index.html", initialSample=json.dumps(stats.get_stats()))
+    return render_template(
+        "index.html",
+        initialSample=json.dumps(stats.get_stats()),
+        highLoadThreshold=float(os.environ.get('HIGH_LOAD_THRESHOLD', 1.0)),
+        highLoadDuration=int(os.environ.get('HIGH_LOAD_DURATION', 120000))
+    )
 
 
 @app.route('/sample', methods=['GET'])

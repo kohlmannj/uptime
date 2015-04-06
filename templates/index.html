@@ -10,7 +10,7 @@
         <script data-main="main" src="{{ url_for("static", filename="bower_components/requirejs/require.js") }}"></script>
         <script>{% include "config.js" %}</script>
         {% if initialSample is defined %}
-        <script>INITIAL_SAMPLE = {{ initialSample | safe }};</script>
+        <script>INITIAL_SAMPLE = {{ initialSample | safe }}; HIGH_LOAD_THRESHOLD = {{ highLoadThreshold }}; HIGH_LOAD_DURATION = {{ highLoadDuration }};</script>
         {% endif %}
     </head>
     <body>
