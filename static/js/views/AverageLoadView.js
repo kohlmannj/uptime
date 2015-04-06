@@ -14,6 +14,8 @@ define(function(require) {
     return D3ShimView.extend({
         // Default width and height values; can be overridden in constructor.
         defaultWidth: 720,
+        animatedSampleLimit: 16,
+        sampleLimit: 200,
         width: 0,
         height: 304,
         sampleWidth: 32,
@@ -43,8 +45,10 @@ define(function(require) {
 
         drawWave: function(options) {
             var defaults = {
+                animate: true,
                 className: "wave-avg-load-1min",
                 data: this.collection.models,
+                // The two draw methods supported are d3.svg.area and d3.svg.line
                 d3DrawMethod: d3.svg.area,
                 magnitude: 1.0,
                 duration: 100,
@@ -88,11 +92,22 @@ define(function(require) {
                 .x(_.bind(function(d) {
                     return this.x(d.get(settings.xAttrName));
                 }, this))
-                .y0(this.innerHeight)
-                .y1(_.bind(function(d) {
-                    return this.y(d.get(settings.yAttrName));
-                }, this))
             ;
+
+            var waveAreaHeightFunction = _.bind(function(d) {
+                return this.y(d.get(settings.yAttrName));
+            }, this);
+
+            if (settings.d3DrawMethod === d3.svg.area) {
+                waveArea
+                    .y0(this.innerHeight)
+                    .y1(waveAreaHeightFunction)
+                ;
+            } else if (settings.d3DrawMethod == d3.svg.line) {
+                waveArea
+                    .y(waveAreaHeightFunction)
+                ;
+            }
 
             // Map the data to a <path> element with the specified className.
             // Wrap the data in an extra array (yes, that's important)
@@ -102,6 +117,8 @@ define(function(require) {
             wavePath
                 .transition()
                 .duration(0)
+                .attr("stroke-linecap", "round")
+                .attr("stroke-linejoin", "round")
                 .attr("d", function(d) {
                     return waveArea(d);
                 })
@@ -111,6 +128,8 @@ define(function(require) {
             wavePath.enter().append("path").classed(settings.className, true)
                 .transition()
                 .duration(0)
+                .attr("stroke-linecap", "round")
+                .attr("stroke-linejoin", "round")
                 .attr("d", function(d) {
                     return waveArea(d);
                 })
@@ -119,10 +138,10 @@ define(function(require) {
             // exit() - Outgoing Data
             wavePath.exit().remove();
 
-            // Return wavePath now (without setting up the wave animations) if `magnitude` and `duration` are both <= 0.
-            //if (settings.magnitude <= 0 || settings.duration <= 0) {
-            //    return wavePath;
-            //}
+            // Short-circuit to stop animation.
+            if (settings.animate === false) {
+                return;
+            }
 
             /////////////////////////
             //// Animation Setup //// (if magnitude and duration are both greater than zero)
@@ -134,22 +153,34 @@ define(function(require) {
                 .x(_.bind(function(d) {
                     return this.x(d.get(settings.xAttrName) + Math.random() * settings.magnitude * 4);
                 }, this))
-                .y0(this.innerHeight)
-                .y1(_.bind(function(d, i) {
-                    // Get the previous data point. If it doesn't exist, use the current one instead.
-                    var prevD = d;
-                    if (0 <= i - 1) {
-                        prevD = d.collection.at(i - 1);
-                    }
-
-                    // Add the difference between this data and the previous data, multiplied by a random value and `magnitude`.
-                    return this.y(
-                        d.get(settings.yAttrName) + (
-                            d.get(settings.yAttrName) - prevD.get(settings.yAttrName)
-                        ) * Math.random() * settings.magnitude
-                    );
-                }, this))
             ;
+
+            var risingWaveHeightFunction = _.bind(function(d, i) {
+                // Get the previous data point. If it doesn't exist, use the current one instead.
+                var prevD = d;
+                if (0 <= i - 1) {
+                    prevD = d.collection.at(i - 1);
+                }
+
+                // Add the difference between this data and the previous data, multiplied by a random value and `magnitude`.
+                return this.y(
+                    d.get(settings.yAttrName) + (
+                        d.get(settings.yAttrName) - prevD.get(settings.yAttrName)
+                    ) * Math.random() * settings.magnitude
+                );
+            }, this);
+
+            // Handle d3.svg.area differently from d3.svg.line
+            if (settings.d3DrawMethod === d3.svg.area) {
+                risingWaveArea
+                    .y0(this.innerHeight)
+                    .y1(risingWaveHeightFunction)
+                ;
+            } else if (settings.d3DrawMethod === d3.svg.line) {
+                risingWaveArea
+                    .y(risingWaveHeightFunction)
+                ;
+            }
 
             // Falling Wave Area
             var fallingWaveArea = settings.d3DrawMethod()
@@ -157,22 +188,34 @@ define(function(require) {
                 .x(_.bind(function(d) {
                     return this.x(d.get(settings.xAttrName) - Math.random() * settings.magnitude * 2);
                 }, this))
-                .y0(this.innerHeight)
-                .y1(_.bind(function(d, i) {
-                    // Get the previous data point. If it doesn't exist, use the current one instead.
-                    var prevD = d;
-                    if (0 <= i - 1) {
-                        prevD = d.collection.at(i - 1);
-                    }
-
-                    // Subtract the difference between this data and the previous data, multiplied by a random value and `magnitude`.
-                    return this.y(
-                        d.get(settings.yAttrName) - (
-                            d.get(settings.yAttrName) - prevD.get(settings.yAttrName)
-                        ) * Math.random() * settings.magnitude
-                    );
-                }, this))
             ;
+
+            var fallingWaveHeightFunction = _.bind(function (d, i) {
+                // Get the previous data point. If it doesn't exist, use the current one instead.
+                var prevD = d;
+                if (0 <= i - 1) {
+                    prevD = d.collection.at(i - 1);
+                }
+
+                // Subtract the difference between this data and the previous data, multiplied by a random value and `magnitude`.
+                return this.y(
+                    d.get(settings.yAttrName) - (
+                    d.get(settings.yAttrName) - prevD.get(settings.yAttrName)
+                    ) * Math.random() * settings.magnitude
+                );
+            }, this);
+
+            // Handle d3.svg.area differently from d3.svg.line
+            if (settings.d3DrawMethod === d3.svg.area) {
+                fallingWaveArea
+                    .y0(this.innerHeight)
+                    .y1(fallingWaveHeightFunction)
+                ;
+            } else if (settings.d3DrawMethod === d3.svg.line) {
+                fallingWaveArea
+                    .y(fallingWaveHeightFunction)
+                ;
+            }
 
             // Animate wavePath between waveArea, risingWaveArea, and fallingWaveArea.
             // Based on http://stackoverflow.com/a/17127850
@@ -279,6 +322,7 @@ define(function(require) {
                 .call(this.yAxis)
             ;
 
+            // <rect> to have the y-axis labels occlude the graph
             yAxisGroup.enter()
                 .append("rect")
                     .classed("bg", true)
@@ -286,6 +330,16 @@ define(function(require) {
                     .attr("height", this.height)
                     .attr("x", -this.margin)
                     .attr("y", -this.margin)
+            ;
+
+            // <rect> to cover up overflow beyond the zero value on the y-axis
+            yAxisGroup.enter()
+                .append("rect")
+                    .classed("bg", true)
+                    .attr("width", this.defaultWidth)
+                    .attr("height", this.margin)
+                    .attr("x", -this.margin)
+                    .attr("y", this.height - this.margin * 2)
             ;
 
             yAxisGroup.enter()
@@ -296,53 +350,6 @@ define(function(require) {
                 ;
 
             yAxisGroup.exit().remove();
-        },
-
-        // Unused
-        drawBgRects: function() {
-            // Select the g.bg groups and map the data to them.
-            var existingGroups = d3.select(this.d3.el).selectAll("g.bg").data(this.collection.models);
-
-            existingGroups
-                .attr("data-error", function(d) {
-                    return d.get("error");
-                })
-                .classed("note", function(d) {
-                    return (typeof d.get("note") === "string");
-                })
-            ;
-
-            // New Groups
-            var newGroups = existingGroups.enter()
-                .append("g")
-                .classed("bg", true)
-            ;
-
-            // New <rect> elements
-            var newRects = newGroups.append("rect")
-                .attr("x", _.bind(function(d, i) {
-                    // Get the previous data point. If it doesn't exist, use the current one instead.
-                    var prevD = d;
-                    if (0 <= i - 1) {
-                        prevD = d.collection.at(i - 1);
-                        return this.x(prevD.get("uptime"))
-                    } else {
-                        return this.x(d.get("uptime")) - this.sampleWidth
-                    }
-                }, this))
-                .attr("y", this.innerHeight)
-                .attr("width", _.bind(function(d, i) {
-                    // Get the previous data point. If it doesn't exist, use the current one instead.
-                    var prevD = d;
-                    if (0 <= i - 1) {
-                        prevD = d.collection.at(i - 1);
-                        return this.x(d.get("uptime")) - this.x(prevD.get("uptime"));
-                    } else {
-                        return this.sampleWidth
-                    }
-                }, this))
-                .attr("height", this.height)
-            ;
         },
 
         drawBrushRects: function() {
@@ -481,7 +488,7 @@ define(function(require) {
                     return this.x(d.get("uptime")) - this.margin;
                 }, this))
                 .attr("y", this.y(0) - this.margin * 3.5)
-                .text(function(d) { return "1 min: " + d.get("avg_load_1min"); })
+                .text(function(d) { return "Load: " + d.get("avg_load_1min"); })
             ;
 
             // New relative timestamp <text> labels
@@ -493,6 +500,14 @@ define(function(require) {
                 }, this))
                 .attr("y", this.y(0) - this.margin)
                 .text(function(d) { return moment(d.get("timestamp")).calendar(); })
+            ;
+
+            //////////////////////////
+            //// Removed Elements ////
+            //////////////////////////
+
+            var removedGroups = existingGroups.exit()
+                .remove()
             ;
         },
 
@@ -517,7 +532,7 @@ define(function(require) {
 
         onRender: function() {
             // Recalculate the svg's (viewBox) width based on the samples we currently have.
-            var xExtent = d3.extent(this.collection.models, function(d) { return d.get("uptime"); })
+            var xExtent = d3.extent(this.collection.last(this.sampleLimit), function(d) { return d.get("uptime"); })
             if (this.collection.length > 0) {
                 this.width = (xExtent[1] - xExtent[0]) * 3 + this.marginLeft;
                 this.innerWidth = this.width - this.marginLeft;
@@ -556,30 +571,66 @@ define(function(require) {
             // Draw Axes
             this.drawAxes();
 
+            //////////////////////
+            //// Static Lines ////
+            //////////////////////
+
             // Draw 15-min Average Load
             this.drawWave({
-                className: "fifteen-min-area",
+                animate: false,
+                data: this.collection.first(this.collection.length - this.animatedSampleLimit + 1),
+                className: "fifteen-min-area-static",
                 yAttrName: "avg_load_15min",
-                duration: 250,
-                magnitude: 0.5 * this.globalWaveMagnitude,
-                //interpolation: "linear"
+                interpolation: "linear",
+                d3DrawMethod: d3.svg.line
             });
 
             // Draw 5-min Average Load
             this.drawWave({
-                className: "five-min-area",
-                yAttrName: "avg_load_5min",
-                duration: 250,
-                magnitude: 0.5 * this.globalWaveMagnitude,
-                //interpolation: "linear"
+                animate: false,
+                data: this.collection.first(this.collection.length - this.animatedSampleLimit + 1),
+                className: "five-min-area-static",
+                interpolation: "linear",
+                yAttrName: "avg_load_5min"
             });
 
             this.drawWave({
+                animate: false,
+                data: this.collection.first(this.collection.length - this.animatedSampleLimit + 1),
+                className: "one-min-area-static",
+                interpolation: "linear",
+                yAttrName: "avg_load_1min"
+            });
+
+            ////////////////////////
+            //// Animated lines ////
+            ////////////////////////
+
+            // Draw 15-min Average Load
+            this.drawWave({
+                data: this.collection.last(this.animatedSampleLimit),
+                className: "fifteen-min-area",
+                yAttrName: "avg_load_15min",
+                duration: 500,
+                magnitude: 0.125 * this.globalWaveMagnitude,
+                d3DrawMethod: d3.svg.line
+            });
+
+            // Draw 5-min Average Load
+            this.drawWave({
+                data: this.collection.last(this.animatedSampleLimit),
+                className: "five-min-area",
+                yAttrName: "avg_load_5min",
+                duration: 250,
+                magnitude: 0.125 * this.globalWaveMagnitude
+            });
+
+            this.drawWave({
+                data: this.collection.last(this.animatedSampleLimit),
                 className: "one-min-area",
                 yAttrName: "avg_load_1min",
                 duration: 150,
-                magnitude: 0.25 * this.globalWaveMagnitude,
-                //interpolation: "linear"
+                magnitude: 0.125 * this.globalWaveMagnitude
             });
 
             this.drawBrushRects();

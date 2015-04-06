@@ -16,8 +16,8 @@ require.config({
                        '../bower_components/backbone/backbone'],
         'd3':         ['//cdnjs.cloudflare.com/ajax/libs/d3/3.5.5/d3.min',
                        '../bower_components/d3/d3.min.js'],
-        'marionette': ['//cdnjs.cloudflare.com/ajax/libs/backbone.marionette/2.2.2/backbone.marionette',
-                       '../bower_components/marionette/lib/backbone.marionette.min'],
+        'marionette': ['//cdnjs.cloudflare.com/ajax/libs/backbone.marionette/2.4.1/backbone.marionette',
+                       '../bower_components/marionette/lib/backbone.marionette'],
         'smooth':     ['../bower_components/Smooth.js/Smooth'],
         'moment':     ['../bower_components/moment/moment']
     },

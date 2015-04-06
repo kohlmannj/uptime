@@ -11,14 +11,6 @@ $successColor: #7ED321;
 $alertColor: #F5A623;
 $espyBlueColor: #00acc2;
 
-$loadAvgWidth: 70.3125%;
-$loadAvgRatio: 1/2.4;
-$loadAvgPaddingBottom: $loadAvgRatio * $loadAvgWidth;
-
-$cpuHiveWidth: 100% - $loadAvgWidth;
-$cpuHiveRatio: 1/1;
-$cupHivePaddingBottom: $cpuHiveRatio * $cpuHiveWidth;
-
 $headerBorderWidth: 2px;
 $headerBorderColor: #999;
 $headerLineOffset: 0px;
@@ -36,8 +28,26 @@ $lineWidthNarrow: 4px;
 $tickWidthNarrow: 2px;
 $tickFontSizeNarrow: 22px;
 
-$loadAvgWidthWithMessages: 52.734375%;
+$graphLayoutHeight: (304px + $margin) / 1024px * 100%;
 
-$messagesWidth: 17.578125%;
+$loadAvgWidth: 720px/1024px * 100%;
+$loadAvgRatio: 1/2.4;
+$loadAvgPaddingBottom: $loadAvgRatio * $loadAvgWidth;
 
-$messagesWidthMinusMargin: 16.015625%;
+$cpuHiveWidth: 100% - $loadAvgWidth;
+$cpuHiveRatio: 1/1;
+$cupHivePaddingBottom: $cpuHiveRatio * $cpuHiveWidth;
+
+$loadAvgWidthWithMessages: 540px/1024px * 100%;
+$messagesWidth: 180/1024 * 100%;
+
+$messagesWidthMinusMargin: (180px - $margin * 2)/1024px * 100%;
+
+$loadAvgWidthWithMessagesNarrow: 480px/1024px * 100%;
+$messagesWidthNarrow: 240px/1024px * 100%;
+$messagesWidthMinusMarginNarrow: (240px - $margin * 2)/1024px * 100%;
+
+$oneMinColor: lighten(#082746, 15%);
+$fiveMinColor: lighten($espyBlueColor, 5%);
+//$fifteenMinColor: darken($alertColor, 15%);
+$fifteenMinColor: darken(#96b4be, 35%);

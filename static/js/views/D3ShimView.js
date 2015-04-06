@@ -20,7 +20,16 @@ define(function(require) {
             this.width = options.width || this.width;
             this.height = options.height || this.height;
             this.margin = options.margin || this.margin;
-            this.listenTo(this.collection, "add remove change reset", this.render);
+            if (this.model) {
+                this.listenTo(this.collection, "change", this.render);
+            }
+            if (this.collection) {
+                this.listenTo(this.collection, "add remove change reset", this.render);
+            }
+            // Hackish support for linked views
+            if (options.linkedView) {
+                this.linkedView = options.linkedView;
+            }
 
             // Set up an object for storing D3-related variables.
             this.d3 = {};

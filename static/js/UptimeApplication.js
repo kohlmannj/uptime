@@ -86,7 +86,7 @@ define(function(require) {
             // CPUHiveView Setup
             this.cpuHiveView = new CPUHiveView({
                 collection: this.samples,
-                current_data: this.current_data
+                linkedView: this.averageLoadView,
             });
             this.rootView.getRegion('CPUHiveView').show(this.cpuHiveView);
 
@@ -207,7 +207,6 @@ define(function(require) {
                         this.messages.add(new MessageModel({
                             sample: firstHighLoadSample
                         }));
-                        console.log("Experiencing a high load (> " + this.highLoadThreshold + "), starting at " + new Date(firstHighLoadSample.get("timestamp")).toString());
                     }
                 }
                 // When under high load...
@@ -257,7 +256,6 @@ define(function(require) {
                         this.messages.add(new MessageModel({
                             sample: firstRecoveredLoadSample
                         }));
-                        console.log("Recovered from high load as of " + new Date(firstRecoveredLoadSample.get("timestamp")).toString());
 
                         this.highLoadSamples = [];
                         this.recoveredLoadSamples = [];

@@ -410,7 +410,7 @@ header {
   width: 100%;
   position: relative;
   height: 0;
-  padding-bottom: 32.03125%; }
+  padding-bottom: 30.46875%; }
   .GraphLayout .AverageLoadCompositeView {
     width: 70.3125%;
     position: absolute;
@@ -494,7 +494,6 @@ header {
     opacity: 0;
     pointer-events: none;
     fill: #fff;
-    text-shadow: 0 1px 1px rgba(0, 0, 0, 0.65);
     font-size: 1em; }
     .AverageLoadView .brush text.timestamp, .AverageLoadView .bg text.timestamp {
       text-transform: uppercase;
@@ -525,72 +524,109 @@ header {
   .AverageLoadView path + g.brush + g.brush + g.brush text,
   .AverageLoadView path + g.brush + g.brush + g.brush + g.brush text,
   .AverageLoadView path + g.brush + g.brush + g.brush + g.brush + g.brush text {
-    fill: #000;
-    text-shadow: 0 1px 1px rgba(255, 255, 255, 0.65); }
-  .AverageLoadView .area, .AverageLoadView .fifteen-min-area, .AverageLoadView .five-min-area, .AverageLoadView .one-min-area {
+    fill: #000; }
+  .AverageLoadView .area, .AverageLoadView .fifteen-min-area, .AverageLoadView .fifteen-min-area-static, .AverageLoadView .five-min-area, .AverageLoadView .five-min-area-static, .AverageLoadView .one-min-area, .AverageLoadView .one-min-area-static {
     stroke-width: 0; }
-  .AverageLoadView .fifteen-min-area {
-    stroke: #6792a1;
+  .AverageLoadView .fifteen-min-area, .AverageLoadView .fifteen-min-area-static {
+    stroke: #3e5a64;
     stroke-width: 0.125em;
     fill: none; }
-  .AverageLoadView .five-min-area {
-    stroke: #00acc2;
+  .AverageLoadView .five-min-area, .AverageLoadView .five-min-area-static {
     fill: rgba(0, 195, 220, 0.65); }
-  .AverageLoadView .one-min-area {
+  .AverageLoadView .one-min-area, .AverageLoadView .one-min-area-static {
     stroke: #051a2f;
     fill: rgba(16, 77, 139, 0.75); }
-  .AverageLoadView .line, .AverageLoadView .fifteen-min-line, .AverageLoadView .five-min-line, .AverageLoadView .one-min-line {
-    stroke-width: 0.125em;
-    fill: none;
-    -moz-transition: stroke 0.25s ease-in-out;
-    -o-transition: stroke 0.25s ease-in-out;
-    -webkit-transition: stroke 0.25s ease-in-out;
-    transition: stroke 0.25s ease-in-out; }
-  .AverageLoadView .fifteen-min-line {
-    stroke: #779eab; }
-  .AverageLoadView .five-min-line {
-    stroke: #082746; }
-  .AverageLoadView .one-min-line {
-    stroke: #00acc2; }
 
 .CPUHiveCompositeView .wrapper {
   overflow: hidden;
   bottom: 0; }
+  .CPUHiveCompositeView .wrapper svg {
+    margin-left: 0;
+    margin-right: auto; }
 
-.CPUHiveView rect {
-  fill: orange;
-  stroke: black;
-  stroke-width: 1px;
-  -moz-transition: fill 0.25s ease-in-out;
-  -o-transition: fill 0.25s ease-in-out;
-  -webkit-transition: fill 0.25s ease-in-out;
-  transition: fill 0.25s ease-in-out; }
-  .CPUHiveView rect:hover {
-    fill: yellow; }
+.CPUHiveView ellipse {
+  fill: none;
+  stroke: rgba(5, 26, 47, 0.5);
+  stroke-width: 0.0625em; }
+.CPUHiveView ellipse + ellipse {
+  stroke: rgba(5, 26, 47, 0.25); }
+.CPUHiveView ellipse + ellipse + ellipse {
+  stroke: rgba(5, 26, 47, 0.125); }
+.CPUHiveView ellipse:last-child {
+  fill: rgba(16, 77, 139, 0.8);
+  stroke: rgba(5, 26, 47, 0); }
+
+.MessagesCompositeView .wrapper dl {
+  margin: 0 0 0.08333em;
+  font-size: 0.75em;
+  padding: 0.66667em;
+  border-left: 0.16667em solid transparent;
+  opacity: 0.3;
+  background-color: transparent; }
+  .MessagesCompositeView .wrapper dl:first-child {
+    opacity: 1; }
+    .MessagesCompositeView .wrapper dl:first-child[data-error="HighLoadStart"] {
+      background-color: rgba(245, 166, 35, 0.5);
+      border-color: #F5A623; }
+    .MessagesCompositeView .wrapper dl:first-child[data-error="HighLoadRecovered"] {
+      background-color: rgba(0, 172, 194, 0.5);
+      border-color: #00acc2; }
+  .MessagesCompositeView .wrapper dl[data-error="HighLoadStart"] {
+    background-color: rgba(153, 153, 153, 0.25);
+    border-color: #F5A623; }
+  .MessagesCompositeView .wrapper dl[data-error="HighLoadRecovered"] {
+    background-color: rgba(153, 153, 153, 0.25);
+    border-color: #00acc2; }
+.MessagesCompositeView .wrapper dt {
+  font-weight: 700;
+  text-transform: uppercase; }
+.MessagesCompositeView .wrapper dd {
+  margin: 0; }
+.MessagesCompositeView .wrapper p {
+  margin: 0; }
 
 @media screen and (min-width: 1080px) {
   .GraphCompositeView svg.overlay .tick text, .GraphLayout .MessagesCompositeView svg.overlay .tick text, .AverageLoadCompositeView svg.overlay .tick text, .CPUHiveCompositeView svg.overlay .tick text {
-    font-size: 0.5em; } }
-@media screen and (min-width: 768px) and (max-width: 960px) {
-  .GraphCompositeView svg.overlay .tick text, .GraphLayout .MessagesCompositeView svg.overlay .tick text, .AverageLoadCompositeView svg.overlay .tick text, .CPUHiveCompositeView svg.overlay .tick text {
-    font-size: 0.875em; } }
-@media screen and (min-width: 1080px) {
+    font-size: 0.5em; }
+
   .AverageLoadView .brush text {
     font-size: 0.75em; }
     .AverageLoadView .brush text.timestamp {
       font-size: 0.5em; } }
 @media screen and (max-width: 767px) {
-  .AverageLoadView .line, .AverageLoadView .fifteen-min-line, .AverageLoadView .five-min-line, .AverageLoadView .one-min-line {
+  .GraphLayout .AverageLoadCompositeView {
+    width: 70.3125%; }
+  .GraphLayout .CPUHiveCompositeView {
+    width: 29.6875%; }
+  .GraphLayout .MessagesCompositeView {
+    width: 21.875%; }
+  .GraphLayout.withMessages .AverageLoadCompositeView {
+    width: 46.875%; }
+  .GraphLayout.withMessages .CPUHiveCompositeView {
+    right: 23.4375%; }
+
+  .GraphCompositeView svg.overlay .tick line, .GraphLayout .MessagesCompositeView svg.overlay .tick line, .AverageLoadCompositeView svg.overlay .tick line, .CPUHiveCompositeView svg.overlay .tick line {
+    stroke-width: 0.125em; }
+  .GraphCompositeView svg.overlay .tick text, .GraphLayout .MessagesCompositeView svg.overlay .tick text, .AverageLoadCompositeView svg.overlay .tick text, .CPUHiveCompositeView svg.overlay .tick text {
+    font-size: 1.375em; }
+
+  .AverageLoadView .line {
     stroke-width: 0.25em; }
   .AverageLoadView .fifteen-min-area {
     stroke-width: 0.25em; }
   .AverageLoadView .brush line, .AverageLoadView .brush ellipse {
     stroke-width: 0.125em; }
+  .AverageLoadView .brush text {
+    font-size: 1.375em;
+    text-shadow: 0 2px 2px rgba(255, 255, 255, 0.5); }
+    .AverageLoadView .brush text.timestamp {
+      font-size: 1.125em; }
 
-  .GraphCompositeView svg.overlay .tick line, .GraphLayout .MessagesCompositeView svg.overlay .tick line, .AverageLoadCompositeView svg.overlay .tick line, .CPUHiveCompositeView svg.overlay .tick line {
+  .CPUHiveView ellipse {
     stroke-width: 0.125em; }
-  .GraphCompositeView svg.overlay .tick text, .GraphLayout .MessagesCompositeView svg.overlay .tick text, .AverageLoadCompositeView svg.overlay .tick text, .CPUHiveCompositeView svg.overlay .tick text {
-    font-size: 1.375em; } }
+
+  .MessagesCompositeView .wrapper dl {
+    font-size: 0.625em; } }
 body {
   font-family: "Avenir", "Helvetica Neue", "Helvetica", sans-serif;
   background: #999;
@@ -599,7 +635,6 @@ body {
   -webkit-font-smoothing: antialiased; }
 
 #container {
-  max-width: 64em;
   margin: 0 auto;
   background: #fff;
   padding: 1em; }

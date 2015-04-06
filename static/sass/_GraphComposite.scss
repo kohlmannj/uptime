@@ -106,7 +106,7 @@
   width: 100%;
   position: relative;
   height: 0;
-  padding-bottom: 32.03125%;
+  padding-bottom: $graphLayoutHeight;
 
   .AverageLoadCompositeView {
     width: $loadAvgWidth;
@@ -197,7 +197,6 @@
       opacity: 0;
       pointer-events: none;
       fill: #fff;
-      text-shadow: 0 $tickWidth $tickWidth rgba(#000, 0.65);
       font-size: pxtoem($tickFontSize + 4px);
 
       &.timestamp {
@@ -240,18 +239,6 @@
       }
     }
 
-//    &[data-error="HighLoadStart"] {
-//      rect {
-//        fill: rgba(#cc0000, 0.25);
-//      }
-//
-//      &:hover {
-//        rect {
-//          fill: rgba(#cc0000, 0.5);
-//        }
-//      }
-//    }
-
     &[data-error="HighLoadStart"],
     &[data-error="HighLoadSustained"],
     &[data-error="HighLoadEnd"] {
@@ -265,18 +252,6 @@
         }
       }
     }
-
-//    &[data-error="HighLoadEnd"] {
-//      rect {
-//        fill: rgba($successColor, 0.25);
-//      }
-//
-//      &:hover {
-//        rect {
-//          fill: rgba($successColor, 0.5);
-//        }
-//      }
-//    }
   }
 
   path + g.brush,
@@ -286,7 +261,6 @@
   path + g.brush + g.brush + g.brush + g.brush + g.brush {
     text {
       fill: #000;
-      text-shadow: 0 $tickWidth $tickWidth rgba(#fff, 0.65);
     }
   }
 
@@ -296,47 +270,22 @@
     stroke-width: 0;
   }
 
-  .fifteen-min-area {
+  .fifteen-min-area, .fifteen-min-area-static {
     @extend .area;
-    stroke: darken(#96b4be, 15%);
+    stroke: $fifteenMinColor;
     stroke-width: pxtoem(2px);
-//    fill: rgba(lighten(#96b4be, 10%), 0.85);
     fill: none;
   }
 
-  .five-min-area {
+  .five-min-area, .five-min-area-static {
     @extend .area;
-    stroke: lighten($espyBlueColor, 0%);
-    fill: rgba(lighten($espyBlueColor, 5%), $areaFillOpacity);
+    fill: rgba($fiveMinColor, $areaFillOpacity);
   }
 
-  .one-min-area {
+  .one-min-area, .one-min-area-static {
     @extend .area;
     stroke: darken(#082746, 5%);
-    fill: rgba(lighten(#082746, 15%), 0.75);
-  }
-
-  // Unused Line Styles
-
-  .line {
-    stroke-width: pxtoem($lineWidth);
-    fill: none;
-    @include transition(stroke 0.25s ease-in-out);
-  }
-
-  .fifteen-min-line {
-    @extend .line;
-    stroke: darken(#96b4be, 10%);
-  }
-
-  .five-min-line {
-    @extend .line;
-    stroke: #082746;
-  }
-
-  .one-min-line {
-    @extend .line;
-    stroke: darken($espyBlueColor, 0%);
+    fill: rgba($oneMinColor, 0.75);
   }
 }
 
@@ -344,23 +293,85 @@
 
 .CPUHiveCompositeView {
   @extend .GraphCompositeView;
+//  background-color: #e5e5e5;
 
   .wrapper {
     overflow: hidden;
     bottom: 0;
+
+    svg {
+      margin-left: 0;
+      margin-right: auto;
+    }
   }
 }
 
 .CPUHiveView {
-  rect {
-    fill: orange;
-    stroke: black;
-    stroke-width: 1px;
-    @include transition(fill 0.25s ease-in-out);
+  ellipse {
+    fill: none;
+    stroke: rgba(darken(#082746, 5%), 0.5);
+    stroke-width: pxtoem($tickWidth);
+  }
 
-    &:hover {
-      fill: yellow;
+  ellipse + ellipse {
+    stroke: rgba(darken(#082746, 5%), 0.25);
+  }
+
+  ellipse + ellipse + ellipse {
+    stroke: rgba(darken(#082746, 5%), 0.125);
+  }
+
+  ellipse:last-child {
+    fill: rgba(lighten(#082746, 15%), 0.80);
+    stroke: rgba(darken(#082746, 5%), 0);
+  }
+}
+
+.MessagesCompositeView .wrapper {
+  dl {
+    margin: 0 0 pxtoem(1px, 12px);
+    font-size: pxtoem(12px);
+    padding: pxtoem($margin, 12px);
+    border-left: pxtoem(2px, 12px) solid transparent;
+    opacity: 0.35;
+    background-color: transparent;
+
+    &:first-child {
+      opacity: 1;
+
+      &[data-error="HighLoadStart"] {
+        background-color: rgba($alertColor, 0.5);
+        border-color: $alertColor;
+      }
+
+      &[data-error="HighLoadRecovered"] {
+        background-color: rgba($espyBlueColor, 0.5);
+        border-color: $espyBlueColor;
+      }
     }
+
+    &[data-error="HighLoadStart"] {
+      background-color: rgba($headerBorderColor, 0.25);
+      border-color: $alertColor;
+    }
+
+    &[data-error="HighLoadRecovered"] {
+      background-color: rgba($headerBorderColor, 0.25);
+      border-color: $espyBlueColor;
+    }
+  }
+
+  dt {
+    font-weight: 700;
+    text-transform: uppercase;
+  }
+
+  dd {
+    margin: 0;
+  }
+
+  p {
+    margin: 0;
   }
 }
 
@@ -372,30 +383,7 @@
       }
     }
   }
-}
 
-@media screen and (min-width: 768px) and (max-width: 960px) {
-//  .AverageLoadView {
-//    text {
-//        font-size: pxtoem($tickFontSizeMedium);
-//        text-shadow: 0 $tickWidth $tickWidth rgba(#fff, 0.5);
-//
-//        &.timestamp {
-//          font-size: pxtoem($tickFontSizeMedium - 2px);
-//        }
-//      }
-//  }
-
-  .GraphCompositeView {
-    svg.overlay {
-      .tick text {
-        font-size: pxtoem($tickFontSizeMedium);
-      }
-    }
-  }
-}
-
-@media screen and (min-width: 1080px) {
   .AverageLoadView {
     .brush {
       text {
@@ -410,34 +398,34 @@
 }
 
 @media screen and (max-width: 767px) {
-  .AverageLoadView {
-    .line {
-      stroke-width: pxtoem($lineWidthNarrow);
+  .GraphLayout {
+    .AverageLoadCompositeView {
+      width: $loadAvgWidth;
     }
 
-//    .area {
-//      stroke-width: pxtoem($lineWidthNarrow);
-//    }
-
-    .fifteen-min-area {
-      stroke-width: pxtoem($lineWidthNarrow);
+    .CPUHiveCompositeView {
+      width: $cpuHiveWidth;
     }
 
-    .brush {
-      line, ellipse {
-        stroke-width: pxtoem($tickWidthNarrow);
+    .MessagesCompositeView {
+      width: $messagesWidthMinusMarginNarrow;
+    }
+
+    &.withMessages {
+      .AverageLoadCompositeView {
+        width: $loadAvgWidthWithMessagesNarrow;
       }
 
-//      text {
-//        font-size: pxtoem($tickFontSizeNarrow);
-//        text-shadow: 0 $tickWidthNarrow $tickWidthNarrow rgba(#fff, 0.5);
-//
-//        &.timestamp {
-//          font-size: pxtoem($tickFontSizeNarrow - 4px);
-//        }
-//      }
+      .CPUHiveCompositeView {
+        right: $messagesWidthNarrow;
+      }
+
+      .MessagesCompositeView {
+
+      }
     }
   }
+
 
   .GraphCompositeView {
     svg.overlay {
@@ -448,6 +436,43 @@
       .tick text {
         font-size: pxtoem($tickFontSizeNarrow);
       }
+    }
+  }
+
+  .AverageLoadView {
+    .line {
+      stroke-width: pxtoem($lineWidthNarrow);
+    }
+
+    .fifteen-min-area {
+      stroke-width: pxtoem($lineWidthNarrow);
+    }
+
+    .brush {
+      line, ellipse {
+        stroke-width: pxtoem($tickWidthNarrow);
+      }
+
+      text {
+        font-size: pxtoem($tickFontSizeNarrow);
+        text-shadow: 0 $tickWidthNarrow $tickWidthNarrow rgba(#fff, 0.5);
+
+        &.timestamp {
+          font-size: pxtoem($tickFontSizeNarrow - 4px);
+        }
+      }
+    }
+  }
+
+  .CPUHiveView {
+    ellipse {
+      stroke-width: pxtoem($tickWidthNarrow);
+    }
+  }
+
+  .MessagesCompositeView .wrapper {
+    dl {
+      font-size: pxtoem(10px);
     }
   }
 }

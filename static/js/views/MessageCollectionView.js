@@ -23,6 +23,9 @@ define(function(require) {
             if (Notification.permission === 'default') {
                 Notification.requestPermission();
             }
+        },
+        viewComparator: function(message) {
+            return message.get("sample").get("uptime") * -1;
         }
     });
 });
