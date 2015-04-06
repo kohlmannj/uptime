@@ -22,7 +22,7 @@ define(function(require) {
         margin: 8,
         marginLeft: 220,
         enterDuration: 2000,
-        yAxisTicks: [0, 1.0, 2.5, 5, 10, 15, 20],
+        yAxisTicks: [0, 1.0, 2.5, 5, 10, 15, 20, 25, 30, 35, 40],
         autoscroll: true,
         defaultGlobalWaveMagnitude: 1.0,
         globalWaveMagnitude: 1.0,
