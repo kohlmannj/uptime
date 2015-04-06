@@ -371,8 +371,15 @@ define(function(require) {
         },
 
         drawBrushRects: function() {
+            var brushRectsGroup = d3.select(this.d3.el).selectAll("g.brushRects").data([0]);
+
+            brushRectsGroup.enter()
+                .append("g")
+                .classed("brushRects", true)
+            ;
+
             // Select the g.brush groups and map the data to them.
-            var existingGroups = d3.select(this.d3.el).selectAll("g.brush").data(this.collection.models);
+            var existingGroups = brushRectsGroup.selectAll("g.brush").data(this.collection.models);
 
             // Add a data-error attribute so we can visually indicate which type of message is there.
             // Also add a .note class if this group has a note.

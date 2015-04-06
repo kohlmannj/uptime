@@ -252,11 +252,8 @@
     }
   }
 
-  path + g.brush,
-  path + g.brush + g.brush,
-  path + g.brush + g.brush + g.brush,
-  path + g.brush + g.brush + g.brush + g.brush,
-  path + g.brush + g.brush + g.brush + g.brush + g.brush {
+  // Use black text for the first six brush texts
+  g.brush:nth-child(-n+6) {
     text {
       fill: #000;
     }

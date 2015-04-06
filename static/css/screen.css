@@ -228,9 +228,10 @@ th {
   .refresh:hover, .refresh:focus {
     background-color: rgba(0, 0, 0, 0.5); }
     .refresh:hover:after, .refresh:focus:after {
+      -webkit-transform: rotate(45deg);
       -moz-transform: rotate(45deg);
       -ms-transform: rotate(45deg);
-      -webkit-transform: rotate(45deg);
+      -o-transform: rotate(45deg);
       transform: rotate(45deg); }
   .refresh:active {
     -moz-transition: none;
@@ -242,27 +243,30 @@ th {
     pointer-events: none;
     background-color: rgba(0, 0, 0, 0.15); }
     .refresh.refreshing:after {
+      -webkit-transform: rotate(360deg);
       -moz-transform: rotate(360deg);
       -ms-transform: rotate(360deg);
-      -webkit-transform: rotate(360deg);
+      -o-transform: rotate(360deg);
       transform: rotate(360deg);
       -moz-transition-duration: 2.5s;
       -o-transition-duration: 2.5s;
       -webkit-transition-duration: 2.5s;
       transition-duration: 2.5s; }
   .refresh.update:after {
+    -webkit-transform: rotate(360deg);
     -moz-transform: rotate(360deg);
     -ms-transform: rotate(360deg);
-    -webkit-transform: rotate(360deg);
+    -o-transform: rotate(360deg);
     transform: rotate(360deg);
     -moz-transition-duration: 0.25s;
     -o-transition-duration: 0.25s;
     -webkit-transition-duration: 0.25s;
     transition-duration: 0.25s; }
   .refresh.reset-transition:after {
+    -webkit-transform: rotate(0);
     -moz-transform: rotate(0);
     -ms-transform: rotate(0);
-    -webkit-transform: rotate(0);
+    -o-transform: rotate(0);
     transform: rotate(0);
     -moz-transition-property: none;
     -o-transition-property: none;
@@ -279,9 +283,10 @@ th {
     .refresh.alert:hover, .refresh.alert:focus {
       background-color: rgba(245, 166, 35, 0.8); }
       .refresh.alert:hover:after, .refresh.alert:focus:after {
+        -webkit-transform: none;
         -moz-transform: none;
         -ms-transform: none;
-        -webkit-transform: none;
+        -o-transform: none;
         transform: none; }
     .refresh.alert:active {
       background-color: #f5a623; }
@@ -333,7 +338,7 @@ header {
 
 .mainHeader {
   margin-bottom: 1.75em;
-  color: #999;
+  color: #999999;
   border-color: #d9d9d9; }
 
 .GraphCompositeView svg.overlay .tick text, .GraphLayout .MessagesCompositeView svg.overlay .tick text, .AverageLoadCompositeView svg.overlay .tick text, .CPUHiveCompositeView svg.overlay .tick text, .AverageLoadView .brush text, .AverageLoadView .bg text {
@@ -365,7 +370,7 @@ header {
       border: 0.0625em solid rgba(153, 153, 153, 0.5);
       border-radius: 0.25em; }
     .GraphCompositeView .wrapper::-webkit-scrollbar-thumb, .GraphLayout .MessagesCompositeView .wrapper::-webkit-scrollbar-thumb, .AverageLoadCompositeView .wrapper::-webkit-scrollbar-thumb, .CPUHiveCompositeView .wrapper::-webkit-scrollbar-thumb, .GraphCompositeView svg.overlay::-webkit-scrollbar-thumb, .GraphLayout .MessagesCompositeView svg.overlay::-webkit-scrollbar-thumb, .AverageLoadCompositeView svg.overlay::-webkit-scrollbar-thumb, .CPUHiveCompositeView svg.overlay::-webkit-scrollbar-thumb {
-      background-color: #999;
+      background-color: #999999;
       border-radius: 0.25em; }
       .GraphCompositeView .wrapper::-webkit-scrollbar-thumb:active, .GraphLayout .MessagesCompositeView .wrapper::-webkit-scrollbar-thumb:active, .AverageLoadCompositeView .wrapper::-webkit-scrollbar-thumb:active, .CPUHiveCompositeView .wrapper::-webkit-scrollbar-thumb:active, .GraphCompositeView svg.overlay::-webkit-scrollbar-thumb:active, .GraphLayout .MessagesCompositeView svg.overlay::-webkit-scrollbar-thumb:active, .AverageLoadCompositeView svg.overlay::-webkit-scrollbar-thumb:active, .CPUHiveCompositeView svg.overlay::-webkit-scrollbar-thumb:active {
         background-color: #737373; }
@@ -395,7 +400,7 @@ header {
       -webkit-transition: fill 0.25s ease-in-out;
       transition: fill 0.25s ease-in-out; }
   .GraphCompositeView header, .GraphLayout .MessagesCompositeView header, .AverageLoadCompositeView header, .CPUHiveCompositeView header {
-    color: #999;
+    color: #999999;
     position: absolute;
     top: -1.5625em;
     left: 0;
@@ -453,13 +458,15 @@ header {
     right: 0;
     top: 0;
     bottom: 0;
+    -webkit-transform: scale(0, 1);
     -moz-transform: scale(0, 1);
     -ms-transform: scale(0, 1);
-    -webkit-transform: scale(0, 1);
+    -o-transform: scale(0, 1);
     transform: scale(0, 1);
+    -webkit-transform-origin: right center 50%;
     -moz-transform-origin: right center 50%;
     -ms-transform-origin: right center 50%;
-    -webkit-transform-origin: right center 50%;
+    -o-transform-origin: right center 50%;
     transform-origin: right center 50%;
     opacity: 0; }
   .GraphLayout.withMessages .AverageLoadCompositeView {
@@ -467,9 +474,10 @@ header {
   .GraphLayout.withMessages .CPUHiveCompositeView {
     right: 17.57813%; }
   .GraphLayout.withMessages .MessagesCompositeView {
+    -webkit-transform: scale(1, 1);
     -moz-transform: scale(1, 1);
     -ms-transform: scale(1, 1);
-    -webkit-transform: scale(1, 1);
+    -o-transform: scale(1, 1);
     transform: scale(1, 1);
     opacity: 1.0;
     pointer-events: auto; }
@@ -514,11 +522,7 @@ header {
     fill: rgba(0, 172, 194, 0.5); }
   .AverageLoadView .brush:hover[data-error="HighLoadStart"] rect, .AverageLoadView .brush:hover[data-error="HighLoadSustained"] rect, .AverageLoadView .brush:hover[data-error="HighLoadEnd"] rect, .AverageLoadView .brush.focused[data-error="HighLoadStart"] rect, .AverageLoadView .brush.focused[data-error="HighLoadSustained"] rect, .AverageLoadView .brush.focused[data-error="HighLoadEnd"] rect, .AverageLoadView .bg:hover[data-error="HighLoadStart"] rect, .AverageLoadView .bg:hover[data-error="HighLoadSustained"] rect, .AverageLoadView .bg:hover[data-error="HighLoadEnd"] rect, .AverageLoadView .bg.focused[data-error="HighLoadStart"] rect, .AverageLoadView .bg.focused[data-error="HighLoadSustained"] rect, .AverageLoadView .bg.focused[data-error="HighLoadEnd"] rect {
     fill: rgba(245, 166, 35, 0.5); }
-  .AverageLoadView path + g.brush text,
-  .AverageLoadView path + g.brush + g.brush text,
-  .AverageLoadView path + g.brush + g.brush + g.brush text,
-  .AverageLoadView path + g.brush + g.brush + g.brush + g.brush text,
-  .AverageLoadView path + g.brush + g.brush + g.brush + g.brush + g.brush text {
+  .AverageLoadView g.brush:nth-child(-n+6) text {
     fill: #000; }
   .AverageLoadView .area, .AverageLoadView .fifteen-min-area, .AverageLoadView .fifteen-min-area-static, .AverageLoadView .five-min-area, .AverageLoadView .five-min-area-static, .AverageLoadView .one-min-area, .AverageLoadView .one-min-area-static {
     stroke-width: 0; }
