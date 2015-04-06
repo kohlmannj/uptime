@@ -45,7 +45,7 @@
 
     &:after {
       @include rotate(360deg);
-      @include transition-duration(2.5s);
+      @include transition-duration(1.35s);
     }
   }
 
