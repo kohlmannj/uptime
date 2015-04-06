@@ -61,7 +61,7 @@ define(function(require) {
                 duration: 100,
                 xAttrName: "uptime",
                 yAttrName: "avg_load_1min",
-                // Bilinear interpolation for smoother curves (and smoother waves)
+                // Bilinear 4x resampling for smoother curves (and smoother waves)
                 interpolation: function(points) {
                     if (points.length > 1) {
                         var path = "";
