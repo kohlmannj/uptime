@@ -38,8 +38,8 @@ define(function(require) {
 
             // 2-Minute High Load Check
             this.hasHighLoad = false;
-            this.highLoadThreshold = 2.5;
-            this.highLoadDuration = 120000 / 4;
+            this.highLoadThreshold = 1.0;
+            this.highLoadDuration = 120000;
             // The collection of samples which have been ABOVE the load threshold.
             // Empty when we haven't seen any samples above the high load threshold.
             this.highLoadSamples = [];
