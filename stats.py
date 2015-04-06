@@ -32,7 +32,7 @@ def get_stats():
         text
     )
     cpu = re.search(
-        r"(CPU usage|Cpu\(s\)):\s*(?P<user>\d*\.?\d*%)\s*(user|us),\s*(?P<sys>\d*\.?\d*%)\s*(sys|sy),(\s*\d*\.?\d*%\s*ni,)?\s*(?P<idle>\d*\.?\d*%)\s*(idle|id)",
+        r"(CPU usage|Cpu\(s\)):\s*(?P<user>\d*\.?\d*(%)?\s*(user|us),\s*(?P<sys>\d*\.?\d*(%)?)\s*(sys|sy),(\s*\d*\.?\d*(%)?\s*ni,)?\s*(?P<idle>\d*\.?\d*(%)?)\s*(idle|id)",
         text
     )
 
