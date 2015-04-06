@@ -19,7 +19,8 @@ define(function(require) {
 
         attributes: function() {
             return {
-                "data-error": this.model.get("sample").get("error")
+                "data-error": this.model.get("sample").get("error"),
+                "data-id": this.model.get("sample").id
             }
         },
 
@@ -51,11 +52,18 @@ define(function(require) {
         },
 
         events: {
-            "click": "focusSample"
+            "mouseenter": "focusSample",
+            "mouseleave": "blurSample"
         },
 
-        focusSample: function() {
+        focusSample: function(e) {
+            e.stopPropagation();
             this.trigger("focusSample", this.model.get("sample"));
+        },
+
+        blurSample: function(e) {
+            e.stopPropagation();
+            this.trigger("blurSample", this.model.get("sample"));
         },
 
         // Ask for permission to display local notifications.
@@ -82,11 +90,9 @@ define(function(require) {
                 );
                 console.log('Notification shown');
                 // Remove the notification from Notification Center when clicked.
-                n.onclick = this.focusSample();
+                n.onclick = this.focusSample;
                 // Callback function when the notification is closed.
-                n.onclose = function () {
-                    console.log('Notification closed');
-                };
+                n.onclose = this.blurSample;
             }
             // If the user does not want notifications to come from this domain...
             else if (Notification.permission === 'denied') {

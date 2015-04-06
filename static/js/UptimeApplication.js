@@ -99,6 +99,13 @@ define(function(require) {
 
             // MainHeaderView Refresh button: listen for "refresh" event to trigger a fetch.
             this.listenTo(this.mainHeaderView, "refresh", this.fetchSample);
+
+            // Listen for focusSample and blurSample events.
+            this.listenTo(this.messageCollectionView, "childview:focusSample", this.focusSampleForMessageView);
+            this.listenTo(this.averageLoadView, "focusSample", this.focusSample);
+
+            this.listenTo(this.messageCollectionView, "childview:blurSample", this.blurSampleForMessageView);
+            this.listenTo(this.averageLoadView, "blurSample", this.blurSample);
         },
 
         onStart: function() {
@@ -128,6 +135,45 @@ define(function(require) {
                 success: _.bind(this.fetchSuccess, this),
                 error: _.bind(this.fetchError, this)
             });
+        },
+
+        focusSampleForMessageView: function(view) {
+            var sample = view.model.get("sample")
+            this.focusSample(sample);
+            // Get clientX position of rect.brush[data-id="sample.id"] so we can scroll to it.
+            var brushRect = d3.select("g.brush[data-id='" + sample.id + "'] rect");
+            if (brushRect.empty() === false) {
+                var brushRectX = parseFloat(brushRect.attr("x"));
+                // Animate scroll position of AverageLoadView
+                this.previousScrollPosition = this.averageLoadView.$el.parent().get(0).scrollLeft;
+                this.averageLoadView.$el.parent().finish().animate({
+                    scrollLeft: brushRectX
+                }, 500);
+            }
+        },
+
+        blurSampleForMessageView: function(view) {
+            this.blurSample(view.model.get("sample"));
+            if (typeof this.previousScrollPosition === "number") {
+                // Animate scroll position of AverageLoadView back into position
+                this.averageLoadView.$el.parent().finish().animate({
+                    scrollLeft: this.previousScrollPosition
+                }, 1000);
+            }
+        },
+
+        focusSample: function(sample) {
+            console.log("Heard focusSample", sample);
+            d3.selectAll("*[data-id='" + sample.id + "']").classed("focused", true);
+            // Pause the graph animation
+            this.rootView.pauseAverageLoadView();
+        },
+
+        blurSample: function(sample) {
+            console.log("Heard blurSample", sample);
+            d3.selectAll("*[data-id='" + sample.id + "']").classed("focused", false);
+            // Resume the graph animation
+            this.rootView.resumeAverageLoadView();
         },
 
         fetchSuccess: function(response) {

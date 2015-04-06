@@ -1,0 +1,14 @@
+{
+	"name": "requirejs-html",
+	"version": "1.2.0",
+	"description": "A RequireJS plugin for loading HTML templates",
+	"keywords": ["html", "markup", "plugin", "require"],
+	"repository": {
+		"type": "git",
+		"url": "https://github.com/DejaMi/requirejs-html.git"
+	},
+	"main": "html.js",
+	"dependencies": {
+		"requirejs-text": "latest"
+	}
+}

@@ -22,12 +22,17 @@ define(function(require) {
         },
 
         pauseAverageLoadView: function(e) {
-            e.stopPropagation();
+            if (e) {
+                e.stopPropagation();
+            }
             this.$el.find(".AverageLoadCompositeView").addClass("paused");
             this.getRegion("AverageLoadView").currentView.pauseScrolling();
         },
 
         resumeAverageLoadView: function(e) {
+            if (e) {
+                e.stopPropagation();
+            }
             this.$el.find(".AverageLoadCompositeView").removeClass("paused");
             this.getRegion("AverageLoadView").currentView.resumeScrolling();
         }

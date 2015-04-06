@@ -205,11 +205,21 @@
       }
     }
 
-    &.note, &[data-error] {
-      @include transition(fill 0.25s ease-in-out);
+    &.note {
+      rect {
+        fill: rgba($espyBlueColor, 0.25);
+      }
     }
 
-    &:hover {
+    &[data-error="HighLoadStart"],
+    &[data-error="HighLoadSustained"],
+    &[data-error="HighLoadEnd"] {
+      rect {
+        fill: rgba($alertColor, 0.25);
+      }
+    }
+
+    &:hover, &.focused {
       rect {
         fill: rgba($headerBorderColor, 0.25);
       }
@@ -225,28 +235,16 @@
           opacity: 0.65;
         }
       }
-    }
 
-    &.note {
-      rect {
-        fill: rgba($espyBlueColor, 0.25);
-      }
-
-      &:hover {
+      &.note {
         rect {
           fill: rgba($espyBlueColor, 0.5);
         }
       }
-    }
 
-    &[data-error="HighLoadStart"],
-    &[data-error="HighLoadSustained"],
-    &[data-error="HighLoadEnd"] {
-      rect {
-        fill: rgba($alertColor, 0.25);
-      }
-
-      &:hover {
+      &[data-error="HighLoadStart"],
+      &[data-error="HighLoadSustained"],
+      &[data-error="HighLoadEnd"] {
         rect {
           fill: rgba($alertColor, 0.5);
         }
@@ -309,7 +307,7 @@
 .CPUHiveView {
   ellipse {
     fill: none;
-    stroke: rgba(darken(#082746, 5%), 0.5);
+    stroke: rgba(darken(#082746, 5%), 0.125);
     stroke-width: pxtoem($tickWidth);
   }
 
@@ -318,7 +316,7 @@
   }
 
   ellipse + ellipse + ellipse {
-    stroke: rgba(darken(#082746, 5%), 0.125);
+    stroke: rgba(darken(#082746, 5%), 0.5);
   }
 
   ellipse:last-child {
@@ -340,24 +338,34 @@
       opacity: 1;
 
       &[data-error="HighLoadStart"] {
-        background-color: rgba($alertColor, 0.5);
-        border-color: $alertColor;
+        background-color: rgba($alertColor, 0.25);
       }
 
       &[data-error="HighLoadRecovered"] {
-        background-color: rgba($espyBlueColor, 0.5);
-        border-color: $espyBlueColor;
+        background-color: rgba($espyBlueColor, 0.25);
       }
     }
 
     &[data-error="HighLoadStart"] {
       background-color: rgba($headerBorderColor, 0.25);
-      border-color: $alertColor;
+//      border-color: $alertColor;
     }
 
     &[data-error="HighLoadRecovered"] {
       background-color: rgba($headerBorderColor, 0.25);
-      border-color: $espyBlueColor;
+//      border-color: $espyBlueColor;
+    }
+
+    &:hover, &.focused {
+      opacity: 1;
+      border-color: rgba(#000, 0.5);
+      &[data-error="HighLoadStart"] {
+        background-color: rgba($alertColor, 0.5);
+      }
+
+      &[data-error="HighLoadRecovered"] {
+        background-color: rgba($espyBlueColor, 0.5);
+      }
     }
   }
 

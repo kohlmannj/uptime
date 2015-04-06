@@ -15,7 +15,7 @@ define(function(require) {
         // Default width and height values; can be overridden in constructor.
         defaultWidth: 720,
         animatedSampleLimit: 16,
-        sampleLimit: 200,
+        sampleLimit: 60,
         width: 0,
         height: 304,
         sampleWidth: 32,
@@ -28,8 +28,15 @@ define(function(require) {
         globalWaveMagnitude: 1.0,
         pauseTimeout: 0,
         dateFormat: "ddd, L · LTS [(GMT] Z[)]",
-
         className: "AverageLoadView",
+
+        focusSample: function(sample) {
+            this.trigger("focusSample", sample);
+        },
+
+        blurSample: function(sample) {
+            this.trigger("blurSample", sample);
+        },
 
         pauseScrolling: function() {
             this.autoscroll = false;
@@ -362,6 +369,9 @@ define(function(require) {
                 .attr("data-error", function(d) {
                     return d.get("error");
                 })
+                .attr("data-id", function(d) {
+                    return d.id;
+                })
                 .classed("note", function(d) {
                     return (typeof d.get("note") === "string");
                 })
@@ -414,6 +424,9 @@ define(function(require) {
                 .attr("data-error", function(d) {
                     return d.get("error");
                 })
+                .attr("data-id", function(d) {
+                    return d.id;
+                })
             ;
 
             // New <rect> elements
@@ -440,6 +453,12 @@ define(function(require) {
                     }
                 }, this))
                 .attr("height", this.height)
+                .on("mouseenter", _.bind(function(e) {
+                    this.focusSample(e);
+                }, this))
+                .on("mouseleave", _.bind(function(e) {
+                    this.blurSample(e);
+                }, this))
             ;
 
             // New <title> elements inside new <rect> elements
@@ -487,7 +506,7 @@ define(function(require) {
                 .attr("x", _.bind(function(d) {
                     return this.x(d.get("uptime")) - this.margin;
                 }, this))
-                .attr("y", this.y(0) - this.margin * 3.5)
+                .attr("y", this.y(0) - this.margin * 4.5)
                 .text(function(d) { return "Load: " + d.get("avg_load_1min"); })
             ;
 
@@ -498,7 +517,7 @@ define(function(require) {
                 .attr("x", _.bind(function(d) {
                     return this.x(d.get("uptime")) - this.margin;
                 }, this))
-                .attr("y", this.y(0) - this.margin)
+                .attr("y", this.y(0) - this.margin * 2)
                 .text(function(d) { return moment(d.get("timestamp")).calendar(); })
             ;
 
@@ -524,7 +543,7 @@ define(function(require) {
 
             // Keep scrolling right if the scroll bar is within one sample width of the rightmost edge.
             if (this.autoscroll === true && this.$el.parent().get(0) && this.$el.parent().get(0).scrollLeft >= this.$el.parent().get(0).scrollWidth * 2/3 - this.$el.parent().width()) {
-                this.$el.parent().animate({
+                this.$el.parent().finish().animate({
                     scrollLeft: this.$el.parent().get(0).scrollWidth
                 }, this.enterDuration);
             }

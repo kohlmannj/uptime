@@ -16,6 +16,5 @@ xcuserdata
 # svn & cvs
 .svn
 CVS
-static/bower_components/*
 .sass-cache
 config.codekit

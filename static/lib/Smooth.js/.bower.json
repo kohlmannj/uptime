@@ -1,0 +1,14 @@
+{
+  "name": "Smooth.js",
+  "homepage": "https://github.com/osuushi/Smooth.js",
+  "_release": "385e69d799",
+  "_resolution": {
+    "type": "branch",
+    "branch": "master",
+    "commit": "385e69d7993688278b083f8ea6cfa113f6256405"
+  },
+  "_source": "https://github.com/osuushi/Smooth.js.git",
+  "_target": "*",
+  "_originalSource": "https://github.com/osuushi/Smooth.js.git",
+  "_direct": true
+}
