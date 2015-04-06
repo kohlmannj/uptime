@@ -61,10 +61,11 @@ define(function(require) {
                 duration: 100,
                 xAttrName: "uptime",
                 yAttrName: "avg_load_1min",
+                // Bilinear interpolation for smoother curves (and smoother waves)
                 interpolation: function(points) {
                     if (points.length > 1) {
                         var path = "";
-                        // Double the number of samples.
+                        // Quadruple the number of samples.
                         var iStep = 1.0 / 4;
                         var s = Smooth(points);
                         for (var i = 0; i < points.length; i += iStep) {
@@ -600,7 +601,6 @@ define(function(require) {
                 data: this.collection.first(this.collection.length - this.animatedSampleLimit + 1),
                 className: "fifteen-min-area-static",
                 yAttrName: "avg_load_15min",
-                interpolation: "linear",
                 d3DrawMethod: d3.svg.line
             });
 
@@ -609,7 +609,6 @@ define(function(require) {
                 animate: false,
                 data: this.collection.first(this.collection.length - this.animatedSampleLimit + 1),
                 className: "five-min-area-static",
-                interpolation: "linear",
                 yAttrName: "avg_load_5min"
             });
 
@@ -617,7 +616,6 @@ define(function(require) {
                 animate: false,
                 data: this.collection.first(this.collection.length - this.animatedSampleLimit + 1),
                 className: "one-min-area-static",
-                interpolation: "linear",
                 yAttrName: "avg_load_1min"
             });
 
