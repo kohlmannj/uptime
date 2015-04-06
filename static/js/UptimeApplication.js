@@ -103,9 +103,11 @@ define(function(require) {
             // Listen for focusSample and blurSample events.
             this.listenTo(this.messageCollectionView, "childview:focusSample", this.focusSampleForMessageView);
             this.listenTo(this.averageLoadView, "focusSample", this.focusSample);
+            this.listenTo(this.cpuHiveView, "focusSample", this.focusSample);
 
             this.listenTo(this.messageCollectionView, "childview:blurSample", this.blurSampleForMessageView);
             this.listenTo(this.averageLoadView, "blurSample", this.blurSample);
+            this.listenTo(this.cpuHiveView, "blurSample", this.blurSample);
         },
 
         onStart: function() {

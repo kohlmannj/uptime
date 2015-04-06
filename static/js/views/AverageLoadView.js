@@ -14,7 +14,7 @@ define(function(require) {
     return D3ShimView.extend({
         // Default width and height values; can be overridden in constructor.
         defaultWidth: 720,
-        animatedSampleLimit: 16,
+        animatedSampleLimit: 20,
         sampleLimit: 60,
         width: 0,
         height: 304,

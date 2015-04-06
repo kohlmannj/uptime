@@ -15,6 +15,14 @@ define(function(require) {
         height: 304,
         className: "CPUHiveView",
 
+        focusSample: function(sample) {
+            this.trigger("focusSample", sample);
+        },
+
+        blurSample: function(sample) {
+            this.trigger("blurSample", sample);
+        },
+
         drawAxes: function() {
             // X-Axis
             this.xAxis = d3.svg.axis()
@@ -131,8 +139,12 @@ define(function(require) {
             var arc = d3.select(this.d3.el).selectAll("ellipse").data(this.collection.last(4));
 
             arc
+                .classed("focused", false)
                 .transition()
                 .duration(2000)
+                .attr("data-id", function(d) {
+                    return d.id;
+                })
                 .attr("cx", this.x(0) - this.margin)
                 .attr("cy", this.y(0))
                 .attr("rx", _.bind(function(d) {
@@ -142,7 +154,7 @@ define(function(require) {
                     return this.y(this.y.domain()[0]) - this.y(d.get("avg_load_1min"));
                 }, this))
             ;
-            arc.selectAll("title")
+            arc.select("title")
                 .text(_.bind(function(d) {
                     return "Load: " + d.get("avg_load_1min") + "\n" +
                         "CPU: " + (100 - parseFloat(d.get("cpu_%idle"))).toFixed(2) + "%" + "\n" +
@@ -151,18 +163,27 @@ define(function(require) {
                 }))
             ;
 
-            var arcEnter = arc.enter();
-
-            arcEnter
+            var arcEnter = arc.enter()
                 .append("ellipse")
+                .attr("data-id", function(d) {
+                    return d.id;
+                })
                 .attr("cx", this.x(0) - this.margin)
                 .attr("cy", this.y(0))
-                .attr("rx", _.bind(function(d) {
-                    return this.x(100 - parseFloat(d.get("cpu_%idle")));
-                }, this))
+                .attr("rx", 0)
                 .attr("ry", _.bind(function(d) {
                     return this.y(this.y.domain()[0]) - this.y(d.get("avg_load_1min"));
                 }, this))
+                .on("mouseenter", _.bind(function(e) {
+                    this.focusSample(e);
+                }, this))
+                .on("mouseleave", _.bind(function(e) {
+                    this.blurSample(e);
+                }, this))
+            ;
+
+            // Title text
+            arcEnter
                 .append("title")
                 .text(_.bind(function(d) {
                     return "Load: " + d.get("avg_load_1min") + "\n" +
@@ -170,6 +191,15 @@ define(function(require) {
                         moment( moment.utc(d.get("timestamp")).toDate() ).calendar()
                     ;
                 }))
+            ;
+
+            // Transition in with actual data
+            arcEnter
+                .transition()
+                .duration(2000)
+                .attr("rx", _.bind(function(d) {
+                    return this.x(100 - parseFloat(d.get("cpu_%idle")));
+                }, this))
             ;
 
             arc.exit()

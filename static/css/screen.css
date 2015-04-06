@@ -536,9 +536,12 @@ header {
     margin-right: auto; }
 
 .CPUHiveView ellipse {
-  fill: none;
+  fill: rgba(16, 77, 139, 0);
   stroke: rgba(5, 26, 47, 0.125);
   stroke-width: 0.0625em; }
+  .CPUHiveView ellipse:hover, .CPUHiveView ellipse.focused {
+    fill: rgba(16, 77, 139, 0.5);
+    stroke: rgba(5, 26, 47, 0.8); }
 .CPUHiveView ellipse + ellipse {
   stroke: rgba(5, 26, 47, 0.25); }
 .CPUHiveView ellipse + ellipse + ellipse {
@@ -546,6 +549,8 @@ header {
 .CPUHiveView ellipse:last-child {
   fill: rgba(16, 77, 139, 0.8);
   stroke: rgba(5, 26, 47, 0); }
+  .CPUHiveView ellipse:last-child:hover, .CPUHiveView ellipse:last-child.focused {
+    stroke: rgba(5, 26, 47, 0.8); }
 
 .MessagesCompositeView .wrapper dl {
   margin: 0 0 0.08333em;

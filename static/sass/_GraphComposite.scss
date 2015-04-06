@@ -303,9 +303,15 @@
 
 .CPUHiveView {
   ellipse {
-    fill: none;
+    fill: rgba(lighten(#082746, 15%), 0);
     stroke: rgba(darken(#082746, 5%), 0.125);
     stroke-width: pxtoem($tickWidth);
+//    pointer-events: none;
+
+    &:hover, &.focused {
+      fill: rgba(lighten(#082746, 15%), 0.5);
+      stroke: rgba(darken(#082746, 5%), 0.8);
+    }
   }
 
   ellipse + ellipse {
@@ -319,6 +325,10 @@
   ellipse:last-child {
     fill: rgba(lighten(#082746, 15%), 0.80);
     stroke: rgba(darken(#082746, 5%), 0);
+
+    &:hover, &.focused {
+      stroke: rgba(darken(#082746, 5%), 0.8);
+    }
   }
 }
 
