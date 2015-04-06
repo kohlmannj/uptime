@@ -143,7 +143,7 @@ define(function(require) {
             // Get clientX position of rect.brush[data-id="sample.id"] so we can scroll to it.
             var brushRect = d3.select("g.brush[data-id='" + sample.id + "'] rect");
             if (brushRect.empty() === false) {
-                var brushRectX = parseFloat(brushRect.attr("x")) + this.averageLoadView.marginLeft;
+                var brushRectX = parseFloat(brushRect.attr("x")) + this.averageLoadView.marginLeft - 120;
                 // Animate scroll position of AverageLoadView
                 this.previousScrollPosition = this.averageLoadView.$el.parent().get(0).scrollLeft;
                 this.averageLoadView.$el.parent().finish().animate({
